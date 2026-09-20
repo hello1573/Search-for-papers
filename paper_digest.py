@@ -65,6 +65,107 @@ RECONSTRUCTION_TERMS = (
     "super-resolution",
 )
 
+DATA_LABELS = (
+    ("digital elevation model", "DEM"),
+    ("dem", "DEM"),
+    ("digital surface model", "DSM"),
+    ("dsm", "DSM"),
+    ("digital terrain model", "DTM"),
+    ("dtm", "DTM"),
+    ("point cloud", "点云"),
+    ("lidar", "LiDAR 点云"),
+    ("remote sensing", "遥感数据"),
+    ("satellite imagery", "卫星影像"),
+    ("aerial imagery", "航空影像"),
+    ("uav", "无人机数据"),
+    ("insar", "InSAR 数据"),
+    ("bathymetr", "海底地形数据"),
+    ("contour line", "等高线"),
+)
+
+METHOD_LABELS = (
+    ("diffusion", "扩散模型"),
+    ("generative adversarial", "生成对抗网络"),
+    ("gan", "生成对抗网络"),
+    ("transformer", "Transformer"),
+    ("u-net", "U-Net"),
+    ("unet", "U-Net"),
+    ("convolution", "卷积网络"),
+    ("self-supervised", "自监督学习"),
+    ("implicit neural", "隐式神经表示"),
+    ("interpolat", "插值"),
+    ("patch matching", "块匹配"),
+    ("data fusion", "多源数据融合"),
+    ("physics-informed", "物理约束学习"),
+    ("attention", "注意力机制"),
+)
+
+PROBLEM_TERMS = (
+    "challenge",
+    "problem",
+    "difficulty",
+    "difficult",
+    "limited",
+    "lack",
+    "suffer",
+    "however",
+    "remain",
+    "address",
+    "missing",
+    "incomplete",
+    "sparse",
+    "occlusion",
+)
+
+METHOD_TERMS = (
+    "propose",
+    "present",
+    "develop",
+    "introduce",
+    "framework",
+    "method",
+    "model",
+    "network",
+    "approach",
+    "employ",
+    "using",
+    "consist",
+    "trained",
+)
+
+CONTRIBUTION_TERMS = (
+    "result",
+    "outperform",
+    "improve",
+    "achieve",
+    "demonstrate",
+    "effective",
+    "accuracy",
+    "rmse",
+    "mae",
+    "superior",
+    "significant",
+    "reduce",
+    "increase",
+)
+
+INNOVATION_TERMS = (
+    "novel",
+    "new",
+    "first",
+    "propose",
+    "introduce",
+    "develop",
+    "unlike",
+    "different",
+    "integrat",
+    "combine",
+    "joint",
+    "terrain-aware",
+    "topology",
+    "topological",
+)
+
 
 def abstract_text(work: dict[str, Any]) -> str:
     inverted = work.get("abstract_inverted_index") or {}
@@ -99,7 +200,19 @@ def relevance_score(work: dict[str, Any]) -> int:
 
 
 def contains_term(text: str, term: str) -> bool:
-    suffix = r"\w*" if term in {"topograph", "reconstruct", "inpaint", "interpolat"} else ""
+    suffix = (
+        r"\w*"
+        if term
+        in {
+            "topograph",
+            "reconstruct",
+            "inpaint",
+            "interpolat",
+            "bathymetr",
+            "integrat",
+        }
+        else ""
+    )
     return bool(re.search(r"\b" + re.escape(term) + suffix + r"\b", text))
 
 
@@ -271,6 +384,155 @@ def abstract_excerpt(work: dict[str, Any]) -> str:
     return abstract
 
 
+def abstract_sentences(work: dict[str, Any]) -> list[str]:
+    abstract = re.sub(r"\s+", " ", abstract_text(work)).strip()
+    if not abstract:
+        return []
+    return [
+        sentence.strip()
+        for sentence in re.split(r"(?<=[.!?])\s+(?=[A-Z0-9(\[])", abstract)
+        if sentence.strip()
+    ]
+
+
+def clip_text(text: str, limit: int = 320) -> str:
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) <= limit:
+        return text
+    return text[:limit].rsplit(" ", 1)[0].rstrip(" ,;:") + "..."
+
+
+def sentence_with_terms(
+    sentences: list[str], terms: tuple[str, ...], limit: int = 320
+) -> str | None:
+    for sentence in sentences:
+        lowered = sentence.casefold()
+        if any(contains_term(lowered, term) for term in terms):
+            return clip_text(sentence, limit)
+    return None
+
+
+def detected_labels(text: str, definitions: tuple[tuple[str, str], ...]) -> list[str]:
+    labels = []
+    for term, label in definitions:
+        if contains_term(text, term) and label not in labels:
+            labels.append(label)
+    if "LiDAR 点云" in labels and "点云" in labels:
+        labels.remove("点云")
+    return labels
+
+
+def task_label(work: dict[str, Any]) -> str:
+    text = work_text(work)
+    if any(
+        contains_term(text, term)
+        for term in ("void", "gap filling", "missing data", "inpaint")
+    ):
+        return "地形或 DEM 缺失区域修复"
+    if contains_term(text, "super-resolution"):
+        return "DEM 超分辨率与稠密化"
+    if contains_term(text, "point cloud") and contains_term(text, "completion"):
+        return "地形点云补全"
+    if "dsm-to-dtm" in text or (
+        contains_term(text, "dsm") and contains_term(text, "dtm")
+    ):
+        return "DSM 到 DTM 重建"
+    if contains_term(text, "interpolat"):
+        return "稀疏高程插值与连续曲面构建"
+    if contains_term(text, "dem") and contains_term(text, "reconstruct"):
+        return "DEM 重建与高程恢复"
+    if contains_term(text, "terrain") and contains_term(text, "reconstruct"):
+        return "地形表面重建"
+    return "地形表面重建或高程恢复"
+
+
+def input_data_summary(work: dict[str, Any], sentences: list[str]) -> str:
+    text = work_text(work)
+    labels = detected_labels(text, DATA_LABELS)
+    evidence = sentence_with_terms(
+        sentences,
+        (
+            "dataset",
+            "data",
+            "input",
+            "imagery",
+            "image",
+            "lidar",
+            "point cloud",
+            "dem",
+            "dsm",
+            "observation",
+            "sample",
+        ),
+        240,
+    )
+    if labels and evidence:
+        return f"涉及{'、'.join(labels)}。摘要依据：{evidence}"
+    if labels:
+        return f"涉及{'、'.join(labels)}；具体数据集、分辨率和样本规模需阅读全文核实。"
+    return "摘要未明确说明具体输入数据、分辨率或样本规模，需阅读全文核实。"
+
+
+def technical_route_summary(work: dict[str, Any], sentences: list[str]) -> str:
+    text = work_text(work)
+    data = detected_labels(text, DATA_LABELS)
+    methods = detected_labels(text, METHOD_LABELS)
+    route = " → ".join(
+        [
+            "、".join(data[:3]) if data else "输入数据",
+            " + ".join(methods[:3]) if methods else "论文方法",
+            task_label(work),
+        ]
+    )
+    evidence = sentence_with_terms(sentences, METHOD_TERMS, 280)
+    return f"{route}。" + (
+        f"摘要依据：{evidence}" if evidence else "具体模块和训练流程需阅读全文核实。"
+    )
+
+
+def research_problem_summary(work: dict[str, Any], sentences: list[str]) -> str:
+    evidence = sentence_with_terms(sentences, PROBLEM_TERMS, 300)
+    if evidence:
+        return evidence
+    if sentences:
+        return clip_text(sentences[0], 300)
+    return f"从题名看，研究聚焦于{task_label(work)}；摘要缺失，具体问题定义需阅读全文核实。"
+
+
+def contribution_summary(work: dict[str, Any], sentences: list[str]) -> str:
+    evidence = sentence_with_terms(sentences, CONTRIBUTION_TERMS, 340)
+    methods = detected_labels(work_text(work), METHOD_LABELS)
+    if evidence:
+        return evidence
+    if methods:
+        return f"摘要显示采用{'、'.join(methods[:3])}处理{task_label(work)}；定量提升和消融结果需阅读全文核实。"
+    return "摘要未明确给出可核验的主要贡献或定量结果，需阅读全文核实。"
+
+
+def innovation_summary(work: dict[str, Any], sentences: list[str]) -> str:
+    evidence = sentence_with_terms(sentences, INNOVATION_TERMS, 340)
+    methods = detected_labels(work_text(work), METHOD_LABELS)
+    if evidence:
+        return evidence
+    if methods:
+        return f"摘要显示将{'、'.join(methods[:3])}用于{task_label(work)}；相对现有方法的具体差异需阅读全文核实。"
+    return "摘要未明确说明相对现有工作的创新差异，需阅读全文核实。"
+
+
+def relevance_summary(work: dict[str, Any]) -> tuple[str, str]:
+    text = work_text(work)
+    data = detected_labels(text, DATA_LABELS)
+    methods = detected_labels(text, METHOD_LABELS)
+    score = work.get("_score", relevance_score(work))
+    level = "高" if score >= 24 else "中" if score >= 14 else "较低"
+    details = [task_label(work)]
+    if data:
+        details.append("对象包含" + "、".join(data[:3]))
+    if methods:
+        details.append("方法涉及" + "、".join(methods[:3]))
+    return level, "；".join(details)
+
+
 def render_markdown(papers: list[dict[str, Any]]) -> str:
     today = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d")
     mention = os.getenv("DIGEST_MENTION", "@hello1573")
@@ -293,14 +555,25 @@ def render_markdown(papers: list[dict[str, Any]]) -> str:
         )
         date = html.escape(paper.get("publication_date") or "日期未知")
         authors = html.escape(authors_text(paper))
-        abstract = html.escape(abstract_excerpt(paper))
+        sentences = abstract_sentences(paper)
+        relevance, relevance_reason = relevance_summary(paper)
         lines.extend(
             [
                 f"### {index}. [{title}](<{url}>)",
-                f"- **作者：** {authors}",
-                f"- **发布日期：** {date}",
+                f"**作者：** {authors}  ",
+                f"**发布日期：** {date}",
                 "",
-                abstract,
+                f"**输入数据：** {html.escape(input_data_summary(paper, sentences))}",
+                "",
+                f"**（1）研究问题：** {html.escape(research_problem_summary(paper, sentences))}",
+                "",
+                f"**（2）技术路线：** {html.escape(technical_route_summary(paper, sentences))}",
+                "",
+                f"**（3）核心方法与贡献：** {html.escape(contribution_summary(paper, sentences))}",
+                "",
+                f"**（4）创新点：** {html.escape(innovation_summary(paper, sentences))}",
+                "",
+                f"**相关性：{relevance}；理由：** {html.escape(relevance_reason)}",
                 "",
             ]
         )

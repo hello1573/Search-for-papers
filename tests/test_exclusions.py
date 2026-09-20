@@ -21,6 +21,13 @@ def work(title, days=0, doi=None, score=30):
     }
 
 
+def inverted_abstract(text):
+    inverted = {}
+    for position, word in enumerate(text.split()):
+        inverted.setdefault(word, []).append(position)
+    return inverted
+
+
 class ExclusionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -93,6 +100,47 @@ class ExclusionTests(unittest.TestCase):
             path.write_text('{}', encoding='utf-8')
             with self.assertRaises(ValueError):
                 digest.load_seen(str(path))
+
+    def test_digest_uses_requested_research_review_structure(self):
+        paper = work(
+            'Self-supervised DEM reconstruction with terrain-aware diffusion',
+            doi='https://doi.org/10.1234/structured',
+        )
+        paper['authorships'] = [{'author': {'display_name': 'Test Author'}}]
+        paper['abstract_inverted_index'] = inverted_abstract(
+            'Sparse LiDAR point cloud data make complete DEM labels difficult to obtain. '
+            'We propose a novel self-supervised terrain-aware diffusion model for DEM reconstruction. '
+            'Results demonstrate improved RMSE on two mountainous datasets.'
+        )
+        rendered = digest.render_markdown([paper])
+        for heading in (
+            '输入数据',
+            '（1）研究问题',
+            '（2）技术路线',
+            '（3）核心方法与贡献',
+            '（4）创新点',
+            '相关性',
+        ):
+            self.assertIn(heading, rendered)
+        self.assertNotIn('局限或适用边界', rendered)
+        self.assertNotIn('对本研究的启示', rendered)
+        self.assertIn('LiDAR 点云', rendered)
+        self.assertIn('自监督学习', rendered)
+        self.assertIn('扩散模型', rendered)
+
+    def test_missing_abstract_marks_unverified_fields(self):
+        paper = work('Sparse DEM reconstruction by a new method')
+        rendered = digest.render_markdown([paper])
+        self.assertIn('摘要缺失', rendered)
+        self.assertIn('需阅读全文核实', rendered)
+        self.assertIn('摘要未明确说明相对现有工作的创新差异', rendered)
+
+    def test_summary_sections_are_bounded_for_email_readability(self):
+        sentence = 'This novel method improves terrain reconstruction accuracy ' + ('substantially ' * 80) + '.'
+        paper = work('Terrain reconstruction with an accurate model')
+        paper['abstract_inverted_index'] = inverted_abstract(sentence)
+        innovation = digest.innovation_summary(paper, digest.abstract_sentences(paper))
+        self.assertLessEqual(len(innovation), 343)
 
 
 if __name__ == '__main__':
