@@ -1,0 +1,622 @@
+{
+  "source": "论文梳理_地形恢复.docx",
+  "source_entry_count": 85,
+  "papers": [
+    {
+      "title": "An Object-Based Ground Filtering of Airborne LiDAR Data for Large-Area DTM Generation",
+      "aliases": [],
+      "source_sections": [
+        "1.1"
+      ]
+    },
+    {
+      "title": "Point-SCT: A Multiscale Spatial Convolution-Swin Transformer Network for Point Cloud Ground Filtering in Complex Mountainous Terrains",
+      "aliases": [],
+      "source_sections": [
+        "1.2"
+      ]
+    },
+    {
+      "title": "森林区域机载LiDAR点云数据的改进八叉树滤波算法研究",
+      "aliases": [],
+      "source_sections": [
+        "1.3"
+      ]
+    },
+    {
+      "title": "基于点的多尺度形态学重建滤波方法（PMMF）",
+      "aliases": [
+        "基于点的多尺度形态学重建滤波方法"
+      ],
+      "source_sections": [
+        "1.4"
+      ]
+    },
+    {
+      "title": "一种顾及地形特征的布料模拟滤波改进方法",
+      "aliases": [],
+      "source_sections": [
+        "1.5"
+      ]
+    },
+    {
+      "title": "基于体素的森林地区机载LiDAR数据DTM提取",
+      "aliases": [],
+      "source_sections": [
+        "1.6"
+      ]
+    },
+    {
+      "title": "一种基于弯曲能量优化的矿区机载LiDAR点云自适应滤波方法",
+      "aliases": [],
+      "source_sections": [
+        "1.7"
+      ]
+    },
+    {
+      "title": "Terrain-Net: A Highly-Efficient, Parameter-Free Deep Neural Network for Ground Filtering of UAV LiDAR Data in Forested Environments",
+      "aliases": [],
+      "source_sections": [
+        "1.8"
+      ]
+    },
+    {
+      "title": "Integrating Elevation Frequency Histogram and Multi-Feature Gaussian Mixture Model for Ground Filtering of UAV LiDAR Point Clouds in Densely Vegetated Areas",
+      "aliases": [],
+      "source_sections": [
+        "1.9"
+      ]
+    },
+    {
+      "title": "Multi-Size Voxel Cube (MSVC) Algorithm for Terrain Filtering from Dense Point Clouds Using a Deep Neural Network",
+      "aliases": [],
+      "source_sections": [
+        "1.10"
+      ]
+    },
+    {
+      "title": "面向全球DEM生产的点云智能滤波与DEM泊松编辑方法",
+      "aliases": [],
+      "source_sections": [
+        "2.1"
+      ]
+    },
+    {
+      "title": "ResSub-Net: Residual Subtraction Network for DTM Extraction from DSM",
+      "aliases": [],
+      "source_sections": [
+        "2.2"
+      ]
+    },
+    {
+      "title": "Real-Time Update of Digital Terrain Model From LiDAR Data",
+      "aliases": [],
+      "source_sections": [
+        "2.3"
+      ]
+    },
+    {
+      "title": "Research on Fine-Scale Terrain Construction in High Vegetation",
+      "aliases": [],
+      "source_sections": [
+        "2.4"
+      ]
+    },
+    {
+      "title": "GrounDiff: Diffusion-Based Ground Surface Generation from Digital Surface Models",
+      "aliases": [],
+      "source_sections": [
+        "2.5"
+      ]
+    },
+    {
+      "title": "Optimized Deep Network for Precise Digital Terrain Model Extraction from LiDAR Data",
+      "aliases": [],
+      "source_sections": [
+        "2.6"
+      ]
+    },
+    {
+      "title": "Learning Digital Terrain Models From Point Clouds: ALS2DTM Dataset and Rasterization-Based GAN",
+      "aliases": [],
+      "source_sections": [
+        "2.7"
+      ]
+    },
+    {
+      "title": "DSM-to-DTM Reconstruction Using Only DSM-Derived Inputs with Residual Learning and CSF Priors",
+      "aliases": [],
+      "source_sections": [
+        "2.8"
+      ]
+    },
+    {
+      "title": "GroundGrid: LiDAR Point Cloud Ground Segmentation and Terrain Estimation",
+      "aliases": [],
+      "source_sections": [
+        "2.9"
+      ]
+    },
+    {
+      "title": "End-to-End High-Quality DEM Generation and Ground Filtering From ALS Point Clouds",
+      "aliases": [],
+      "source_sections": [
+        "2.10"
+      ]
+    },
+    {
+      "title": "Void Filling of Digital Elevation Models Based on Terrain Feature-Guided Diffusion Model (TFDM)",
+      "aliases": [
+        "Void Filling of Digital Elevation Models Based on Terrain Feature-Guided Diffusion Model"
+      ],
+      "source_sections": [
+        "3.1"
+      ]
+    },
+    {
+      "title": "Voids Filling of DEM with Multiattention Generative Adversarial Network Model",
+      "aliases": [],
+      "source_sections": [
+        "3.2"
+      ]
+    },
+    {
+      "title": "Terrain Point Cloud Inpainting via Signal Decomposition",
+      "aliases": [],
+      "source_sections": [
+        "3.3"
+      ]
+    },
+    {
+      "title": "Structure-Preserving DEM Void Filling via Optical Imagery-Guided Diffusion (OptiGDM)",
+      "aliases": [
+        "Structure-Preserving DEM Void Filling via Optical Imagery-Guided Diffusion"
+      ],
+      "source_sections": [
+        "3.4"
+      ]
+    },
+    {
+      "title": "S2DDM: Single-Beam-to-DEM Diffusion Model for Large-Scale Consistent Seabed Terrain Restoration",
+      "aliases": [],
+      "source_sections": [
+        "3.5"
+      ]
+    },
+    {
+      "title": "Reconstructing Occluded Elevation Information in Terrain Maps with Self-Supervised Learning",
+      "aliases": [],
+      "source_sections": [
+        "3.6"
+      ]
+    },
+    {
+      "title": "MBES-DDPM: Multibeam Echo Sounder Bathymetry Swath Gap Reconstruction Based on Denoising Diffusion Probability Model",
+      "aliases": [],
+      "source_sections": [
+        "3.7"
+      ]
+    },
+    {
+      "title": "Integrating Topographic Knowledge into Deep Learning for the Void-Filling of Digital Elevation Models (TKCGAN)",
+      "aliases": [
+        "Integrating Topographic Knowledge into Deep Learning for the Void-Filling of Digital Elevation Models"
+      ],
+      "source_sections": [
+        "3.8"
+      ]
+    },
+    {
+      "title": "Integrating Topographic Features and Patch Matching into Point Cloud Restoration for Terrain Modelling (TFPM)",
+      "aliases": [
+        "Integrating Topographic Features and Patch Matching into Point Cloud Restoration for Terrain Modelling"
+      ],
+      "source_sections": [
+        "3.9"
+      ]
+    },
+    {
+      "title": "InSAR Digital Elevation Model Void-Filling Method Based on Incorporating Elevation Outlier Detection",
+      "aliases": [],
+      "source_sections": [
+        "3.10"
+      ]
+    },
+    {
+      "title": "CRPAG-DSHAT: From Gaps to Granularity — Multi-Modal Deep Learning Framework for DEM Void Repair and Super-Resolution in Himalayas",
+      "aliases": [],
+      "source_sections": [
+        "3.11"
+      ]
+    },
+    {
+      "title": "Generative DEM Void Filling With Terrain Feature-Guided Transfer Learning Assisted by Remote Sensing Images (RSAGAN)",
+      "aliases": [
+        "Generative DEM Void Filling With Terrain Feature-Guided Transfer Learning Assisted by Remote Sensing Images"
+      ],
+      "source_sections": [
+        "3.12"
+      ]
+    },
+    {
+      "title": "Dfilled: Repurposing Edge-Enhancing Diffusion for Guided DSM Void Filling",
+      "aliases": [],
+      "source_sections": [
+        "3.13"
+      ]
+    },
+    {
+      "title": "HASM: A New Method of Surface Modeling and Its Application to DEM Construction",
+      "aliases": [
+        "A New Method of Surface Modeling and Its Application to DEM Construction",
+        "A New Method of Surface Modeling and Its Application to DEM Construction (SMTS/HASM)"
+      ],
+      "source_sections": [
+        "3.14",
+        "5.7"
+      ]
+    },
+    {
+      "title": "Can Inpainting Improve Digital Terrain Analysis — Comparing Techniques for Void Filling, Surface Reconstruction and Geomorphometric Analyses",
+      "aliases": [],
+      "source_sections": [
+        "3.15",
+        "8.10"
+      ]
+    },
+    {
+      "title": "Exploring the Integration of Auxiliary Modal Information from Remote Sensing Images for DEM Super-Resolution (TGF-RSAnet)",
+      "aliases": [
+        "Exploring the Integration of Auxiliary Modal Information from Remote Sensing Images for DEM Super-Resolution"
+      ],
+      "source_sections": [
+        "4.1"
+      ]
+    },
+    {
+      "title": "High-Resolution Bathymetry by Deep-Learning Based Point Cloud Upsampling",
+      "aliases": [],
+      "source_sections": [
+        "4.2"
+      ]
+    },
+    {
+      "title": "Window-Shifted Multi-Source Data Fusion Method — Residual U-Net Attention Network for Seafloor Topography Background Field Super-Resolution Optimization",
+      "aliases": [],
+      "source_sections": [
+        "4.3"
+      ]
+    },
+    {
+      "title": "Terrain Super-Resolution through Aerial Imagery and Fully Convolutional Networks",
+      "aliases": [],
+      "source_sections": [
+        "4.4"
+      ]
+    },
+    {
+      "title": "Shipborne Bathymetry Constrained Denoising Diffusion Probabilistic Model for Seafloor DEM Super-Resolution (Bathy-DDPM)",
+      "aliases": [
+        "Shipborne Bathymetry Constrained Denoising Diffusion Probabilistic Model for Seafloor DEM Super-Resolution"
+      ],
+      "source_sections": [
+        "4.5"
+      ]
+    },
+    {
+      "title": "Terrain Self-Similarity-Based Transformer for Generating Super Resolution DEMs (SSTrans)",
+      "aliases": [
+        "Terrain Self-Similarity-Based Transformer for Generating Super Resolution DEMs"
+      ],
+      "source_sections": [
+        "4.6"
+      ]
+    },
+    {
+      "title": "High-Resolution Multi-Spectral Image Guided DEM Super-Resolution Using Sinkhorn Regularized Adversarial Network (SIRAN)",
+      "aliases": [
+        "High-Resolution Multi-Spectral Image Guided DEM Super-Resolution Using Sinkhorn Regularized Adversarial Network"
+      ],
+      "source_sections": [
+        "4.7"
+      ]
+    },
+    {
+      "title": "RRDPM: Relay Residual Diffusion Probabilistic Model for Global Typical Land and Seabed DEM Super-Resolution",
+      "aliases": [],
+      "source_sections": [
+        "4.8"
+      ]
+    },
+    {
+      "title": "Bridging Land and Sea: A Latent Diffusion Framework for High-Resolution Ocean Floor Mapping",
+      "aliases": [],
+      "source_sections": [
+        "4.9"
+      ]
+    },
+    {
+      "title": "DEM Super-Resolution Assisted by Remote Sensing Images Content Feature",
+      "aliases": [],
+      "source_sections": [
+        "4.10"
+      ]
+    },
+    {
+      "title": "Locally Controlled Globally Smooth Ground Surface Reconstruction from Terrestrial Point Clouds",
+      "aliases": [],
+      "source_sections": [
+        "5.1"
+      ]
+    },
+    {
+      "title": "HessianForge: Scalable LiDAR Reconstruction with Physics-Informed Neural Representation",
+      "aliases": [],
+      "source_sections": [
+        "5.2"
+      ]
+    },
+    {
+      "title": "ImplicitTerrainV2: Wavelet-Guided Spatially Adaptive Neural Terrain Representation",
+      "aliases": [],
+      "source_sections": [
+        "5.3"
+      ]
+    },
+    {
+      "title": "High Accuracy Terrain Reconstruction from Point Clouds Using Implicit Deformable Model",
+      "aliases": [],
+      "source_sections": [
+        "5.4"
+      ]
+    },
+    {
+      "title": "A Terrain-Constrained TIN Approach for High-Precision DEM Reconstruction Using UAV Point Clouds (TC-TIN)",
+      "aliases": [
+        "A Terrain-Constrained TIN Approach for High-Precision DEM Reconstruction Using UAV Point Clouds"
+      ],
+      "source_sections": [
+        "5.5"
+      ]
+    },
+    {
+      "title": "An Improved ANUDEM Method Combining Topographic Correction and DEM Interpolation",
+      "aliases": [],
+      "source_sections": [
+        "5.6"
+      ]
+    },
+    {
+      "title": "A Hybrid Interpolation Method for the Refinement of a Regular Grid Digital Elevation Model",
+      "aliases": [],
+      "source_sections": [
+        "5.8"
+      ]
+    },
+    {
+      "title": "DEM Generation from GF-7 Satellite Stereo Imagery Assisted by Space-Borne LiDAR and Its Application to Active Tectonics",
+      "aliases": [],
+      "source_sections": [
+        "6.1"
+      ]
+    },
+    {
+      "title": "多源DEM融合的高差拟合神经网络方法",
+      "aliases": [],
+      "source_sections": [
+        "6.2"
+      ]
+    },
+    {
+      "title": "Up-to-Date High-Resolution Understory Terrain Extraction Based on Satellite Stereo Photogrammetry and Spaceborne LiDAR",
+      "aliases": [],
+      "source_sections": [
+        "6.3"
+      ]
+    },
+    {
+      "title": "Generating Elevation Surface from a Single RGB Remotely Sensed Image Using Deep Learning",
+      "aliases": [],
+      "source_sections": [
+        "6.4"
+      ]
+    },
+    {
+      "title": "Integrated Multi-Resolution DEM Generation: Merging Airborne LiDAR and CartoDEM for Seamless Terrain Modeling",
+      "aliases": [],
+      "source_sections": [
+        "6.5"
+      ]
+    },
+    {
+      "title": "Focusing on Shadows for Predicting Heightmaps from Single Remotely Sensed RGB Images with Deep Learning",
+      "aliases": [],
+      "source_sections": [
+        "6.6"
+      ]
+    },
+    {
+      "title": "Development of a Stream DTM Generation Methodology Using UAV-Based SfM and LiDAR Point Cloud",
+      "aliases": [],
+      "source_sections": [
+        "6.7"
+      ]
+    },
+    {
+      "title": "DEM Generation from Fixed-Wing UAV Imaging and LiDAR-Derived Ground Control Points for Flood Estimation",
+      "aliases": [],
+      "source_sections": [
+        "6.8"
+      ]
+    },
+    {
+      "title": "Combining LiDAR, SAR, and DEM Data for Estimating Understory Terrain Using Machine Learning-Based Methods",
+      "aliases": [],
+      "source_sections": [
+        "6.9"
+      ]
+    },
+    {
+      "title": "Automated Digital Elevation Model Generation from Very-High-Resolution Planet SkySat Triplet Stereo and Video Imagery",
+      "aliases": [],
+      "source_sections": [
+        "6.10"
+      ]
+    },
+    {
+      "title": "顾及多尺度特征和防收缩断裂的地形断裂线提取",
+      "aliases": [],
+      "source_sections": [
+        "7.1"
+      ]
+    },
+    {
+      "title": "Generating Terrain Data for Geomorphological Analysis by Integrating Topographical Features and Conditional Generative Adversarial Networks (Terrain-CGAN)",
+      "aliases": [
+        "Generating Terrain Data for Geomorphological Analysis by Integrating Topographical Features and Conditional Generative Adversarial Networks"
+      ],
+      "source_sections": [
+        "7.2"
+      ]
+    },
+    {
+      "title": "机载LiDAR点云滤波综述",
+      "aliases": [],
+      "source_sections": [
+        "8.1"
+      ]
+    },
+    {
+      "title": "基于机载LiDAR数据的林下地形提取算法比较与组合分析",
+      "aliases": [],
+      "source_sections": [
+        "8.2"
+      ]
+    },
+    {
+      "title": "Towards Intelligent Ground Filtering of Large-Scale Topographic Point Clouds — A Comprehensive Survey",
+      "aliases": [],
+      "source_sections": [
+        "8.3"
+      ]
+    },
+    {
+      "title": "The Effectiveness of a UAV-Based LiDAR Survey to Develop Digital Terrain Models and Topographic Texture Analyses",
+      "aliases": [],
+      "source_sections": [
+        "8.4"
+      ]
+    },
+    {
+      "title": "Effect of Interpolation Methods on Quantifying Terrain Surface Roughness under Different Data Densities",
+      "aliases": [],
+      "source_sections": [
+        "8.5"
+      ]
+    },
+    {
+      "title": "Evaluating Error Associated with LiDAR-Derived DEM Interpolation",
+      "aliases": [],
+      "source_sections": [
+        "8.6"
+      ]
+    },
+    {
+      "title": "Deep Learning for Filtering the Ground from ALS Point Clouds — A Dataset, Evaluations and Issues (OpenGF)",
+      "aliases": [
+        "Deep Learning for Filtering the Ground from ALS Point Clouds — A Dataset, Evaluations and Issues"
+      ],
+      "source_sections": [
+        "8.7"
+      ]
+    },
+    {
+      "title": "Drone LiDAR Occlusion Analysis and Simulation from Retrieved Pathways to Improve Ground Mapping of Forested Environments",
+      "aliases": [],
+      "source_sections": [
+        "8.8"
+      ]
+    },
+    {
+      "title": "Comparison of DEM Super-Resolution Methods Based on Interpolation and Neural Networks",
+      "aliases": [],
+      "source_sections": [
+        "8.9"
+      ]
+    },
+    {
+      "title": "Spatial-Temporal Diffusion Model for Underwater Scene Reconstruction With Application to AUV Navigation (ST-Diffusion)",
+      "aliases": [
+        "Spatial-Temporal Diffusion Model for Underwater Scene Reconstruction With Application to AUV Navigation"
+      ],
+      "source_sections": [
+        "9.1"
+      ]
+    },
+    {
+      "title": "Three-Dimensional Reconstruction of Forest Scenes with Tree–Shrub–Grass Structure Using Airborne LiDAR Point Cloud",
+      "aliases": [],
+      "source_sections": [
+        "9.2"
+      ]
+    },
+    {
+      "title": "Self-Supervised Large Scale Point Cloud Completion for Archaeological Site Restoration",
+      "aliases": [],
+      "source_sections": [
+        "9.3"
+      ]
+    },
+    {
+      "title": "Scaling Diffusion Models to Real-World 3D LiDAR Scene Completion",
+      "aliases": [],
+      "source_sections": [
+        "9.4"
+      ]
+    },
+    {
+      "title": "Physics-Aware Diffusion for LiDAR Point Cloud Densification",
+      "aliases": [],
+      "source_sections": [
+        "9.5"
+      ]
+    },
+    {
+      "title": "P2C: Self-Supervised Point Cloud Completion from Single Partial Clouds",
+      "aliases": [],
+      "source_sections": [
+        "9.6"
+      ]
+    },
+    {
+      "title": "Make it Dense: Self-Supervised Geometric Scan Completion of Sparse 3D LiDAR Scans in Large Outdoor Environments",
+      "aliases": [],
+      "source_sections": [
+        "9.7"
+      ]
+    },
+    {
+      "title": "LD-DEM: Latent Diffusion with Conditional Decoding for High-Precision Planetary DEM Generation from RGB Satellite Images",
+      "aliases": [],
+      "source_sections": [
+        "9.8"
+      ]
+    },
+    {
+      "title": "LODE: Locally Conditioned Eikonal Implicit Scene Completion from Sparse LiDAR",
+      "aliases": [],
+      "source_sections": [
+        "9.9"
+      ]
+    },
+    {
+      "title": "Learning Compact Representations for LiDAR Completion and Generation (UltraLiDAR)",
+      "aliases": [
+        "Learning Compact Representations for LiDAR Completion and Generation"
+      ],
+      "source_sections": [
+        "9.10"
+      ]
+    }
+  ]
+}

@@ -2,10 +2,14 @@ import argparse
 import html
 import json
 import os
+import re
 import time
+import unicodedata
 from datetime import datetime, timezone
 from datetime import timedelta
+from pathlib import Path
 from typing import Any
+from urllib.parse import unquote
 
 import requests
 
@@ -87,17 +91,22 @@ def relevance_score(work: dict[str, Any]) -> int:
     text = work_text(work)
     score = 0
     for keyword, weight in KEYWORDS.items():
-        if keyword in text:
+        if contains_term(text, keyword):
             score += weight
-        if keyword in title:
+        if contains_term(title, keyword):
             score += weight
     return score
 
 
+def contains_term(text: str, term: str) -> bool:
+    suffix = r"\w*" if term in {"topograph", "reconstruct", "inpaint", "interpolat"} else ""
+    return bool(re.search(r"\b" + re.escape(term) + suffix + r"\b", text))
+
+
 def is_terrain_relevant(work: dict[str, Any]) -> bool:
     text = work_text(work)
-    has_core_object = any(term in text for term in CORE_TERRAIN_TERMS)
-    has_reconstruction_task = any(term in text for term in RECONSTRUCTION_TERMS)
+    has_core_object = any(contains_term(text, term) for term in CORE_TERRAIN_TERMS)
+    has_reconstruction_task = any(contains_term(text, term) for term in RECONSTRUCTION_TERMS)
     return has_core_object and has_reconstruction_task
 
 
@@ -125,6 +134,19 @@ def search_openalex(
     return []
 
 
+def normalize_title(title: str) -> str:
+    text = unicodedata.normalize("NFKD", html.unescape(title)).casefold()
+    return "".join(char for char in text if char.isalnum())
+
+
+def normalize_identifier(value: str) -> str:
+    key = unquote(str(value)).strip().casefold().rstrip("/")
+    key = re.sub(r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", "", key)
+    if key.startswith("http://openalex.org/"):
+        key = "https://" + key.removeprefix("http://")
+    return key
+
+
 def paper_keys(work: dict[str, Any]) -> set[str]:
     primary_location = work.get("primary_location") or {}
     values = {
@@ -132,16 +154,11 @@ def paper_keys(work: dict[str, Any]) -> set[str]:
         work.get("doi"),
         primary_location.get("landing_page_url"),
     }
-    keys = set()
-    for value in values:
-        if not value:
-            continue
-        key = str(value).strip().lower().rstrip("/")
-        if key.startswith("https://doi.org/"):
-            key = key.removeprefix("https://doi.org/")
-        elif key.startswith("http://doi.org/"):
-            key = key.removeprefix("http://doi.org/")
-        keys.add(key)
+    keys = {normalize_identifier(value) for value in values if value}
+    for field in ("title", "display_name"):
+        title = normalize_title(work.get(field) or "")
+        if title:
+            keys.add("title:" + title)
     return keys
 
 
@@ -150,9 +167,24 @@ def load_seen(path: str) -> set[str]:
         with open(path, encoding="utf-8") as source:
             values = source.read()
         data = json.loads(values)
-    except (FileNotFoundError, json.JSONDecodeError):
+    except FileNotFoundError:
         return set()
-    return {str(value).strip().lower().rstrip("/") for value in data}
+    if not isinstance(data, list) or not all(isinstance(value, str) for value in data):
+        raise ValueError("Invalid sent-paper history; refusing to reset deduplication.")
+    return {normalize_identifier(value) for value in data}
+
+
+def load_known(path: str) -> set[str]:
+    with open(path, encoding="utf-8") as source:
+        data = json.load(source)
+    keys = set()
+    for paper in data["papers"]:
+        keys.update(paper_keys(paper))
+        for alias in paper.get("aliases", []):
+            title = normalize_title(alias)
+            if title:
+                keys.add("title:" + title)
+    return keys
 
 
 def save_seen(path: str, seen: set[str]) -> None:
@@ -161,7 +193,33 @@ def save_seen(path: str, seen: set[str]) -> None:
         target.write("\n")
 
 
-def collect_papers(seen: set[str]) -> list[dict[str, Any]]:
+def select_papers(papers: list[dict[str, Any]], excluded: set[str]) -> list[dict[str, Any]]:
+    today = datetime.now(timezone.utc).date()
+    from_date = (today - timedelta(days=730)).isoformat()
+    ranked = sorted(
+        papers,
+        key=lambda item: (item.get("publication_date") or "", item["_score"]),
+        reverse=True,
+    )
+    selected = []
+    selected_keys = set(excluded)
+    for paper in ranked:
+        date = paper.get("publication_date") or ""
+        keys = paper_keys(paper)
+        if (
+            paper["_score"] < 8
+            or not from_date <= date <= today.isoformat()
+            or keys.intersection(selected_keys)
+        ):
+            continue
+        selected.append(paper)
+        selected_keys.update(keys)
+        if len(selected) == 8:
+            break
+    return selected
+
+
+def collect_papers(excluded: set[str]) -> list[dict[str, Any]]:
     session = requests.Session()
     session.headers.update(
         {
@@ -188,16 +246,7 @@ def collect_papers(seen: set[str]) -> list[dict[str, Any]]:
                 work["_score"] = score
                 papers[work_id] = work
 
-    ranked = sorted(
-        papers.values(),
-        key=lambda item: (item.get("publication_date") or "", item["_score"]),
-        reverse=True,
-    )
-    return [
-        paper
-        for paper in ranked
-        if paper["_score"] >= 8 and not paper_keys(paper).intersection(seen)
-    ][:8]
+    return select_papers(list(papers.values()), excluded)
 
 
 def authors_text(work: dict[str, Any]) -> str:
@@ -264,10 +313,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="digest.md")
     parser.add_argument("--state", default="seen_papers.json")
+    parser.add_argument("--known", default=str(Path(__file__).with_name("known_papers.json")))
     parser.add_argument("--count-output", default="digest_count.txt")
     args = parser.parse_args()
     seen = load_seen(args.state)
-    papers = collect_papers(seen)
+    known = load_known(args.known)
+    papers = collect_papers(seen | known)
     content = render_markdown(papers)
     with open(args.output, "w", encoding="utf-8") as output:
         output.write(content)

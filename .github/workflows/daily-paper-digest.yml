@@ -5,6 +5,15 @@ on:
     # 02:00 UTC = 10:00 Asia/Shanghai
     - cron: "0 2 * * *"
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Generate and verify without publishing or updating sent history"
+        type: boolean
+        default: false
+
+concurrency:
+  group: daily-paper-digest
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -25,17 +34,26 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
+      - name: Verify exclusions and newest-first selection
+        run: python -m unittest discover -s tests -v
+
       - name: Search and publish digest
         env:
           OPENALEX_MAILTO: ${{ secrets.OPENALEX_MAILTO }}
           DIGEST_MENTION: "@${{ github.repository_owner }}"
           GH_TOKEN: ${{ github.token }}
+          DRY_RUN: ${{ inputs.dry_run || false }}
         run: |
           python paper_digest.py \
             --output digest.md \
             --state seen_papers.json \
             --count-output digest_count.txt
           count="$(cat digest_count.txt)"
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Dry run: generated $count papers; no notification or history update."
+            cat digest.md >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           if [ "$count" -eq 0 ]; then
             echo "没有发现新的论文，跳过通知。"
             exit 0
