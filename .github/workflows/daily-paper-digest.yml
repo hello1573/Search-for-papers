@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   digest:
@@ -24,8 +25,27 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Search and push digest
+      - name: Search and publish digest
         env:
-          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
           OPENALEX_MAILTO: ${{ secrets.OPENALEX_MAILTO }}
-        run: python paper_digest.py
+          DIGEST_MENTION: "@${{ github.repository_owner }}"
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python paper_digest.py --output digest.md
+          issue_number="$(gh issue list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --limit 20 \
+            --json number,title \
+            --jq '.[] | select(.title == "[论文日报] 稀疏地形重建文章日报") | .number' \
+            | head -n 1)"
+          if [ -n "$issue_number" ]; then
+            gh issue comment "$issue_number" \
+              --repo "$GITHUB_REPOSITORY" \
+              --body-file digest.md
+          else
+            gh issue create \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "[论文日报] 稀疏地形重建文章日报" \
+              --body-file digest.md
+          fi

@@ -1,3 +1,4 @@
+import argparse
 import html
 import os
 import time
@@ -8,7 +9,6 @@ import requests
 
 
 OPENALEX_URL = "https://api.openalex.org/works"
-PUSHPLUS_URL = "https://www.pushplus.plus/send"
 QUERIES = (
     "sparse terrain reconstruction",
     "sparse DEM reconstruction",
@@ -139,57 +139,53 @@ def abstract_excerpt(work: dict[str, Any]) -> str:
     return abstract
 
 
-def render_html(papers: list[dict[str, Any]]) -> str:
+def render_markdown(papers: list[dict[str, Any]]) -> str:
     today = datetime.now(timezone.utc).astimezone().strftime("%Y-%m-%d")
-    items = []
+    mention = os.getenv("DIGEST_MENTION", "@hello1573")
+    lines = [
+        mention,
+        "",
+        f"# 稀疏地形重建文章日报｜{today}",
+        "",
+        "以下结果来自 OpenAlex，按与稀疏采样、DEM 修复、地形重建和高程补全的相关性筛选。",
+        "",
+    ]
     for index, paper in enumerate(papers, start=1):
         title = html.escape(paper.get("title") or "未命名文章")
         primary_location = paper.get("primary_location") or {}
-        url = html.escape(
+        url = (
             paper.get("doi")
             or primary_location.get("landing_page_url")
             or paper.get("id")
-            or "#",
-            quote=True,
+            or "#"
         )
         date = html.escape(paper.get("publication_date") or "日期未知")
         authors = html.escape(authors_text(paper))
         abstract = html.escape(abstract_excerpt(paper))
-        items.append(
-            f"<h3>{index}. <a href=\"{url}\">{title}</a></h3>"
-            f"<p><b>作者：</b>{authors}<br><b>发布日期：</b>{date}</p>"
-            f"<p>{abstract}</p>"
+        lines.extend(
+            [
+                f"### {index}. [{title}](<{url}>)",
+                f"- **作者：** {authors}",
+                f"- **发布日期：** {date}",
+                "",
+                abstract,
+                "",
+            ]
         )
-    body = "".join(items) or "今天没有找到达到相关性阈值的文章。"
-    return (
-        "<div style='font-family:Arial,sans-serif;line-height:1.6'>"
-        f"<h2>稀疏地形重建文章日报｜{today}</h2>"
-        "<p>以下结果来自 OpenAlex，按与稀疏采样、DEM 修复、地形重建和高程补全的相关性筛选。</p>"
-        f"{body}</div>"
-    )
-
-
-def send_pushplus(content: str, count: int) -> None:
-    token = os.getenv("PUSHPLUS_TOKEN")
-    if not token:
-        raise RuntimeError("缺少 PUSHPLUS_TOKEN。请在 GitHub Secrets 中配置它。")
-    title = f"稀疏地形重建日报（{count}篇）"
-    response = requests.post(
-        PUSHPLUS_URL,
-        json={"token": token, "title": title, "content": content, "template": "html"},
-        timeout=30,
-    )
-    response.raise_for_status()
-    result = response.json()
-    if result.get("code") not in (200, "200"):
-        raise RuntimeError(f"PushPlus 推送失败：{result}")
+    if not papers:
+        lines.extend(["今天没有找到达到相关性阈值的文章。", ""])
+    return "\n".join(lines).rstrip() + "\n"
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", default="digest.md")
+    args = parser.parse_args()
     papers = collect_papers()
-    content = render_html(papers)
-    send_pushplus(content, len(papers))
-    print(f"已推送 {len(papers)} 篇文章。")
+    content = render_markdown(papers)
+    with open(args.output, "w", encoding="utf-8") as output:
+        output.write(content)
+    print(f"已生成 {len(papers)} 篇文章的日报：{args.output}")
 
 
 if __name__ == "__main__":

@@ -9,25 +9,23 @@
 - 点云高程补全
 - 遥感 DEM 缺失区域修复
 
-脚本会筛选最多 8 篇高相关结果，并通过 PushPlus 微信公众号推送。GitHub Actions 的定时任务使用 UTC 时间，因此配置为每天 `02:00 UTC`。
+脚本会筛选最多 8 篇高相关结果，并发布到仓库中的固定日报 Issue。每次发布都会 @ 仓库所有者，因此 GitHub 会按账号的通知设置发送邮件。GitHub Actions 的定时任务使用 UTC 时间，因此配置为每天 `02:00 UTC`。
 
 ## 配置 GitHub Secrets
 
-在仓库的 **Settings -> Secrets and variables -> Actions** 中新增：
+在仓库的 **Settings -> Secrets and variables -> Actions** 中可选配置：
 
-1. `PUSHPLUS_TOKEN`：PushPlus 公众号提供的 Token，必填。
-2. `OPENALEX_MAILTO`：用于 OpenAlex 礼貌池的邮箱，可选。
+1. `OPENALEX_MAILTO`：用于 OpenAlex 礼貌池的邮箱，可选。
 
-不要把 Token 写入代码、README 或提交记录。
+日报正文通过 GitHub 通知邮件发送，不需要 PushPlus Token 或 SMTP 密码。
 
 ## 手动测试
 
-打开仓库的 **Actions -> Daily sparse terrain paper digest -> Run workflow**，可以立即运行一次。首次测试前必须先配置 `PUSHPLUS_TOKEN`。
+打开仓库的 **Actions -> Daily sparse terrain paper digest -> Run workflow**，可以立即运行一次。运行成功后，日报会出现在固定的 `[论文日报] 稀疏地形重建文章日报` Issue 中，并触发 GitHub 邮件通知。
 
 本地运行：
 
 ```powershell
 python -m pip install -r requirements.txt
-$env:PUSHPLUS_TOKEN = "你的Token"
-python paper_digest.py
+python paper_digest.py --output digest.md
 ```
