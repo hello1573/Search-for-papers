@@ -9,7 +9,7 @@
 - 点云高程补全
 - 遥感 DEM 缺失区域修复
 
-脚本会筛选最多 8 篇高相关结果，并发布到仓库中的固定日报 Issue。每次发布都会 @ 仓库所有者，因此 GitHub 会按账号的通知设置发送邮件。GitHub Actions 的定时任务使用 UTC 时间，因此配置为每天 `02:00 UTC`。
+脚本会筛选最多 8 篇高相关结果，只保留最近两年发表的文章，并优先推荐最新发表的结果。论文必须同时涉及地形、DEM、高程、点云等核心对象，以及重建、补全、修复或插值任务。已发送的论文会记录在 `seen_papers.json` 中，后续运行不会重复推送。日报发布到仓库中的固定 Issue，每次发布都会 @ 仓库所有者，因此 GitHub 会按账号的通知设置发送邮件。GitHub Actions 的定时任务使用 UTC 时间，因此配置为每天 `02:00 UTC`。
 
 ## 配置 GitHub Secrets
 
@@ -27,5 +27,5 @@
 
 ```powershell
 python -m pip install -r requirements.txt
-python paper_digest.py --output digest.md
+python paper_digest.py --output digest.md --state seen_papers.json
 ```
