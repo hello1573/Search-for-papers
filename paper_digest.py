@@ -55,6 +55,11 @@ CORE_TERRAIN_TERMS = (
     "bathymetr",
 )
 
+TITLE_TERRAIN_TERMS = (
+    "terrain", "topograph", "digital elevation model", "digital terrain model",
+    "dem", "dtm", "bathymetr", "seabed", "subglacial", "ground point",
+)
+
 RECONSTRUCTION_TERMS = (
     "reconstruct",
     "completion",
@@ -64,6 +69,12 @@ RECONSTRUCTION_TERMS = (
     "gap filling",
     "missing data",
     "super-resolution",
+    "void filling",
+    "terrain generation",
+    "dem generation",
+    "dtm generation",
+    "ground filtering",
+    "ground classification",
 )
 
 DATA_LABELS = (
@@ -251,7 +262,8 @@ def is_terrain_relevant(work: dict[str, Any]) -> bool:
     title = (work.get("title") or "").lower()
     if re.search(r"\b(reply|response|comment|corrigendum|erratum)\s+(to|on)\b", title):
         return False
-    has_core_object = any(contains_term(text, term) for term in CORE_TERRAIN_TERMS)
+    # A terrain term in the abstract alone is often only a study-area covariate.
+    has_core_object = any(contains_term(title, term) for term in TITLE_TERRAIN_TERMS)
     has_reconstruction_task = any(contains_term(text, term) for term in RECONSTRUCTION_TERMS)
     return has_core_object and has_reconstruction_task
 
@@ -365,7 +377,7 @@ def select_papers(papers: list[dict[str, Any]], excluded: set[str]) -> list[dict
         date = paper.get("publication_date") or ""
         keys = paper_keys(paper)
         if (
-            paper["_score"] < 8
+            paper["_score"] < 14
             or not from_date <= date <= today.isoformat()
             or (keys | hashed_keys(keys)).intersection(selected_keys)
         ):

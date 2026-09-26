@@ -61,7 +61,7 @@ class ExclusionTests(unittest.TestCase):
 
     def test_newest_first_without_padding_with_seen_old_or_future_papers(self):
         older = work('Older relevant terrain reconstruction', days=30, score=100)
-        newest = work('Newest relevant terrain reconstruction', days=0, score=10)
+        newest = work('Newest relevant terrain reconstruction', days=0, score=14)
         middle = work('Other relevant DEM completion study', days=7, score=60)
         too_old = work('Very old terrain reconstruction', days=4000)
         future = work('Future terrain reconstruction', days=-1)
@@ -84,6 +84,17 @@ class ExclusionTests(unittest.TestCase):
     def test_generic_point_cloud_and_review_reply_are_not_terrain_restoration(self):
         self.assertFalse(digest.is_terrain_relevant(work('Point cloud completion for indoor chairs')))
         self.assertFalse(digest.is_terrain_relevant(work('Reply on terrain reconstruction review')))
+        for title in (
+            'Natural and anthropogenic influences on modern salt-marsh foraminifera across Wadden Sea Islands',
+            'STRIDER: Stepping-Enabled Multi-Gait Hierarchical 3D Loco-Manipulation Framework for Humanoid Robots',
+            'A UAV-LiDAR multi-dimensional crown metric system and adaptive extraction methods for mountainous Chinese fir plantations',
+            'Annual canopy height mapping in Italy from Landsat and multi-source LiDAR for disturbance and recovery monitoring',
+            'KODAMA: Multimodal Digital Twin Reconstruction for Urban RF Propagation Modelling',
+        ):
+            candidate = work(title)
+            candidate['abstract_inverted_index'] = inverted_abstract('We reconstruct models in complex terrain using LiDAR elevation.')
+            self.assertFalse(digest.is_terrain_relevant(candidate), title)
+        self.assertTrue(digest.is_terrain_relevant(work('DEM Void Filling for Sparse Terrain Reconstruction')))
 
     def test_fullwidth_entities_and_punctuation(self):
         left = 'Terrain\u2011Net: A & B Model'
