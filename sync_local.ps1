@@ -10,8 +10,11 @@ $env:PYTHONIOENCODING = 'utf-8'
 [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
 $OutputEncoding = [Console]::OutputEncoding
 try {
+    $ErrorActionPreference = 'Continue'
     & $python (Join-Path $repo 'local_sync.py') --repo $repo --root $root --node $node --builder (Join-Path $repo 'build_catalog.mjs') 2>&1 | Out-File -LiteralPath $log -Append -Encoding utf8
-    if ($LASTEXITCODE -ne 0) { throw "local_sync.py failed with exit code $LASTEXITCODE" }
+    $result = $LASTEXITCODE
+    $ErrorActionPreference = 'Stop'
+    if ($result -ne 0) { throw "local_sync.py failed with exit code $result" }
 } catch {
     "$(Get-Date -Format s) 同步失败: $_" | Add-Content -LiteralPath $log -Encoding utf8
     exit 1
