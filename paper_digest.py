@@ -60,6 +60,11 @@ TITLE_TERRAIN_TERMS = (
     "dem", "dtm", "bathymetr", "seabed", "subglacial", "ground point",
 )
 
+EXCLUDED_TITLE_TERMS = (
+    "robot", "humanoid", "locomotion", "foothold", "walking", "traversability",
+    "rf propagation", "radio propagation",
+)
+
 RECONSTRUCTION_TERMS = (
     "reconstruct",
     "completion",
@@ -261,6 +266,8 @@ def is_terrain_relevant(work: dict[str, Any]) -> bool:
     text = work_text(work)
     title = (work.get("title") or "").lower()
     if re.search(r"\b(reply|response|comment|corrigendum|erratum)\s+(to|on)\b", title):
+        return False
+    if any(contains_term(title, term) for term in EXCLUDED_TITLE_TERMS):
         return False
     # A terrain term in the abstract alone is often only a study-area covariate.
     has_core_object = any(contains_term(title, term) for term in TITLE_TERRAIN_TERMS)

@@ -90,6 +90,7 @@ class ExclusionTests(unittest.TestCase):
             'A UAV-LiDAR multi-dimensional crown metric system and adaptive extraction methods for mountainous Chinese fir plantations',
             'Annual canopy height mapping in Italy from Landsat and multi-source LiDAR for disturbance and recovery monitoring',
             'KODAMA: Multimodal Digital Twin Reconstruction for Urban RF Propagation Modelling',
+            'Walking with Terrain Reconstruction: Learning to Traverse Risky Sparse Footholds',
         ):
             candidate = work(title)
             candidate['abstract_inverted_index'] = inverted_abstract('We reconstruct models in complex terrain using LiDAR elevation.')
