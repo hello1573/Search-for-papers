@@ -2,8 +2,8 @@ name: Daily sparse terrain paper digest
 
 on:
   schedule:
-    # 02:00 UTC = 10:00 Asia/Shanghai
-    - cron: "0 2 * * *"
+    - cron: "0 10 * * *"
+      timezone: "Asia/Shanghai"
   workflow_dispatch:
     inputs:
       dry_run:
