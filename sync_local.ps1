@@ -5,9 +5,12 @@ $python = Join-Path $repo '.venv\Scripts\python.exe'
 $node = Join-Path $runtime 'node\bin\node.exe'
 $root = 'E:\论文\知识点概述\日常文献查询记录'
 New-Item -ItemType Directory -Force -Path $root | Out-Null
-$log = Join-Path $root '本地同步日志.txt'
+$log = Join-Path $root '本地同步日志_UTF8.txt'
+$env:PYTHONIOENCODING = 'utf-8'
+[Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+$OutputEncoding = [Console]::OutputEncoding
 try {
-    & $python (Join-Path $repo 'local_sync.py') --repo $repo --root $root --node $node --builder (Join-Path $repo 'build_catalog.mjs') *>> $log
+    & $python (Join-Path $repo 'local_sync.py') --repo $repo --root $root --node $node --builder (Join-Path $repo 'build_catalog.mjs') 2>&1 | Out-File -LiteralPath $log -Append -Encoding utf8
     if ($LASTEXITCODE -ne 0) { throw "local_sync.py failed with exit code $LASTEXITCODE" }
 } catch {
     "$(Get-Date -Format s) 同步失败: $_" | Add-Content -LiteralPath $log -Encoding utf8

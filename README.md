@@ -55,4 +55,4 @@ python paper_digest.py --output digest.md --state seen_papers.json
 
 只有标为“高相关”且 OpenAlex 提供合法开放获取 PDF 地址的论文，才会尝试下载到 `论文\YYYY-MM-DD\英文题名.pdf`。下载前验证 HTTPS、大小及 PDF 头尾；失败会在次日重新尝试。开放获取全文下载成功不表示已核读全文；简报仍以当时推送的摘要级内容为准。订阅期刊如无开放获取版本，不会用学校登录凭据自动抓取，需通过有权访问的图书馆页面另行获取。
 
-本机同步依赖本地 Python 虚拟环境（`python -m venv .venv`、`.venv\Scripts\python -m pip install -r requirements.txt`）以及 Codex 捆绑 Node 运行时及 `@oai/artifact-tool`。GitHub 云端不能直接写本机 E 盘。电脑须开机、联网且 E 盘可用；错过同步的日报将在下次运行时补齐。Windows 计划任务仅负责本机同步，不改变 GitHub/企业微信到达时间。日志在 E 盘目录的 `本地同步日志.txt`。
+本机同步依赖本地 Python 虚拟环境（`python -m venv .venv`、`.venv\Scripts\python -m pip install -r requirements.txt`）以及 Codex 捆绑 Node 运行时及 `@oai/artifact-tool`。GitHub 云端不能直接写本机 E 盘。电脑须开机、联网且 E 盘可用；错过同步的日报将在下次运行时补齐。Windows 计划任务仅负责本机同步，不改变 GitHub/企业微信到达时间。日志在 E 盘目录的 `本地同步日志_UTF8.txt`。
