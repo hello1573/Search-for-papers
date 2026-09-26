@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import html
 import json
 import os
@@ -50,9 +51,8 @@ CORE_TERRAIN_TERMS = (
     "landform",
     "contour line",
     "elevation",
-    "point cloud",
-    "lidar",
-    "surface model",
+    "bare earth",
+    "bathymetr",
 )
 
 RECONSTRUCTION_TERMS = (
@@ -248,19 +248,22 @@ def contains_term(text: str, term: str) -> bool:
 
 def is_terrain_relevant(work: dict[str, Any]) -> bool:
     text = work_text(work)
+    title = (work.get("title") or "").lower()
+    if re.search(r"\b(reply|response|comment|corrigendum|erratum)\s+(to|on)\b", title):
+        return False
     has_core_object = any(contains_term(text, term) for term in CORE_TERRAIN_TERMS)
     has_reconstruction_task = any(contains_term(text, term) for term in RECONSTRUCTION_TERMS)
     return has_core_object and has_reconstruction_task
 
 
 def search_openalex(
-    session: requests.Session, query: str, from_date: str
+    session: requests.Session, query: str, from_date: str, to_date: str | None = None
 ) -> list[dict[str, Any]]:
     params = {
         "search": query,
-        "filter": f"from_publication_date:{from_date}",
+        "filter": f"from_publication_date:{from_date}" + (f",to_publication_date:{to_date}" if to_date else ""),
         "sort": "publication_date:desc",
-        "per-page": 30,
+        "per-page": 100,
     }
     mailto = session.headers.get("mailto")
     if mailto:
@@ -330,6 +333,18 @@ def load_known(path: str) -> set[str]:
     return keys
 
 
+def load_catalog_index(path: str) -> set[str]:
+    with open(path, encoding="utf-8") as source:
+        data = json.load(source)
+    if not isinstance(data, list) or not all(re.fullmatch(r"[0-9a-f]{64}", value) for value in data):
+        raise ValueError("Invalid local catalog exclusion index")
+    return {"sha256:" + value for value in data}
+
+
+def hashed_keys(keys: set[str]) -> set[str]:
+    return {"sha256:" + hashlib.sha256(key.encode("utf-8")).hexdigest() for key in keys}
+
+
 def save_seen(path: str, seen: set[str]) -> None:
     with open(path, "w", encoding="utf-8") as target:
         json.dump(sorted(seen), target, ensure_ascii=False, indent=2)
@@ -338,7 +353,7 @@ def save_seen(path: str, seen: set[str]) -> None:
 
 def select_papers(papers: list[dict[str, Any]], excluded: set[str]) -> list[dict[str, Any]]:
     today = datetime.now(timezone.utc).date()
-    from_date = (today - timedelta(days=730)).isoformat()
+    from_date = "2018-01-01"
     ranked = sorted(
         papers,
         key=lambda item: (item.get("publication_date") or "", item["_score"]),
@@ -352,7 +367,7 @@ def select_papers(papers: list[dict[str, Any]], excluded: set[str]) -> list[dict
         if (
             paper["_score"] < 8
             or not from_date <= date <= today.isoformat()
-            or keys.intersection(selected_keys)
+            or (keys | hashed_keys(keys)).intersection(selected_keys)
         ):
             continue
         selected.append(paper)
@@ -374,10 +389,13 @@ def collect_papers(excluded: set[str]) -> list[dict[str, Any]]:
     if mailto:
         session.headers["mailto"] = mailto
 
-    from_date = (datetime.now(timezone.utc).date() - timedelta(days=730)).isoformat()
+    recent = (datetime.now(timezone.utc).date() - timedelta(days=730)).isoformat()
     papers: dict[str, dict[str, Any]] = {}
     for query in QUERIES:
-        for rank, work in enumerate(search_openalex(session, query, from_date)):
+        results = search_openalex(session, query, recent)
+        # Search older work separately so unseen papers are not hidden by the newest page.
+        results += search_openalex(session, query, "2018-01-01", (datetime.fromisoformat(recent).date() - timedelta(days=1)).isoformat())
+        for rank, work in enumerate(results):
             work_id = work.get("id")
             if not work_id or not work.get("title"):
                 continue
@@ -693,6 +711,44 @@ def note_section(work: dict[str, Any], field: str, fallback: str) -> str:
     return markdown_text(note if note else fallback)
 
 
+def report_record(work: dict[str, Any]) -> dict[str, Any]:
+    oa_locations = [work.get("best_oa_location") or {}]
+    oa_locations.extend(location for location in work.get("locations") or [] if location.get("is_oa"))
+    pdf_urls = []
+    for location in oa_locations:
+        url = location.get("pdf_url")
+        if url and urlparse(str(url)).scheme == "https" and url not in pdf_urls:
+            pdf_urls.append(url)
+    source = ((work.get("primary_location") or {}).get("source") or {})
+    relevance, reason = relevance_summary(work)
+    return {
+        "id": work.get("id"),
+        "title": work.get("title"),
+        "authors": authors_text(work),
+        "publication_date": work.get("publication_date"),
+        "journal": journal_name(work),
+        "source_type": source.get("type"),
+        "doi": work.get("doi"),
+        "url": source_url(work),
+        "categories": categories(work),
+        "direction": task_label(work),
+        "relevance": relevance,
+        "relevance_reason": reason,
+        "abstract": abstract_text(work),
+        "open_access_pdf_urls": pdf_urls,
+        "reading_scope": "OpenAlex 摘要和元数据；未核读全文",
+        "discovery_type": discovery_type(work),
+        "jcr": None,
+        "cas": None,
+    }
+
+
+def discovery_type(work: dict[str, Any]) -> str:
+    date = work.get("publication_date") or ""
+    today = datetime.now(timezone(timedelta(hours=8))).date()
+    return "近30天发表" if (today - timedelta(days=30)).isoformat() <= date <= today.isoformat() else "历史未收录补充"
+
+
 def render_markdown(papers: list[dict[str, Any]]) -> str:
     today = datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d")
     mention = os.getenv("DIGEST_MENTION", "@hello1573")
@@ -724,7 +780,7 @@ def render_markdown(papers: list[dict[str, Any]]) -> str:
                 "",
                 f"**期刊等级：** JCR 分区未核验；中科院分区未核验（须注明评价年份和来源）。**阅读范围：** {scope}。",
                 "",
-                f"**研究方向与分类：** {markdown_text(task_label(paper))}；{'、'.join(markdown_text(label) for label in categories(paper))}（自动初分，可多选）。**相关性：** {relevance}；{markdown_text(relevance_reason)}。",
+                f"**收录类型：** {discovery_type(paper)}。**研究方向与分类：** {markdown_text(task_label(paper))}；{'、'.join(markdown_text(label) for label in categories(paper))}（自动初分，可多选）。**相关性：** {relevance}；{markdown_text(relevance_reason)}。",
                 "",
                 "### 研究背景",
                 note_section(paper, "background", f"摘要所述问题：{research_problem_summary(paper, sentences)} 学术脉络与已有方法的具体局限需阅读全文核实。"),
@@ -755,14 +811,26 @@ def main() -> None:
     parser.add_argument("--output", default="digest.md")
     parser.add_argument("--state", default="seen_papers.json")
     parser.add_argument("--known", default=str(Path(__file__).with_name("known_papers.json")))
+    parser.add_argument("--catalog-index", default=str(Path(__file__).with_name("local_catalog_keys.json")))
     parser.add_argument("--count-output", default="digest_count.txt")
+    parser.add_argument("--report-json", help="Write the same selected papers as a local-sync manifest")
     args = parser.parse_args()
     seen = load_seen(args.state)
     known = load_known(args.known)
+    known.update(load_catalog_index(args.catalog_index))
     papers = collect_papers(seen | known)
     for paper in papers:
         paper["_summary"] = summarize_from_abstract(paper)
     content = render_markdown(papers)
+    if args.report_json:
+        report = {
+            "schema_version": 1,
+            "date": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"),
+            "papers": [report_record(paper) for paper in papers],
+        }
+        with open(args.report_json, "w", encoding="utf-8") as target:
+            json.dump(report, target, ensure_ascii=False, indent=2)
+            target.write("\n")
     with open(args.output, "w", encoding="utf-8") as output:
         output.write(content)
     if papers:

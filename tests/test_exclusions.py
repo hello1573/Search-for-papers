@@ -63,13 +63,27 @@ class ExclusionTests(unittest.TestCase):
         older = work('Older relevant terrain reconstruction', days=30, score=100)
         newest = work('Newest relevant terrain reconstruction', days=0, score=10)
         middle = work('Other relevant DEM completion study', days=7, score=60)
-        too_old = work('Very old terrain reconstruction', days=731)
+        too_old = work('Very old terrain reconstruction', days=4000)
         future = work('Future terrain reconstruction', days=-1)
         sent = work('An already sent terrain paper', doi='https://doi.org/10.1234/sent')
         duplicate = {**newest, 'id': 'https://openalex.org/a-different-index'}
         candidates = [older, too_old, sent, middle, future, duplicate, newest]
         selected = digest.select_papers(candidates, self.known | {'10.1234/sent'})
         self.assertEqual([p['title'] for p in selected], [newest['title'], middle['title'], older['title']])
+
+    def test_unseen_older_paper_is_allowed_as_historical_supplement(self):
+        old = work('Unseen DEM void filling study', days=900)
+        self.assertEqual(digest.select_papers([old], self.known), [old])
+        self.assertEqual(digest.discovery_type(old), '历史未收录补充')
+
+    def test_hashed_local_catalog_entry_prevents_repeat(self):
+        paper = work('An existing DEM restoration paper', days=500)
+        excluded = digest.hashed_keys(digest.paper_keys(paper))
+        self.assertEqual(digest.select_papers([paper], excluded), [])
+
+    def test_generic_point_cloud_and_review_reply_are_not_terrain_restoration(self):
+        self.assertFalse(digest.is_terrain_relevant(work('Point cloud completion for indoor chairs')))
+        self.assertFalse(digest.is_terrain_relevant(work('Reply on terrain reconstruction review')))
 
     def test_fullwidth_entities_and_punctuation(self):
         left = 'Terrain\u2011Net: A & B Model'

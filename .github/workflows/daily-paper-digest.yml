@@ -2,8 +2,8 @@ name: Daily sparse terrain paper digest
 
 on:
   schedule:
-    - cron: "0 10 * * *"
-      timezone: "Asia/Shanghai"
+    # UTC 02:00 is 10:00 in Asia/Shanghai; GitHub may queue scheduled runs.
+    - cron: "0 2 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -49,6 +49,7 @@ jobs:
         run: |
           python paper_digest.py \
             --output digest.md \
+            --report-json digest.json \
             --state seen_papers.json \
             --count-output digest_count.txt
           count="$(cat digest_count.txt)"
@@ -57,29 +58,37 @@ jobs:
             cat digest.md >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          if [ "$count" -eq 0 ]; then
-            echo "没有发现新的论文，跳过通知。"
+          report_date="$(python -c 'import json; print(json.load(open("digest.json", encoding="utf-8"))["date"])')"
+          mkdir -p reports/daily
+          if [ -e "reports/daily/$report_date.json" ]; then
+            echo "今天的日报已归档，跳过重复发布。"
             exit 0
           fi
-          issue_number="$(gh issue list \
-            --repo "$GITHUB_REPOSITORY" \
-            --state open \
-            --limit 20 \
-            --json number,title \
-            --jq '.[] | select(.title == "[论文日报] 稀疏地形重建文章日报") | .number' \
-            | head -n 1)"
-          if [ -n "$issue_number" ]; then
-            gh issue comment "$issue_number" \
+          cp digest.md "reports/daily/$report_date.md"
+          cp digest.json "reports/daily/$report_date.json"
+          if [ "$count" -gt 0 ]; then
+            issue_number="$(gh issue list \
               --repo "$GITHUB_REPOSITORY" \
-              --body-file digest.md
+              --state open \
+              --limit 20 \
+              --json number,title \
+              --jq '.[] | select(.title == "[论文日报] 稀疏地形重建文章日报") | .number' \
+              | head -n 1)"
+            if [ -n "$issue_number" ]; then
+              gh issue comment "$issue_number" \
+                --repo "$GITHUB_REPOSITORY" \
+                --body-file digest.md
+            else
+              gh issue create \
+                --repo "$GITHUB_REPOSITORY" \
+                --title "[论文日报] 稀疏地形重建文章日报" \
+                --body-file digest.md
+            fi
           else
-            gh issue create \
-              --repo "$GITHUB_REPOSITORY" \
-              --title "[论文日报] 稀疏地形重建文章日报" \
-              --body-file digest.md
+            echo "没有发现新论文，不发送通知；归档空日报。"
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add seen_papers.json
-          git commit -m "Track sent paper digest entries"
+          git add seen_papers.json reports/daily
+          git commit -m "Archive paper digest for $report_date"
           git push
