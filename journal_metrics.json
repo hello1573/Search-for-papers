@@ -1,0 +1,439 @@
+{
+  "remotesensing": {
+    "journal": "Remote Sensing",
+    "issn": "2072-4292",
+    "checked_at": "2026-09-26",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Remote+Sensing",
+      "https://www.letpub.com.cn/index.php?journalid=8969&page=journalapp&view=detail",
+      "https://www.mdpi.com/journal/remotesensing",
+      "https://www.mdpi.com/journal/remotesensing/stats"
+    ],
+    "provenance": "LetPub公开汇总；非JCR或中科院官方直接查询",
+    "indexing": "SCIE",
+    "if_value": 4.3,
+    "if_year": 2025,
+    "if_release_year": 2026,
+    "if_year_basis": "出版方主页明确2025年度；统计图截至2025年",
+    "cas": "地球科学大类2区",
+    "cas_year": 2025,
+    "jcr_subjects": [
+      {
+        "quartile": "Q1",
+        "subject": "Geosciences, Multidisciplinary"
+      },
+      {
+        "quartile": "Q2",
+        "subject": "Remote Sensing"
+      },
+      {
+        "quartile": "Q2",
+        "subject": "Environmental Sciences"
+      },
+      {
+        "quartile": "Q2",
+        "subject": "Imaging Science and Photographic Technology"
+      }
+    ],
+    "jcr_year_label": "出版方2026-09-26当前显示；分区年度未单列",
+    "jcr_basis": "MDPI统计页全部JCR学科；未以CiteScore代替"
+  },
+  "ieeetransactionsongeoscienceandremotesensing": {
+    "journal": "IEEE Transactions on Geoscience and Remote Sensing",
+    "issn": "0196-2892",
+    "checked_at": "2026-09-26",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE+Transactions+on+Geoscience+and+Remote+Sensing",
+      "https://www.letpub.com.cn/index.php?journalid=3389&page=journalapp&view=detail"
+    ],
+    "provenance": "LetPub公开汇总；非JCR或中科院官方直接查询",
+    "if_value": 9.4,
+    "if_year": 2025,
+    "if_release_year": 2026,
+    "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+    "jcr_failure": "公开查询页的JCR字段要求登录；未读取受限数据",
+    "cas": "地球科学大类1区",
+    "cas_year": 2025
+  },
+  "遥感学报": {
+    "journal": "遥感学报",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=%E9%81%A5%E6%84%9F%E5%AD%A6%E6%8A%A5"
+    ]
+  },
+  "sustainability": {
+    "journal": "Sustainability",
+    "issn": "2071-1050",
+    "checked_at": "2026-09-26",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Sustainability",
+      "https://www.letpub.com.cn/index.php?journalid=9646&page=journalapp&view=detail"
+    ],
+    "provenance": "LetPub公开汇总；非JCR或中科院官方直接查询",
+    "indexing": "SCIE",
+    "if_value": 4.1,
+    "if_year": 2025,
+    "if_release_year": 2026,
+    "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+    "refresh_failure": "公开期刊查询未返回同名记录"
+  },
+  "kscejournalofcivilengineering": {
+    "journal": "KSCE Journal of Civil Engineering",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=KSCE+Journal+of+Civil+Engineering"
+    ]
+  },
+  "ieeeroboticsandautomationletters": {
+    "journal": "IEEE Robotics and Automation Letters",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE+Robotics+and+Automation+Letters"
+    ]
+  },
+  "remotesensingofenvironment": {
+    "journal": "Remote Sensing of Environment",
+    "checked_at": "2026-09-26",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Remote+Sensing+of+Environment",
+      "https://www.letpub.com.cn/index.php?journalid=7128&page=journalapp&view=detail"
+    ],
+    "issn": "0034-4257",
+    "provenance": "LetPub公开汇总；非JCR或中科院官方直接查询",
+    "if_value": 12.3,
+    "if_year": 2025,
+    "if_release_year": 2026,
+    "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+    "refresh_failure": "公开期刊查询未返回同名记录"
+  },
+  "giscienceremotesensing": {
+    "journal": "GIScience & Remote Sensing",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=GIScience+%26+Remote+Sensing"
+    ]
+  },
+  "internationaljournalofdigitalearth": {
+    "journal": "International Journal of Digital Earth",
+    "checked_at": "2026-09-26",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=International+Journal+of+Digital+Earth",
+      "https://www.letpub.com.cn/index.php?journalid=3717&page=journalapp&view=detail"
+    ],
+    "issn": "1753-8947",
+    "provenance": "LetPub公开汇总；非JCR或中科院官方直接查询",
+    "indexing": "SCIE",
+    "if_value": 5.4,
+    "if_year": 2025,
+    "if_release_year": 2026,
+    "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+    "jcr_failure": "公开查询页的JCR字段要求登录；未读取受限数据",
+    "cas": "地球科学大类2区",
+    "cas_year": 2025,
+    "refresh_failure": "公开期刊查询未返回同名记录"
+  },
+  "isprsopenjournalofphotogrammetryandremotesensing": {
+    "journal": "ISPRS Open Journal of Photogrammetry and Remote Sensing",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ISPRS+Open+Journal+of+Photogrammetry+and+Remote+Sensing"
+    ]
+  },
+  "ieeegeoscienceandremotesensingletters": {
+    "journal": "IEEE Geoscience and Remote Sensing Letters",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE+Geoscience+and+Remote+Sensing+Letters"
+    ]
+  },
+  "geomorphology": {
+    "journal": "Geomorphology",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Geomorphology"
+    ]
+  },
+  "earthsurfaceprocessesandlandforms": {
+    "journal": "Earth Surface Processes and Landforms",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Earth+Surface+Processes+and+Landforms"
+    ]
+  },
+  "internationaljournalofgeographicalinformationscience": {
+    "journal": "International Journal of Geographical Information Science",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=International+Journal+of+Geographical+Information+Science"
+    ]
+  },
+  "ieeeaccess": {
+    "journal": "IEEE Access",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE+Access"
+    ]
+  },
+  "sciencechinaearthsciences": {
+    "journal": "Science China Earth Sciences",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Science+China+Earth+Sciences"
+    ]
+  },
+  "computergraphicsforum": {
+    "journal": "Computer Graphics Forum",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Computer+Graphics+Forum"
+    ]
+  },
+  "internationaljournalofappliedearthobservationandgeoinformation": {
+    "journal": "International Journal of Applied Earth Observation and Geoinformation",
+    "checked_at": "2026-09-26",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=International+Journal+of+Applied+Earth+Observation+and+Geoinformation",
+      "https://www.letpub.com.cn/index.php?journalid=3661&page=journalapp&view=detail"
+    ],
+    "issn": "0303-2434",
+    "indexing": "SCIE",
+    "if_value": 8.2,
+    "if_year": 2025,
+    "if_release_year": 2026,
+    "if_year_basis": "LetPub公开页2026年6月最新IF更新口径",
+    "cas": "地球科学大类1区",
+    "cas_year": 2025,
+    "provenance": "LetPub公开汇总；非JCR或中科院官方直接查询",
+    "jcr_failure": "LetPub的JCR字段要求登录；出版方页面未取得可核验分区"
+  },
+  "expertsystemswithapplications": {
+    "journal": "Expert Systems with Applications",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Expert+Systems+with+Applications"
+    ]
+  },
+  "journalofimaging": {
+    "journal": "Journal of Imaging",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal+of+Imaging"
+    ]
+  },
+  "geocartointernational": {
+    "journal": "Geocarto International",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Geocarto+International"
+    ]
+  },
+  "forestecosystems": {
+    "journal": "Forest Ecosystems",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Forest+Ecosystems"
+    ]
+  },
+  "isprsannalsofthephotogrammetryremotesensingandspatialinformationsciences": {
+    "journal": "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ISPRS+Annals+of+the+Photogrammetry%2C+Remote+Sensing+and+Spatial+Information+Sciences"
+    ]
+  },
+  "scientificreports": {
+    "journal": "Scientific Reports",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Scientific+Reports"
+    ]
+  },
+  "sensors": {
+    "journal": "Sensors",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Sensors"
+    ]
+  },
+  "forests": {
+    "journal": "Forests",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Forests"
+    ]
+  },
+  "isprsjournalofphotogrammetryandremotesensing": {
+    "journal": "ISPRS Journal of Photogrammetry and Remote Sensing",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ISPRS+Journal+of+Photogrammetry+and+Remote+Sensing"
+    ]
+  },
+  "computersgeosciences": {
+    "journal": "Computers & Geosciences",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Computers+%26+Geosciences"
+    ]
+  },
+  "drones": {
+    "journal": "Drones",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Drones"
+    ]
+  },
+  "ieeeasmetransactionsonmechatronics": {
+    "journal": "IEEE/ASME Transactions on Mechatronics",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE%2FASME+Transactions+on+Mechatronics"
+    ]
+  },
+  "aerospace": {
+    "journal": "Aerospace",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Aerospace"
+    ]
+  },
+  "ieeejournalofselectedtopicsinappliedearthobservationsandremotesensing": {
+    "journal": "IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=IEEE+Journal+of+Selected+Topics+in+Applied+Earth+Observations+and+Remote+Sensing"
+    ]
+  },
+  "sensingandimaging": {
+    "journal": "Sensing and Imaging",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Sensing+and+Imaging"
+    ]
+  },
+  "internationaljournalofremotesensing": {
+    "journal": "International Journal of Remote Sensing",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=International+Journal+of+Remote+Sensing"
+    ]
+  },
+  "earthandspacescience": {
+    "journal": "Earth and Space Science",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Earth+and+Space+Science"
+    ]
+  },
+  "scientificdata": {
+    "journal": "Scientific Data",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Scientific+Data"
+    ]
+  },
+  "oceanscience": {
+    "journal": "Ocean Science",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Ocean+Science"
+    ]
+  },
+  "journalofglaciology": {
+    "journal": "Journal of Glaciology",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Journal+of+Glaciology"
+    ]
+  },
+  "geoscientificmodeldevelopment": {
+    "journal": "Geoscientific Model Development",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Geoscientific+Model+Development"
+    ]
+  },
+  "isprsinternationaljournalofgeoinformation": {
+    "journal": "ISPRS International Journal of Geo-Information",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=ISPRS+International+Journal+of+Geo-Information"
+    ]
+  },
+  "earthsciencereviews": {
+    "journal": "Earth-Science Reviews",
+    "checked_at": "2026-09-26",
+    "failure": "公开期刊查询未返回同名记录",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Earth-Science+Reviews"
+    ]
+  },
+  "electronics": {
+    "journal": "Electronics",
+    "checked_at": "2026-09-26",
+    "sources": [
+      "https://www.letpub.com.cn/index.php?page=journalapp&view=search&searchname=Electronics",
+      "https://www.mdpi.com/journal/electronics/stats",
+      "https://www.letpub.com.cn/index.php?journalid=10444&page=journalapp&view=detail"
+    ],
+    "issn": "2079-9292",
+    "indexing": "SCIE",
+    "if_value": 2.9,
+    "if_year": 2025,
+    "if_release_year": 2026,
+    "cas": "计算机科学大类4区",
+    "cas_year": 2025,
+    "if_year_basis": "出版方统计图截至2025年；LetPub显示2026年6月更新",
+    "jcr_subjects": [
+      {
+        "quartile": "Q2",
+        "subject": "Engineering, Electrical and Electronic"
+      },
+      {
+        "quartile": "Q3",
+        "subject": "Physics, Applied"
+      },
+      {
+        "quartile": "Q3",
+        "subject": "Computer Science, Information Systems"
+      }
+    ],
+    "jcr_year_label": "出版方2026-09-26当前显示；分区年度未单列",
+    "jcr_basis": "MDPI统计页全部JCR学科；未以CiteScore代替"
+  }
+}

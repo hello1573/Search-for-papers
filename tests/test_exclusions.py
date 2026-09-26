@@ -145,8 +145,8 @@ class ExclusionTests(unittest.TestCase):
         rendered = digest.render_markdown([paper])
         for heading in (
             '### 期刊与论文基本信息',
-            '### 研究背景',
-            '### 核心方法',
+            '### 研究问题',
+            '### 核心思路',
             '### 创新点',
             '### 实验结果',
             '### 结论',
@@ -154,13 +154,15 @@ class ExclusionTests(unittest.TestCase):
         ):
             self.assertIn(heading, rendered)
         self.assertIn('Journal of Terrain Studies', rendered)
-        self.assertIn('JCR 分区未核验；中科院分区未核验', rendered)
-        self.assertIn('03\\_缺失地形恢复\\_空洞填补', rendered)
-        self.assertIn('07\\_拓扑结构与地形特征', rendered)
+        self.assertNotIn('待审核', rendered)
+        self.assertIn('缺失地形恢复与空洞填补', rendered)
+        self.assertIn('拓扑结构与地形特征', rendered)
+        self.assertNotIn('03\\_', rendered)
+        self.assertNotIn('10.1234/structured', rendered)
+        self.assertIn('### 本地全文', rendered)
         self.assertIn('未核读全文', rendered)
-        self.assertIn('LiDAR 点云', rendered)
-        self.assertIn('自监督学习', rendered)
-        self.assertIn('扩散模型', rendered)
+        self.assertIn('中文译名', rendered)
+        self.assertIn('大白话理解', rendered)
 
     def test_missing_abstract_marks_unverified_fields(self):
         paper = work('Sparse DEM reconstruction by a new method')
@@ -177,7 +179,7 @@ class ExclusionTests(unittest.TestCase):
         }
         rendered = digest.render_markdown([paper])
         self.assertIn('arXiv（来源类型：repository；不确认为期刊）', rendered)
-        self.assertIn('JCR 分区未核验', rendered)
+        self.assertIn('非期刊成果；JCR、中科院期刊分区和期刊IF不适用', rendered)
 
     def test_untrusted_title_cannot_inject_markdown_link(self):
         paper = work('Sparse DEM reconstruction [extra](https://example.com)')

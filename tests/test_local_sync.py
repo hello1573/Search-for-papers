@@ -10,18 +10,50 @@ import local_sync
 
 
 class LocalSyncTests(unittest.TestCase):
+    def test_newer_report_metrics_are_not_overwritten_by_older_registry(self):
+        older = {'checked_at': '2026-09-26', 'if_value': 4.3, 'if_year': 2025}
+        newer = {'checked_at': '2027-09-26', 'if_value': 4.5, 'if_year': 2026}
+        with patch.object(local_sync.journal_metrics, 'lookup', return_value=older):
+            result = local_sync.metric_columns('Example', 'journal', newer)
+        self.assertEqual(result['if_value'], 4.5)
+        self.assertEqual(result['if_year'], 2026)
+
     def test_safe_english_title_and_invalid_path_chars(self):
         self.assertEqual(local_sync.safe_filename('DEM: Sparse / Reconstruction?', 'doi'), 'DEM_ Sparse _ Reconstruction_.pdf')
 
     def test_docx_uses_real_hyperlinks_not_markdown_syntax(self):
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory) / 'brief.docx'
-            local_sync.build_docx('# Brief\n## 1. [DEM study](<https://doi.org/10.1234/example>)\n**Conclusion:** abstract only.', target)
+            local_sync.build_docx('# Brief\n## 1. [DEM study](<https://doi.org/10.1234/example>)\n**Conclusion:** abstract only.', target, Path(directory) / 'no-template.docx')
             from docx import Document
             doc = Document(target)
             self.assertEqual(doc.paragraphs[1].text, '1. DEM study')
             self.assertIn('https://doi.org/10.1234/example', [rel.target_ref for rel in doc.part.rels.values()])
             self.assertNotIn('[DEM study]', '\n'.join(p.text for p in doc.paragraphs))
+
+    def test_numbered_template_heading_does_not_duplicate_manual_number(self):
+        from docx import Document
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
+        from docx.oxml import OxmlElement
+        from docx.oxml.ns import qn
+        with tempfile.TemporaryDirectory() as directory:
+            template = Path(directory) / 'template.docx'
+            target = Path(directory) / 'brief.docx'
+            source = Document()
+            ppr = source.styles['Heading 1'].element.get_or_add_pPr()
+            numpr = OxmlElement('w:numPr')
+            numid = OxmlElement('w:numId')
+            # Default Word list number 5 is a decimal list.
+            numid.set(qn('w:val'), '5')
+            numpr.append(numid)
+            ppr.append(numpr)
+            source.save(template)
+            local_sync.build_docx('# Brief\n## 1. DEM study\n**本地路径：** `E:\\论文\\test.pdf`', target, template)
+            doc = Document(target)
+            self.assertTrue(local_sync.heading_has_number(doc, 'Heading 1'))
+            self.assertEqual(doc.paragraphs[1].text, 'DEM study')
+            self.assertEqual(doc.paragraphs[2].alignment, WD_ALIGN_PARAGRAPH.LEFT)
+            self.assertEqual(doc.paragraphs[2].paragraph_format.first_line_indent, 0)
 
     def test_report_rows_keep_release_and_collection_dates_distinct(self):
         reports = [({'date': '2026-09-26', 'papers': [{

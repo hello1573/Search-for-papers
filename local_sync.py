@@ -10,16 +10,21 @@ import re
 import subprocess
 import sys
 import tempfile
+import zipfile
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.opc.constants import RELATIONSHIP_TYPE as RT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
+import journal_metrics
+from paper_paths import safe_filename
+from paper_digest import category_names, render_markdown, work_from_record
 
 
 DEFAULT_ROOT = Path(r"E:\论文\知识点概述\日常文献查询记录")
@@ -44,12 +49,6 @@ def report_paths(repo: Path) -> list[str]:
     git(repo, "fetch", "origin", "main")
     paths = git(repo, "ls-tree", "-r", "--name-only", "origin/main", "reports/daily")
     return sorted(path for path in paths.splitlines() if re.fullmatch(r"reports/daily/\d{4}-\d{2}-\d{2}\.json", path))
-
-
-def safe_filename(title: str, identifier: str) -> str:
-    name = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", title)
-    name = re.sub(r"\s+", " ", name).strip(" .")[:145].rstrip(" .")
-    return f"{name or hashlib.sha256(identifier.encode('utf-8')).hexdigest()[:12]}.pdf"
 
 
 def fetch_open_pdf(paper: dict, folder: Path) -> Path | None:
@@ -129,21 +128,60 @@ def add_rich(paragraph, text: str) -> None:
         paragraph.add_run(plain_markdown(text[last:]))
 
 
-def build_docx(markdown: str, output: Path) -> None:
-    doc = Document()
+def heading_has_number(doc, style_name: str) -> bool:
+    style = doc.styles[style_name]
+    visited = set()
+    while style is not None and style.style_id not in visited:
+        visited.add(style.style_id)
+        ppr = style.element.pPr
+        numpr = ppr.find(qn("w:numPr")) if ppr is not None else None
+        if numpr is not None:
+            numid = numpr.find(qn("w:numId"))
+            if numid is not None:
+                if numid.get(qn("w:val")) == "0":
+                    return False
+                level = numpr.find(qn("w:ilvl"))
+                level = level.get(qn("w:val")) if level is not None else "0"
+                numbering = doc.part.numbering_part.element
+                nums = numbering.xpath(f'./w:num[@w:numId="{numid.get(qn("w:val"))}"]')
+                if not nums:
+                    return False
+                abstract = nums[0].find(qn("w:abstractNumId"))
+                if abstract is None:
+                    return False
+                overrides = nums[0].xpath(f'./w:lvlOverride[@w:ilvl="{level}"]/w:lvl/w:numFmt')
+                formats = overrides or numbering.xpath(
+                    f'./w:abstractNum[@w:abstractNumId="{abstract.get(qn("w:val"))}"]'
+                    f'/w:lvl[@w:ilvl="{level}"]/w:numFmt'
+                )
+                return bool(formats and formats[0].get(qn("w:val")) not in {"bullet", "none"})
+        style = style.base_style
+    return False
+
+
+def build_docx(markdown: str, output: Path, template: Path | None = None) -> None:
+    template = template or Path(r"E:\论文\单篇论文梳理模板.docx")
+    doc = Document(template) if template.is_file() else Document()
+    for element in list(doc.element.body):
+        if element.tag != qn("w:sectPr"):
+            doc.element.body.remove(element)
     section = doc.sections[0]
-    section.top_margin = Cm(2.2)
-    section.bottom_margin = Cm(2.1)
-    section.left_margin = section.right_margin = Cm(2.4)
+    if not template.is_file():
+        section.page_width, section.page_height = Cm(21), Cm(29.7)
+        section.top_margin = section.bottom_margin = section.left_margin = section.right_margin = Cm(2.54)
     styles = doc.styles
-    for name, size in (("Normal", 10.5), ("Title", 17), ("Heading 1", 13), ("Heading 2", 11)):
+    for name, size in (() if template.is_file() else (("Normal", 12), ("Title", 18), ("Heading 1", 16), ("Heading 2", 14))):
         style = styles[name]
-        style.font.name = "Microsoft YaHei"
+        style.font.name = "Times New Roman"
+        style.element.get_or_add_rPr().get_or_add_rFonts().set(qn("w:eastAsia"), "宋体")
         style.font.size = Pt(size)
         style.font.color.rgb = RGBColor(0, 0, 0)
         style.paragraph_format.space_after = Pt(4 if name == "Normal" else 7)
-    styles["Normal"].paragraph_format.line_spacing = 1.22
+    if not template.is_file():
+        styles["Normal"].paragraph_format.line_spacing = 1.22
     for name in ("Title", "Heading 1", "Heading 2"):
+        if template.is_file():
+            continue
         styles[name].paragraph_format.keep_with_next = True
         ppr = styles[name].element.pPr
         if ppr is not None:
@@ -159,15 +197,49 @@ def build_docx(markdown: str, output: Path) -> None:
             paragraph = doc.add_paragraph(style="Title")
             add_rich(paragraph, line[2:])
         elif line.startswith("## "):
-            add_rich(doc.add_paragraph(style="Heading 1"), line[3:])
+            text = line[3:]
+            if heading_has_number(doc, "Heading 1"):
+                text = re.sub(r"^\d+\.\s+", "", text)
+            add_rich(doc.add_paragraph(style="Heading 1"), text)
         elif line.startswith("### "):
             add_rich(doc.add_paragraph(style="Heading 2"), line[4:])
         else:
-            add_rich(doc.add_paragraph(), line)
+            paragraph = doc.add_paragraph()
+            if line.startswith("**本地路径：**"):
+                paragraph.alignment = WD_ALIGN_PARAGRAPH.LEFT
+                paragraph.paragraph_format.first_line_indent = Pt(0)
+            add_rich(paragraph, line)
     output.parent.mkdir(parents=True, exist_ok=True)
     temp = output.with_name("." + output.name)
     doc.save(temp)
+    if template.is_file():
+        with zipfile.ZipFile(temp) as authored:
+            body = authored.read("word/document.xml")
+            relationships = authored.read("word/_rels/document.xml.rels")
+        # Preserve the template's styles, fields, footer and opaque package parts.
+        with zipfile.ZipFile(template) as reference, zipfile.ZipFile(temp, "w", zipfile.ZIP_DEFLATED) as final:
+            for part in reference.infolist():
+                content = body if part.filename == "word/document.xml" else relationships if part.filename == "word/_rels/document.xml.rels" else reference.read(part.filename)
+                final.writestr(part, content)
     os.replace(temp, output)
+
+
+def metric_columns(name: str, source_type: str | None, reported: dict | None = None) -> dict:
+    registry = journal_metrics.lookup(name, source_type)
+    reported = reported or {}
+    if reported.get("checked_at", "") > registry.get("checked_at", ""):
+        metrics = journal_metrics.merge_metrics(registry, reported)
+    else:
+        metrics = journal_metrics.merge_metrics(reported, registry)
+    if metrics.get("not_applicable"):
+        return {"indexing": "非期刊成果", "jcr": "不适用", "cas": "不适用"}
+    return {
+        "indexing": metrics.get("indexing") or "公开记录未确认收录类型",
+        "jcr": journal_metrics.jcr_display(metrics),
+        "cas": f"{metrics['cas']}（{metrics['cas_year']}版）" if metrics.get("cas") else "公开查询未取得2025版分区值",
+        "if_value": metrics.get("if_value"), "if_year": metrics.get("if_year"),
+        "metrics_verified": [k for k in ("indexing", "jcr", "cas", "if_value", "if_year") if metrics.get(k) is not None or (k == "jcr" and metrics.get("jcr_subjects"))],
+    }
 
 
 def normalized_key(paper: dict) -> str:
@@ -183,21 +255,22 @@ def rows_from_ledger(root: Path) -> list[dict]:
     data = json.loads(path.read_text(encoding="utf-8"))
     rows = []
     for record in data.get("records", []):
-        grades = record.get("grades") or {}
         files = record.get("local_files") or []
         rows.append({
             "date": record.get("publication_date") or record.get("publication_year") or "",
             "title": record.get("title"),
+            "title_zh": record.get("title_zh") or "",
             "journal": record.get("journal"),
-            "jcr": grades.get("jcr") or grades.get("status") or "未核验",
-            "cas": grades.get("cas") or grades.get("status") or "未核验",
+            **metric_columns(record.get("journal"), "journal" if record.get("publication_type") == "journal-article" else "other"),
             "direction": record.get("main_direction") or "",
-            "categories": ", ".join(record.get("categories") or []),
+            "categories": "、".join(category_names(record.get("categories") or [])),
             "doi": record.get("doi"),
             "relevance": record.get("relevance") or "",
             "pdf": files[0].get("path") if files else "",
             "url": next((s for s in record.get("sources") or [] if str(s).startswith("https://")), ""),
             "collected": (record.get("pushed_dates") or [record.get("collected_at", "")[:10]])[0],
+            "reading_status": record.get("reading_status") or "未确认用户已读",
+            "notes": "；".join(record.get("notes") or []),
         })
     return rows
 
@@ -208,9 +281,10 @@ def rows_from_reports(reports: list[tuple[dict, dict[str, str]]]) -> list[dict]:
         for paper in report["papers"]:
             rows.append({
                 "date": paper.get("publication_date"), "title": paper.get("title"),
-                "journal": paper.get("journal"), "jcr": paper.get("jcr") or "未核验",
-                "cas": paper.get("cas") or "未核验", "direction": paper.get("direction"),
-                "categories": ", ".join(paper.get("categories") or []),
+                "title_zh": paper.get("title_zh"),
+                "journal": paper.get("journal"), **metric_columns(paper.get("journal"), paper.get("source_type"), paper.get("journal_metrics")),
+                "direction": paper.get("direction"),
+                "categories": "、".join(category_names(paper.get("categories") or [])),
                 "doi": paper.get("doi"), "relevance": paper.get("relevance"),
                 "pdf": downloads.get(normalized_key(paper), ""), "url": paper.get("url"),
                 "collected": report["date"],
@@ -234,10 +308,6 @@ def run(repo: Path, root: Path, node: Path, builder: Path) -> None:
         markdown = git(repo, "show", f"origin/main:reports/daily/{day}.md")
         markdown_path = root / f"{day}_稀疏地形重建文献简报.md"
         docx_path = root / f"{day}_稀疏地形重建文献简报.docx"
-        if not markdown_path.exists():
-            markdown_path.write_text(markdown, encoding="utf-8")
-        if not docx_path.exists():
-            build_docx(markdown, docx_path)
         pdf_folder = root / "论文" / day
         pdf_folder.mkdir(parents=True, exist_ok=True)
         downloads = {}
@@ -251,6 +321,17 @@ def run(repo: Path, root: Path, node: Path, builder: Path) -> None:
                 downloads[key] = str(result)
             elif paper.get("relevance") == "高" and paper.get("open_access_pdf_urls"):
                 attempts[day + ":" + key] = today
+        if all(p.get("format_version") == 2 for p in report["papers"]) and report["papers"]:
+            markdown = render_markdown([work_from_record(p, downloads.get(normalized_key(p))) for p in report["papers"]], day)
+        previous = markdown_path.read_text(encoding="utf-8") if markdown_path.exists() else None
+        if previous != markdown or not docx_path.exists():
+            if docx_path.exists() and previous is not None:
+                backup = root / "备份"
+                backup.mkdir(exist_ok=True)
+                import shutil
+                shutil.copy2(docx_path, backup / (docx_path.stem + "_" + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".docx"))
+            markdown_path.write_text(markdown, encoding="utf-8")
+            build_docx(markdown, docx_path)
         reports.append((report, downloads))
 
     rows = rows_from_ledger(root) + rows_from_reports(reports)
