@@ -40,6 +40,9 @@ jobs:
       - name: Search and publish digest
         env:
           OPENALEX_MAILTO: ${{ secrets.OPENALEX_MAILTO }}
+          SUMMARY_API_KEY: ${{ secrets.SUMMARY_API_KEY }}
+          SUMMARY_API_BASE_URL: ${{ vars.SUMMARY_API_BASE_URL }}
+          SUMMARY_MODEL: ${{ vars.SUMMARY_MODEL }}
           DIGEST_MENTION: "@${{ github.repository_owner }}"
           GH_TOKEN: ${{ github.token }}
           DRY_RUN: ${{ inputs.dry_run || false }}

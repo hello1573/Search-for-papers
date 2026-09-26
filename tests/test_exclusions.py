@@ -1,4 +1,5 @@
 import json
+import os
 import tempfile
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -101,29 +102,36 @@ class ExclusionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 digest.load_seen(str(path))
 
-    def test_digest_uses_requested_research_review_structure(self):
+    def test_digest_uses_short_reading_note_structure(self):
         paper = work(
             'Self-supervised DEM reconstruction with terrain-aware diffusion',
             doi='https://doi.org/10.1234/structured',
         )
         paper['authorships'] = [{'author': {'display_name': 'Test Author'}}]
+        paper['primary_location'] = {
+            'source': {'display_name': 'Journal of Terrain Studies', 'type': 'journal'}
+        }
         paper['abstract_inverted_index'] = inverted_abstract(
-            'Sparse LiDAR point cloud data make complete DEM labels difficult to obtain. '
+            'Sparse LiDAR point cloud data with missing ridges make complete DEM labels difficult to obtain. '
             'We propose a novel self-supervised terrain-aware diffusion model for DEM reconstruction. '
             'Results demonstrate improved RMSE on two mountainous datasets.'
         )
         rendered = digest.render_markdown([paper])
         for heading in (
-            '输入数据',
-            '（1）研究问题',
-            '（2）技术路线',
-            '（3）核心方法与贡献',
-            '（4）创新点',
-            '相关性',
+            '### 期刊与论文基本信息',
+            '### 研究背景',
+            '### 核心方法',
+            '### 创新点',
+            '### 实验结果',
+            '### 结论',
+            '一句话理解',
         ):
             self.assertIn(heading, rendered)
-        self.assertNotIn('局限或适用边界', rendered)
-        self.assertNotIn('对本研究的启示', rendered)
+        self.assertIn('Journal of Terrain Studies', rendered)
+        self.assertIn('JCR 分区未核验；中科院分区未核验', rendered)
+        self.assertIn('03\\_缺失地形恢复\\_空洞填补', rendered)
+        self.assertIn('07\\_拓扑结构与地形特征', rendered)
+        self.assertIn('未核读全文', rendered)
         self.assertIn('LiDAR 点云', rendered)
         self.assertIn('自监督学习', rendered)
         self.assertIn('扩散模型', rendered)
@@ -133,7 +141,63 @@ class ExclusionTests(unittest.TestCase):
         rendered = digest.render_markdown([paper])
         self.assertIn('摘要缺失', rendered)
         self.assertIn('需阅读全文核实', rendered)
+        self.assertIn('摘要未给出可核实的实验结果', rendered)
         self.assertIn('摘要未明确说明相对现有工作的创新差异', rendered)
+
+    def test_preprint_is_not_misreported_as_journal(self):
+        paper = work('Terrain point cloud completion with interpolation')
+        paper['primary_location'] = {
+            'source': {'display_name': 'arXiv', 'type': 'repository'}
+        }
+        rendered = digest.render_markdown([paper])
+        self.assertIn('arXiv（来源类型：repository；不确认为期刊）', rendered)
+        self.assertIn('JCR 分区未核验', rendered)
+
+    def test_untrusted_title_cannot_inject_markdown_link(self):
+        paper = work('Sparse DEM reconstruction [extra](https://example.com)')
+        rendered = digest.render_markdown([paper])
+        self.assertIn(r'\[extra\]', rendered)
+        self.assertNotIn('[extra](https://example.com)', rendered)
+
+    def test_summary_requires_abstract_evidence_and_does_not_invent_numbers(self):
+        paper = work('Sparse DEM reconstruction')
+        paper['abstract_inverted_index'] = inverted_abstract(
+            'Sparse DEM observations create gaps. We propose interpolation for terrain recovery. '
+            'Results show improved accuracy on a test region.'
+        )
+        sections = {
+            field: {'text': '摘要未说明，需阅读全文核实', 'evidence': ''}
+            for field in digest.NOTE_FIELDS
+        }
+        sections['method'] = {'text': '研究采用插值恢复地形。', 'evidence': 'We propose interpolation for terrain recovery.'}
+        sections['innovation'] = {'text': '世界首次提出此方法。', 'evidence': 'This sentence is not in the abstract.'}
+        sections['results'] = {'text': '误差降低了95%。', 'evidence': 'Results show improved accuracy on a test region.'}
+        response = {'choices': [{'message': {'content': json.dumps(sections, ensure_ascii=False)}}]}
+        with patch.dict(os.environ, {'SUMMARY_API_KEY': 'test-only', 'SUMMARY_API_BASE_URL': '', 'SUMMARY_MODEL': ''}):
+            with patch.object(digest.requests, 'post') as post:
+                post.return_value.json.return_value = response
+                note = digest.summarize_from_abstract(paper)
+        self.assertIn('研究采用插值恢复地形', note['method'])
+        self.assertNotIn('innovation', note)
+        self.assertNotIn('results', note)
+        self.assertEqual(post.call_args.kwargs['json']['model'], digest.SUMMARY_MODEL)
+        self.assertEqual(post.call_args.args[0], digest.SUMMARY_API_BASE_URL + '/chat/completions')
+        paper['_summary'] = note
+        rendered = digest.render_markdown([paper])
+        self.assertIn('模型辅助整理', rendered)
+        self.assertIn('摘要报告', rendered)
+        self.assertNotIn('95%', rendered)
+
+    def test_no_key_or_no_abstract_skips_summary_api(self):
+        paper = work('Sparse DEM reconstruction')
+        with patch.dict(os.environ, {'SUMMARY_API_KEY': ''}):
+            with patch.object(digest.requests, 'post') as post:
+                self.assertEqual(digest.summarize_from_abstract(paper), {})
+                post.assert_not_called()
+        with patch.dict(os.environ, {'SUMMARY_API_KEY': 'test-only'}):
+            with patch.object(digest.requests, 'post') as post:
+                self.assertEqual(digest.summarize_from_abstract(paper), {})
+                post.assert_not_called()
 
     def test_summary_sections_are_bounded_for_email_readability(self):
         sentence = 'This novel method improves terrain reconstruction accuracy ' + ('substantially ' * 80) + '.'
