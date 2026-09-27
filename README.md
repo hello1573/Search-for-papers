@@ -1,6 +1,6 @@
 # 稀疏地形重建文章日报
 
-这个仓库计划每天北京时间 10:00 运行一次，检索 OpenAlex 中与以下主题相关的文章。工作流使用 `Asia/Shanghai` 时区；GitHub Actions 定时任务可能排队延迟，不能保证准点送达。
+这个仓库以北京时间10:00发布日报为目标。本机计划任务09:30先触发准备，GitHub定时09:37作备用，生成完毕后不早于10:00发布。电脑需开机联网并保有GitHub写入权限；两种云端触发均可能排队，外部微信转发也可能延迟，不能保证10:00整送达。
 
 - 稀疏地形重建
 - 稀疏 DEM 重建与修复
@@ -27,6 +27,8 @@
 
 摘要整理步骤把公开题名和摘要交给配置的 OpenAI 兼容接口，生成中文段落，每段返回可在摘要中逐字找到的证据。该校验不能替代全文阅读，也不能保证翻译绝对无误。缺API密钥、关键中文部分缺失或未通过证据校验时，运行报错并停止发布，不再把英文模板当成已完成日报。仅诊断可显式使用 `--allow-metadata-only`，不要将诊断输出发布给手机。
 
+发布检查同时拒绝英文模板、损坏字符、未解码的Unicode转义和不合格的中文创新点；运行统一使用UTF-8。OpenAlex及中文接口遇到429、503或连接超时会有限重试，鉴权失败不反复重试。单条检索失败会继续其余检索并内部记录覆盖范围；全部检索失败必须报错，不能伪装成当天没有新论文。GitHub原文正常而微信乱码时，仍需检查仓库外的邮件或机器人转发，不能只靠这里的UTF-8设置判断已修复。
+
 可在手动运行时勾选 `dry_run`，仅生成预览和运行验证，不发布 Issue 通知或更新推送记录。正式运行将**同一次筛选**的推送正文及结构化清单保存到 `reports/daily/YYYY-MM-DD.md/.json`，供本机同步，不把 PDF 或账号信息提交到仓库。
 
 ## 配置 GitHub Secrets
@@ -39,6 +41,12 @@
 可选的 GitHub Actions **Variables**：`SUMMARY_API_BASE_URL`（默认 `https://www.lwjcode.xyz/v1`）和 `SUMMARY_MODEL`（默认 `gpt-5.6-terra`）。仅接受HTTPS。接口不可用时停止发布。不要把学校账号密码或图书馆Cookie配置到本仓库。
 
 日报正文通过 GitHub 通知邮件发送，不需要 PushPlus Token 或 SMTP 密码。
+
+## 本机早间触发
+
+Windows任务`SparseTerrainPaperMorningDispatch`每天09:30运行`dispatch_daily.ps1`，登录后可补触发，09:30前登录不会提前请求。它使用已有Git Credential Manager登录，不读取或导出API Token。`dispatch_daily.py`只在专用分支`codex/daily-digest-dispatch`创建同一天的触发提交，不切换分支、不提交工作区文件、不覆盖本地修改。该分支触发的工作流明确检出`main`，与备用定时运行共用并发组；归档存在时，在检索和模型调用前跳过，避免重复通知和费用。
+
+调度日志及日期去重状态仅放在`local-state`，不放E盘。Git push成功只代表已提交触发请求，不代表任务或手机发送成功。可以运行`python dispatch_daily.py --dry-run`检查远端读取，不创建提交、推送或发送消息。每日09:30的电脑必须开机联网；未开机时云端定时仍作备用，但可能延迟。若需绕过GitHub邮件链路直发企业微信，需要另行确定接收方式和授权，当前没有假设或启用直接机器人发送。
 
 ## 手动测试
 
@@ -53,8 +61,8 @@ python paper_digest.py --output digest.md --state seen_papers.json
 
 ## 本机归档
 
-本机执行 `sync_local.ps1` 只读获取远端 `main` 的归档，更新同一个 `稀疏地形重建文献总表.xlsx`，从同批论文内容生成同日Word。Word继承本机模板的页面、样式和页脚；本地下载完成后把实际路径放到最后。Excel保留历史、人工阅读状态、备注和自定义列，更新经核验的机器指标；移除显示的DOI/来源链接、补充中文题名，全文路径始终最后一列。覆盖前在“备份”目录保存原文件。同样数据重复执行不重复添加论文。原JSON台账不被重写。
+本机执行 `sync_local.ps1` 只读获取远端 `main` 的归档，更新同一个 `稀疏地形重建文献总表.xlsx`，从同批论文内容生成同日Word。用户目录只交付每日Word和累计Excel，不额外保存Markdown、JSON台账、日志、样稿或提示词文档。Word继承本机模板的页面、样式和页脚；本地下载完成后把实际路径放到最后。Excel保留历史、人工阅读状态、备注和自定义列，更新经核验的机器指标；移除显示的DOI/来源链接、补充中文题名，全文路径始终最后一列。恢复备份、去重索引和运行状态统一保存在程序目录 `local-state`，已在Git中忽略。同样数据重复执行不重复添加论文，也不重复写Word；检测到人工修改时不覆盖。首次切换复制旧JSON台账供内部回读，不删除用户目录中的历史文件。
 
 只有标为“高相关”且 OpenAlex 提供合法开放获取 PDF 地址的论文，才会尝试下载到 `论文\YYYY-MM-DD\英文题名.pdf`。下载前验证 HTTPS、大小及 PDF 头尾；失败会在次日重新尝试。开放获取全文下载成功不表示已核读全文；简报仍以当时推送的摘要级内容为准。订阅期刊如无开放获取版本，不会用学校登录凭据自动抓取，需通过有权访问的图书馆页面另行获取。
 
-本机同步依赖本地 Python 虚拟环境（`python -m venv .venv`、`.venv\Scripts\python -m pip install -r requirements.txt`）以及 Codex 捆绑 Node 运行时及 `@oai/artifact-tool`。GitHub 云端不能直接写本机 E 盘。电脑须开机、联网且 E 盘可用；错过同步的日报将在下次运行时补齐。Windows 计划任务仅负责本机同步，不改变 GitHub/企业微信到达时间。日志在 E 盘目录的 `本地同步日志_UTF8.txt`。
+本机同步依赖本地 Python 虚拟环境（`python -m venv .venv`、`.venv\Scripts\python -m pip install -r requirements.txt`）以及 Codex 捆绑 Node 运行时及 `@oai/artifact-tool`。GitHub 云端不能直接写本机 E 盘。电脑须开机、联网且 E 盘可用；错过同步的日报将在下次运行时补齐。Windows 计划任务仅负责本机同步，不改变 GitHub/企业微信到达时间。日志在程序目录的 `local-state/本地同步日志_UTF8.txt`，不写入用户的文献目录。

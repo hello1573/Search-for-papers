@@ -1,15 +1,24 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { FileBlob, SpreadsheetFile, Workbook } from "@oai/artifact-tool";
 
-const [sourcePath, outputPath] = process.argv.slice(2);
-if (!sourcePath || !outputPath) throw new Error("Usage: build_catalog.mjs rows.json catalog.xlsx");
+const [sourcePath, outputPath, stateDirectory] = process.argv.slice(2);
+if (!sourcePath || !outputPath) throw new Error("Usage: build_catalog.mjs rows.json catalog.xlsx [internal-directory]");
+const internalRoot = path.resolve(stateDirectory || path.join(path.dirname(fileURLToPath(import.meta.url)), "local-state"));
+const outputRoot = path.resolve(path.dirname(outputPath));
+const relative = path.relative(outputRoot, internalRoot);
+if (!relative || (!relative.startsWith(".." + path.sep) && relative !== ".." && !path.isAbsolute(relative))) {
+  throw new Error("Internal files must be outside the user's output directory");
+}
+await fs.mkdir(internalRoot, {recursive:true});
 const candidates = JSON.parse(await fs.readFile(sourcePath, "utf8"));
 const exists = await fs.stat(outputPath).then(() => true, () => false);
 const workbook = exists ? await SpreadsheetFile.importXlsx(await FileBlob.load(outputPath)) : Workbook.create();
 const sheet = exists ? workbook.worksheets.getItem("文献目录") : workbook.worksheets.add("文献目录");
-const indexPath = path.join(path.dirname(outputPath), ".paper_catalog_index.json");
-const savedIndex = await fs.readFile(indexPath, "utf8").then(JSON.parse, () => ({}));
+const indexPath = path.join(internalRoot, ".paper_catalog_index.json");
+const legacyIndex = path.join(outputRoot, ".paper_catalog_index.json");
+const savedIndex = await fs.readFile(indexPath, "utf8").then(JSON.parse, () => fs.readFile(legacyIndex, "utf8").then(JSON.parse, () => ({})));
 const headers = ["发表日期", "论文英文题名", "论文中文译名", "期刊/来源", "收录类型", "JCR分区", "中科院分区", "影响因子", "IF数据年份", "方向与交叉分类", "相关性", "收录/推送日期", "用户阅读状态", "备注", "本地全文路径"];
 const safeText = value => {
   if (typeof value === "number") return value;
@@ -103,7 +112,7 @@ const after = [finalHeaders, ...records];
 const changed = savedIndex.__format_version !== 3 || JSON.stringify(before) !== JSON.stringify(after);
 if (changed) {
   if (exists) {
-    const folder = path.join(path.dirname(outputPath), "备份");
+    const folder = path.join(internalRoot, "backups");
     await fs.mkdir(folder, {recursive:true});
     await fs.copyFile(outputPath, path.join(folder, `${path.basename(outputPath, ".xlsx")}_${new Date().toISOString().replace(/[:.]/g, "-")}.xlsx`));
   }
@@ -138,12 +147,15 @@ if (changed) {
   const file = await SpreadsheetFile.exportXlsx(workbook);
   await fs.mkdir(path.dirname(outputPath), {recursive:true});
   const temp = `${outputPath}.tmp.xlsx`;
-  await file.save(temp);
+  const stage = path.join(internalRoot, "catalog-stage.xlsx");
+  await file.save(stage);
+  await fs.copyFile(stage, temp);
   await fs.rename(temp,outputPath);
-  await fs.unlink(`${temp}.inspect.ndjson`).catch(() => {});
 }
 savedIndex.__format_version = 3;
-await fs.writeFile(indexPath, JSON.stringify(savedIndex,null,2), "utf8");
+const indexTemp = `${indexPath}.tmp`;
+await fs.writeFile(indexTemp, JSON.stringify(savedIndex,null,2), "utf8");
+await fs.rename(indexTemp, indexPath);
 if (process.env.PREVIEW_FILE) {
   const preview = await workbook.render({sheetName:"文献目录",range:process.env.PREVIEW_RANGE || "A1:I6",scale:1.3,format:"png"});
   await fs.writeFile(process.env.PREVIEW_FILE,new Uint8Array(await preview.arrayBuffer()));

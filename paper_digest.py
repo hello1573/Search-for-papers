@@ -218,6 +218,27 @@ CATEGORY_NAMES = {
 NOTE_FIELDS = ("title_zh", "background", "background_plain", "method", "method_plain", "innovation_overview", "innovation_plain", "results", "conclusion", "plain")
 SUMMARY_API_BASE_URL = "https://www.lwjcode.xyz/v1"
 SUMMARY_MODEL = "gpt-5.6-terra"
+RETRYABLE_HTTP_STATUS = {408, 429, 500, 502, 503, 504}
+
+
+def request_with_retry(send, attempts: int = 3):
+    for attempt in range(attempts):
+        response = None
+        try:
+            response = send()
+            response.raise_for_status()
+            return response
+        except requests.RequestException as exc:
+            retryable = isinstance(exc, (requests.ConnectionError, requests.Timeout)) or (
+                response is not None and response.status_code in RETRYABLE_HTTP_STATUS
+            )
+            if not retryable or attempt == attempts - 1:
+                raise
+            retry_after = response.headers.get("Retry-After", "") if response is not None else ""
+            delay = min(int(retry_after), 30) if retry_after.isdigit() else 2 ** (attempt + 1)
+            print(f"Transient request failure ({type(exc).__name__}); retry {attempt + 2}/{attempts} in {delay}s.", file=sys.stderr)
+            time.sleep(delay)
+    raise RuntimeError("Request attempts exhausted")
 
 
 def abstract_text(work: dict[str, Any]) -> str:
@@ -297,16 +318,11 @@ def search_openalex(
     mailto = session.headers.get("mailto")
     if mailto:
         params["mailto"] = mailto
-    for attempt in range(4):
-        response = session.get(OPENALEX_URL, params=params, timeout=30)
-        if response.status_code != 429:
-            response.raise_for_status()
-            return response.json().get("results", [])
-        if attempt < 3:
-            retry_after = response.headers.get("Retry-After")
-            delay = int(retry_after) if retry_after and retry_after.isdigit() else 3 * (attempt + 1)
-            time.sleep(min(delay, 30))
-    return []
+    response = request_with_retry(lambda: session.get(OPENALEX_URL, params=params, timeout=30))
+    results = response.json().get("results")
+    if not isinstance(results, list):
+        raise ValueError("OpenAlex response did not contain a results array")
+    return results
 
 
 def normalize_title(title: str) -> str:
@@ -406,7 +422,7 @@ def select_papers(papers: list[dict[str, Any]], excluded: set[str]) -> list[dict
     return selected
 
 
-def collect_papers(excluded: set[str]) -> list[dict[str, Any]]:
+def collect_papers(excluded: set[str], diagnostics: dict | None = None) -> list[dict[str, Any]]:
     session = requests.Session()
     session.headers.update(
         {
@@ -420,10 +436,18 @@ def collect_papers(excluded: set[str]) -> list[dict[str, Any]]:
 
     recent = (datetime.now(timezone.utc).date() - timedelta(days=730)).isoformat()
     papers: dict[str, dict[str, Any]] = {}
+    coverage = {"successful_queries": 0, "failed_queries": []}
     for query in QUERIES:
-        results = search_openalex(session, query, recent)
-        # Search older work separately so unseen papers are not hidden by the newest page.
-        results += search_openalex(session, query, "2018-01-01", (datetime.fromisoformat(recent).date() - timedelta(days=1)).isoformat())
+        results = []
+        # One unavailable query must not discard other successfully retrieved papers.
+        windows = [(recent, None), ("2018-01-01", (datetime.fromisoformat(recent).date() - timedelta(days=1)).isoformat())]
+        for start, end in windows:
+            try:
+                results.extend(search_openalex(session, query, start, end))
+                coverage["successful_queries"] += 1
+            except (requests.RequestException, ValueError) as exc:
+                coverage["failed_queries"].append({"query": query, "from": start, "to": end, "error": type(exc).__name__})
+                print(f"OpenAlex query unavailable ({type(exc).__name__}); continuing other searches.", file=sys.stderr)
         for rank, work in enumerate(results):
             work_id = work.get("id")
             if not work_id or not work.get("title"):
@@ -436,6 +460,11 @@ def collect_papers(excluded: set[str]) -> list[dict[str, Any]]:
                 work["_score"] = score
                 papers[work_id] = work
 
+    session.close()
+    if diagnostics is not None:
+        diagnostics.update(coverage)
+    if not coverage["successful_queries"]:
+        raise RuntimeError("All OpenAlex queries failed; this is not a no-new-papers result. No digest was published.")
     return select_papers(list(papers.values()), excluded)
 
 
@@ -691,7 +720,7 @@ def summarize_from_abstract(work: dict[str, Any]) -> dict[str, Any]:
     }
     instructions = Path(__file__).with_name("summary_schema_prompt.txt").read_text(encoding="utf-8")
     try:
-        response = requests.post(
+        response = request_with_retry(lambda: requests.post(
             base + "/chat/completions",
             headers={"Authorization": f"Bearer {key}"},
             json={
@@ -704,8 +733,7 @@ def summarize_from_abstract(work: dict[str, Any]) -> dict[str, Any]:
                 "max_tokens": 6500,
             },
             timeout=150,
-        )
-        response.raise_for_status()
+        ))
         content = response.json()["choices"][0]["message"]["content"].strip()
         if content.startswith("```"):
             content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content).strip()
@@ -766,8 +794,24 @@ def summarize_from_abstract(work: dict[str, Any]) -> dict[str, Any]:
     return verified
 
 
+def valid_chinese_text(text: Any) -> bool:
+    if not isinstance(text, str) or re.search(r"\ufffd|[\ud800-\udfff]|\\u[0-9a-fA-F]{4}|锟斤拷", text):
+        return False
+    chinese = len(re.findall(r"[\u3400-\u9fff]", text))
+    letters = sum(char.isalpha() for char in text)
+    return chinese >= 2 and chinese >= letters * 0.25
+
+
 def summary_complete(summary: dict) -> bool:
-    return all(summary.get(field) for field in NOTE_FIELDS) and not summary["background"].startswith("摘要未说明") and not summary["title_zh"].startswith("摘要未说明")
+    if not all(valid_chinese_text(summary.get(field)) for field in NOTE_FIELDS):
+        return False
+    entries = summary.get("innovations", [])
+    if not isinstance(entries, list) or any(
+        not isinstance(entry, dict) or not all(valid_chinese_text(entry.get(field)) for field in ("claim", "analysis"))
+        for entry in entries
+    ):
+        return False
+    return not summary["background"].startswith("摘要未说明") and not summary["title_zh"].startswith("摘要未说明")
 
 
 def note_section(work: dict[str, Any], field: str, fallback: str) -> str:
@@ -929,11 +973,12 @@ def main() -> None:
     seen = load_seen(args.state)
     known = load_known(args.known)
     known.update(load_catalog_index(args.catalog_index))
-    papers = collect_papers(seen | known)
+    search_diagnostics = {}
+    papers = collect_papers(seen | known, search_diagnostics)
     for paper in papers:
         paper["_summary"] = summarize_from_abstract(paper)
         if not summary_complete(paper["_summary"]) and not args.allow_metadata_only:
-            raise RuntimeError("Chinese summary missing or failed evidence checks; no digest or sent-history update was published.")
+            raise RuntimeError("Chinese summary missing or failed evidence/Chinese-text checks; no digest or sent-history update was published.")
         source = ((paper.get("primary_location") or {}).get("source") or {})
         paper["_metrics"] = journal_metrics.lookup(source.get("display_name"), source.get("type"))
         if source.get("type") == "journal" and journal_metrics.needs_refresh(paper["_metrics"]):
@@ -948,6 +993,7 @@ def main() -> None:
         report = {
             "schema_version": 1,
             "date": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d"),
+            "search_coverage": search_diagnostics,
             "papers": [report_record(paper) for paper in papers],
         }
         with open(args.report_json, "w", encoding="utf-8") as target:

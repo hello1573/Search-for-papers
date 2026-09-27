@@ -1,9 +1,12 @@
 name: Daily sparse terrain paper digest
 
 on:
+  push:
+    branches: [codex/daily-digest-dispatch]
   schedule:
-    # UTC 02:00 is 10:00 in Asia/Shanghai; GitHub may queue scheduled runs.
-    - cron: "0 2 * * *"
+    # Prepare off-peak at 09:37 Beijing; publication is gated until 10:00.
+    # A local 09:30 Git push is the primary trigger, not a punctuality guarantee.
+    - cron: "37 1 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -22,9 +25,17 @@ permissions:
 jobs:
   digest:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: utf-8
+      LANG: C.UTF-8
+      TZ: Asia/Shanghai
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -47,6 +58,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           DRY_RUN: ${{ inputs.dry_run || false }}
         run: |
+          today="$(date +%Y-%m-%d)"
+          if [ "$DRY_RUN" != "true" ] && [ -e "reports/daily/$today.json" ]; then
+            echo "Today's digest is already archived; skipping before search and summary calls."
+            exit 0
+          fi
           python paper_digest.py \
             --output digest.md \
             --report-json digest.json \
@@ -58,6 +74,7 @@ jobs:
             cat digest.md >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
+          python delivery_schedule.py --report digest.json
           report_date="$(python -c 'import json; print(json.load(open("digest.json", encoding="utf-8"))["date"])')"
           mkdir -p reports/daily
           if [ -e "reports/daily/$report_date.json" ]; then

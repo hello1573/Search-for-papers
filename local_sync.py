@@ -7,6 +7,7 @@ import hashlib
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -248,8 +249,10 @@ def normalized_key(paper: dict) -> str:
     return doi or title
 
 
-def rows_from_ledger(root: Path) -> list[dict]:
-    path = root / "文献收录与阅读台账.json"
+def rows_from_ledger(root: Path, internal_root: Path | None = None) -> list[dict]:
+    path = (internal_root or root) / "文献收录与阅读台账.json"
+    if not path.exists() and internal_root is not None:
+        path = root / "文献收录与阅读台账.json"
     if not path.exists():
         return []
     data = json.loads(path.read_text(encoding="utf-8"))
@@ -292,9 +295,51 @@ def rows_from_reports(reports: list[tuple[dict, dict[str, str]]]) -> list[dict]:
     return rows
 
 
-def run(repo: Path, root: Path, node: Path, builder: Path) -> None:
+def write_json(path: Path, value: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temp = path.with_suffix(path.suffix + ".tmp")
+    temp.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(temp, path)
+
+
+def seed_internal_records(root: Path, internal_root: Path) -> None:
+    for name in ("文献收录与阅读台账.json", ".paper_catalog_index.json", ".paper_sync_state.json"):
+        source, target = root / name, internal_root / name
+        if source.is_file() and not target.exists():
+            shutil.copy2(source, target)
+
+
+def update_docx(markdown: str, output: Path, day: str, cache: dict, internal_root: Path) -> None:
+    signature = hashlib.sha256(markdown.encode("utf-8")).hexdigest()
+    previous = cache.get(day)
+    actual_hash = hashlib.sha256(output.read_bytes()).hexdigest() if output.is_file() else None
+    # Preserve possible manual edits when adopting reports made before migration.
+    if actual_hash and previous is None:
+        cache[day] = {"source_sha256": signature, "docx_sha256": actual_hash}
+        return
+    if actual_hash and actual_hash != previous.get("docx_sha256"):
+        print(f"保留人工修改的Word，未覆盖：{output.name}", file=sys.stderr)
+        return
+    if actual_hash and previous.get("source_sha256") == signature:
+        return
+    if actual_hash:
+        backup = internal_root / "backups"
+        backup.mkdir(exist_ok=True)
+        shutil.copy2(output, backup / (output.stem + "_" + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".docx"))
+    build_docx(markdown, output)
+    cache[day] = {"source_sha256": signature, "docx_sha256": hashlib.sha256(output.read_bytes()).hexdigest()}
+
+
+def run(repo: Path, root: Path, node: Path, builder: Path, internal_root: Path | None = None) -> None:
+    internal_root = (internal_root or repo / "local-state").resolve()
+    if internal_root == root.resolve() or root.resolve() in internal_root.parents:
+        raise ValueError("Internal state must be outside the user's output directory")
     root.mkdir(parents=True, exist_ok=True)
-    state_path = root / ".paper_sync_state.json"
+    internal_root.mkdir(parents=True, exist_ok=True)
+    seed_internal_records(root, internal_root)
+    state_path = internal_root / ".paper_sync_state.json"
+    cache_path = internal_root / "docx_sources.json"
+    cache = json.loads(cache_path.read_text(encoding="utf-8")) if cache_path.exists() else {}
     attempts = json.loads(state_path.read_text(encoding="utf-8")) if state_path.exists() else {}
     today = datetime.now().date().isoformat()
     reports = []
@@ -306,7 +351,6 @@ def run(repo: Path, root: Path, node: Path, builder: Path) -> None:
         if path != f"reports/daily/{day}.json":
             raise ValueError(f"Report date does not match filename: {path}")
         markdown = git(repo, "show", f"origin/main:reports/daily/{day}.md")
-        markdown_path = root / f"{day}_稀疏地形重建文献简报.md"
         docx_path = root / f"{day}_稀疏地形重建文献简报.docx"
         pdf_folder = root / "论文" / day
         pdf_folder.mkdir(parents=True, exist_ok=True)
@@ -323,30 +367,21 @@ def run(repo: Path, root: Path, node: Path, builder: Path) -> None:
                 attempts[day + ":" + key] = today
         if all(p.get("format_version") == 2 for p in report["papers"]) and report["papers"]:
             markdown = render_markdown([work_from_record(p, downloads.get(normalized_key(p))) for p in report["papers"]], day)
-        previous = markdown_path.read_text(encoding="utf-8") if markdown_path.exists() else None
-        if previous != markdown or not docx_path.exists():
-            if docx_path.exists() and previous is not None:
-                backup = root / "备份"
-                backup.mkdir(exist_ok=True)
-                import shutil
-                shutil.copy2(docx_path, backup / (docx_path.stem + "_" + datetime.now().strftime("%Y%m%d_%H%M%S_%f") + ".docx"))
-            markdown_path.write_text(markdown, encoding="utf-8")
-            build_docx(markdown, docx_path)
+        update_docx(markdown, docx_path, day, cache, internal_root)
+        write_json(cache_path, cache)
         reports.append((report, downloads))
 
-    rows = rows_from_ledger(root) + rows_from_reports(reports)
+    rows = rows_from_ledger(root, internal_root) + rows_from_reports(reports)
     # The workbook builder appends missing records, preserving existing user edits.
     with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", suffix=".json", delete=False) as source:
         json.dump(rows, source, ensure_ascii=False)
         input_path = Path(source.name)
     try:
         workbook_path = root / "稀疏地形重建文献总表.xlsx"
-        subprocess.run([str(node), str(builder), str(input_path), str(workbook_path)], check=True, timeout=180)
+        subprocess.run([str(node), str(builder), str(input_path), str(workbook_path), str(internal_root)], check=True, timeout=180)
     finally:
         input_path.unlink(missing_ok=True)
-    temp_state = state_path.with_suffix(".tmp")
-    temp_state.write_text(json.dumps(attempts, ensure_ascii=False, indent=2), encoding="utf-8")
-    os.replace(temp_state, state_path)
+    write_json(state_path, attempts)
     print(f"已同步 {len(reports)} 期日报，文献目录 {len(rows)} 条候选记录。")
 
 
@@ -356,8 +391,9 @@ def main() -> None:
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     parser.add_argument("--node", type=Path, required=True)
     parser.add_argument("--builder", type=Path, default=Path(__file__).with_name("build_catalog.mjs"))
+    parser.add_argument("--internal-root", type=Path, help="Private state, logs and backup directory outside the output folder")
     args = parser.parse_args()
-    run(args.repo, args.root, args.node, args.builder)
+    run(args.repo, args.root, args.node, args.builder, args.internal_root)
 
 
 if __name__ == "__main__":

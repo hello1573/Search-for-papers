@@ -64,6 +64,58 @@ class LocalSyncTests(unittest.TestCase):
         self.assertEqual(rows[0]['date'], '2022-01-02')
         self.assertEqual(rows[0]['collected'], '2026-09-26')
 
+    def test_word_updates_keep_backups_internal_and_preserve_manual_edits(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'library'
+            internal = Path(directory) / 'private'
+            root.mkdir()
+            internal.mkdir()
+            output = root / 'brief.docx'
+            cache = {}
+            with patch.object(local_sync, 'build_docx', side_effect=lambda text, target: target.write_bytes(text.encode('utf-8'))) as builder:
+                local_sync.update_docx('First version', output, '2026-09-26', cache, internal)
+                local_sync.update_docx('First version', output, '2026-09-26', cache, internal)
+                self.assertEqual(builder.call_count, 1)
+                local_sync.update_docx('Second version', output, '2026-09-26', cache, internal)
+                self.assertEqual(builder.call_count, 2)
+                self.assertEqual(len(list((internal / 'backups').glob('*.docx'))), 1)
+                output.write_bytes(b'User edits')
+                local_sync.update_docx('Third version', output, '2026-09-26', cache, internal)
+                self.assertEqual(builder.call_count, 2)
+                self.assertEqual(output.read_bytes(), b'User edits')
+            self.assertEqual([p.name for p in root.iterdir()], ['brief.docx'])
+
+    def test_existing_word_is_adopted_without_rewriting_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / 'brief.docx'
+            output.write_bytes(b'Existing report with user annotations')
+            cache = {}
+            with patch.object(local_sync, 'build_docx') as builder:
+                local_sync.update_docx('Archived source', output, '2026-09-26', cache, Path(directory))
+            builder.assert_not_called()
+            self.assertIn('2026-09-26', cache)
+
+    def test_internal_ledger_is_seeded_once_without_changing_legacy_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'library'
+            internal = Path(directory) / 'private'
+            root.mkdir()
+            internal.mkdir()
+            old = root / '文献收录与阅读台账.json'
+            old.write_text('{"records": []}', encoding='utf-8')
+            local_sync.seed_internal_records(root, internal)
+            self.assertEqual((internal / old.name).read_bytes(), old.read_bytes())
+            (internal / old.name).write_text('{"records": [], "marker": "current"}', encoding='utf-8')
+            local_sync.seed_internal_records(root, internal)
+            self.assertEqual(json.loads((internal / old.name).read_text('utf-8'))['marker'], 'current')
+            self.assertNotIn('marker', json.loads(old.read_text('utf-8')))
+
+    def test_internal_state_inside_output_directory_is_rejected(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            with self.assertRaisesRegex(ValueError, 'outside'):
+                local_sync.run(root, root, root / 'node', root / 'builder', root / 'private')
+
     @unittest.skipUnless(os.environ.get('TEST_NODE'), 'Requires artifact-tool Node runtime')
     def test_archived_digest_creates_matching_word_excel_and_open_pdf(self):
         report = {'schema_version': 1, 'date': '2026-09-26', 'papers': [{
@@ -82,15 +134,28 @@ class LocalSyncTests(unittest.TestCase):
             return json.dumps(report) if args[-1].endswith('.json') else markdown
 
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
+            repo = Path(directory) / 'repo'
+            root = Path(directory) / 'library'
+            repo.mkdir()
             with patch.object(local_sync, 'report_paths', return_value=['reports/daily/2026-09-26.json']), \
                  patch.object(local_sync, 'git', side_effect=source), \
                  patch.object(local_sync, 'urlopen', side_effect=lambda *a, **kw: Response(b'%PDF-1.4\n' + b'x' * 2048 + b'\n%%EOF')):
                 for _ in range(2):
-                    local_sync.run(root, root, Path(os.environ['TEST_NODE']), Path(local_sync.__file__).with_name('build_catalog.mjs'))
+                    local_sync.run(repo, root, Path(os.environ['TEST_NODE']), Path(local_sync.__file__).with_name('build_catalog.mjs'))
             self.assertTrue((root / '2026-09-26_稀疏地形重建文献简报.docx').exists())
             self.assertTrue((root / '稀疏地形重建文献总表.xlsx').exists())
             self.assertTrue((root / '论文' / '2026-09-26' / 'Sparse DEM terrain reconstruction.pdf').exists())
+            self.assertEqual({p.name for p in root.iterdir()}, {'2026-09-26_稀疏地形重建文献简报.docx', '稀疏地形重建文献总表.xlsx', '论文'})
+            self.assertTrue((repo / 'local-state' / '.paper_sync_state.json').exists())
+            self.assertTrue((repo / 'local-state' / '.paper_catalog_index.json').exists())
+            report['papers'][0]['title_zh'] = '稀疏地形重建'
+            local_sync.write_json(repo / 'local-state' / '.paper_sync_state.json', {})
+            rows = local_sync.rows_from_reports([(report, {})])
+            source_path = repo / 'rows.json'
+            source_path.write_text(json.dumps(rows), encoding='utf-8')
+            local_sync.subprocess.run([os.environ['TEST_NODE'], str(Path(local_sync.__file__).with_name('build_catalog.mjs')), str(source_path), str(root / '稀疏地形重建文献总表.xlsx'), str(repo / 'local-state')], check=True, timeout=180)
+            self.assertTrue(list((repo / 'local-state' / 'backups').glob('*.xlsx')))
+            self.assertEqual({p.name for p in root.iterdir()}, {'2026-09-26_稀疏地形重建文献简报.docx', '稀疏地形重建文献总表.xlsx', '论文'})
 
 
 if __name__ == '__main__':
