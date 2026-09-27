@@ -2,17 +2,22 @@ name: Daily sparse terrain paper digest
 
 on:
   push:
-    branches: [codex/daily-digest-dispatch]
+    branches: [main]
+    paths:
+      - "reports/prepared/*.json"
+      - ".github/workflows/daily-paper-digest.yml"
+      - "codex_delivery.py"
+      - "submit_codex_report.py"
+      - "tests/test_codex_delivery.py"
   schedule:
-    # Prepare off-peak at 09:37 Beijing; publication is gated until 10:00.
-    # A local 09:30 Git push is the primary trigger, not a punctuality guarantee.
-    - cron: "37 1 * * *"
+    # Backup check only; Codex supplies Chinese notes, GitHub never calls an AI API.
+    - cron: "7 2 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Generate and verify without publishing or updating sent history"
+        description: "Validate Codex notes without publishing or updating sent history"
         type: boolean
-        default: false
+        default: true
 
 concurrency:
   group: daily-paper-digest
@@ -45,67 +50,17 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
-      - name: Verify exclusions and newest-first selection
+      - name: Verify notes, exclusions and publication safety
         run: python -m unittest discover -s tests -v
 
-      - name: Search and publish digest
+      - name: Publish Codex-authored Chinese notes
         env:
-          OPENALEX_MAILTO: ${{ secrets.OPENALEX_MAILTO }}
-          SUMMARY_API_KEY: ${{ secrets.SUMMARY_API_KEY }}
-          SUMMARY_API_BASE_URL: ${{ vars.SUMMARY_API_BASE_URL }}
-          SUMMARY_MODEL: ${{ vars.SUMMARY_MODEL }}
           DIGEST_MENTION: "@${{ github.repository_owner }}"
           GH_TOKEN: ${{ github.token }}
           DRY_RUN: ${{ inputs.dry_run || false }}
         run: |
-          today="$(date +%Y-%m-%d)"
-          if [ "$DRY_RUN" != "true" ] && [ -e "reports/daily/$today.json" ]; then
-            echo "Today's digest is already archived; skipping before search and summary calls."
-            exit 0
-          fi
-          python paper_digest.py \
-            --output digest.md \
-            --report-json digest.json \
-            --state seen_papers.json \
-            --count-output digest_count.txt
-          count="$(cat digest_count.txt)"
           if [ "$DRY_RUN" = "true" ]; then
-            echo "Dry run: generated $count papers; no notification or history update."
-            cat digest.md >> "$GITHUB_STEP_SUMMARY"
-            exit 0
-          fi
-          python delivery_schedule.py --report digest.json
-          report_date="$(python -c 'import json; print(json.load(open("digest.json", encoding="utf-8"))["date"])')"
-          mkdir -p reports/daily
-          if [ -e "reports/daily/$report_date.json" ]; then
-            echo "今天的日报已归档，跳过重复发布。"
-            exit 0
-          fi
-          cp digest.md "reports/daily/$report_date.md"
-          cp digest.json "reports/daily/$report_date.json"
-          if [ "$count" -gt 0 ]; then
-            issue_number="$(gh issue list \
-              --repo "$GITHUB_REPOSITORY" \
-              --state open \
-              --limit 20 \
-              --json number,title \
-              --jq '.[] | select(.title == "[论文日报] 稀疏地形重建文章日报") | .number' \
-              | head -n 1)"
-            if [ -n "$issue_number" ]; then
-              gh issue comment "$issue_number" \
-                --repo "$GITHUB_REPOSITORY" \
-                --body-file digest.md
-            else
-              gh issue create \
-                --repo "$GITHUB_REPOSITORY" \
-                --title "[论文日报] 稀疏地形重建文章日报" \
-                --body-file digest.md
-            fi
+            python codex_delivery.py --dry-run
           else
-            echo "没有发现新论文，不发送通知；归档空日报。"
+            python codex_delivery.py
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add seen_papers.json reports/daily
-          git commit -m "Archive paper digest for $report_date"
-          git push

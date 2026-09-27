@@ -1,6 +1,6 @@
 # 稀疏地形重建文章日报
 
-这个仓库以北京时间10:00发布日报为目标。本机计划任务09:30先触发准备，GitHub定时09:37作备用，生成完毕后不早于10:00发布。电脑需开机联网并保有GitHub写入权限；两种云端触发均可能排队，外部微信转发也可能延迟，不能保证10:00整送达。
+这个仓库以北京时间10:00发布日报为目标。Codex自动化09:30先检索和撰写中文，提交成稿后GitHub不早于10:00发布，10:07定时只作补发布检查。电脑、Codex和网络需可用，并保有GitHub写入权限。云端发布及外部微信转发可能延迟，不保证10:00整送达。GitHub不调用AI接口、不要求`SUMMARY_API_KEY`；Codex使用用户当前模型连接，模型用量沿用现有配置，不承诺免费。
 
 - 稀疏地形重建
 - 稀疏 DEM 重建与修复
@@ -9,7 +9,7 @@
 - 点云高程补全
 - 遥感 DEM 缺失区域修复
 
-脚本会筛选最多 8 篇高相关结果，优先最新发表；近期期刊论文不足时，也检索 2018 年以来尚未收录的相关成果。每篇标明“近30天发表”或“历史未收录补充”。论文必须同时涉及地形/高程等核心对象以及重建、补全、修复或插值任务；不靠低相关内容凑数量。已发送论文记录在 `seen_papers.json`，后续运行不重复推送。日报发布到固定 Issue 并 @ 仓库所有者，GitHub 依通知设置发送邮件。本仓库没有直接连接企业微信机器人；企业微信实际到达时间还受仓库外的转发链路影响。
+Codex每天核验7–8篇高相关结果，依次检索近7天、30天和365天；不足时补充未收录的历史研究，仍不足时据实说明，不用弱相关内容凑数量。论文必须涉及地形/高程核心对象及重建、补全、修复或插值任务，并区分近期发表与历史补充。已发送论文记录在`seen_papers.json`，发布前再次排除已有题名和标识。日报发布到固定Issue并@仓库所有者，GitHub依通知设置发送邮件。本仓库没有直接连接企业微信机器人；企业微信实际到达时间和乱码仍需检查仓库外的转发链路。
 
 ## 已有文献排除
 
@@ -25,38 +25,33 @@
 
 `journal_metrics.py` 主动查询期刊指标，`journal_metrics.json` 保存有来源和查询日期的已核验值。JCR 标注学科及年份或出版方当前显示口径，不以 CiteScore 代替，也不只挑多学科最高分区。中科院使用2025版；IF区分数据年度和发布年度，例如2025年度数据、2026年发布。查询不到某个字段时仅说明该字段的具体限制，不能以统一“待审核”代替查询，也不能猜测。会议、预印本的期刊分区和IF不适用。云端中文笔记仍以摘要为依据，**不是全文精读**；取得PDF不等于已核读全文。
 
-摘要整理步骤把公开题名和摘要交给配置的 OpenAI 兼容接口，生成中文段落，每段返回可在摘要中逐字找到的证据。该校验不能替代全文阅读，也不能保证翻译绝对无误。缺API密钥、关键中文部分缺失或未通过证据校验时，运行报错并停止发布，不再把英文模板当成已完成日报。仅诊断可显式使用 `--allow-metadata-only`，不要将诊断输出发布给手机。
+中文报告由当前Codex会话依据实际核验的摘要或全文撰写，不额外请求中转API。`codex_delivery.py`仅验证和发布成稿：检查中文字段、两类来源核验、重复记录及当天日期，缺少成稿时安静退出，不发占位内容。事实和证据仍需Codex认真核查，程序校验不能替代阅读。旧`paper_digest.py`的模型调用功能仅保留为独立诊断工具，不在每日GitHub工作流中执行。
 
-发布检查同时拒绝英文模板、损坏字符、未解码的Unicode转义和不合格的中文创新点；运行统一使用UTF-8。OpenAlex及中文接口遇到429、503或连接超时会有限重试，鉴权失败不反复重试。单条检索失败会继续其余检索并内部记录覆盖范围；全部检索失败必须报错，不能伪装成当天没有新论文。GitHub原文正常而微信乱码时，仍需检查仓库外的邮件或机器人转发，不能只靠这里的UTF-8设置判断已修复。
+发布检查拒绝英文模板、损坏字符、未解码的Unicode转义和不合格的中文创新点，运行统一使用UTF-8。读取GitHub接口会有限重试；创建Issue评论不盲目重试，超时后先核查是否已发布，防止重复手机通知。公开检索出现网络故障时继续可用来源，并如实说明覆盖范围，不能伪装成当天没有新论文。GitHub原文正常而微信乱码时，仍需检查外部邮件或机器人转发。
 
 可在手动运行时勾选 `dry_run`，仅生成预览和运行验证，不发布 Issue 通知或更新推送记录。正式运行将**同一次筛选**的推送正文及结构化清单保存到 `reports/daily/YYYY-MM-DD.md/.json`，供本机同步，不把 PDF 或账号信息提交到仓库。
 
-## 配置 GitHub Secrets
+## 不需要AI密钥
 
-在仓库的 **Settings -> Secrets and variables -> Actions** 中配置：
-
-1. `OPENALEX_MAILTO`：用于 OpenAlex 礼貌池的邮箱，可选。
-2. `SUMMARY_API_KEY`：中文自动整理所必需的专用密钥；应在 GitHub Actions **Secret** 中设置，不要在聊天、代码或 Issue 中提供。每天最多对入选的8篇各调用一次，可能产生模型费用。
-
-可选的 GitHub Actions **Variables**：`SUMMARY_API_BASE_URL`（默认 `https://www.lwjcode.xyz/v1`）和 `SUMMARY_MODEL`（默认 `gpt-5.6-terra`）。仅接受HTTPS。接口不可用时停止发布。不要把学校账号密码或图书馆Cookie配置到本仓库。
+每日发布不需要设置`SUMMARY_API_KEY`、`SUMMARY_API_BASE_URL`或`SUMMARY_MODEL`，也不需要读取用户当前Codex的密钥。GitHub使用Actions自动提供的临时`github.token`发布；本机仅使用现有Git Credential Manager提交脱敏成稿。不要把学校密码、Cookie或模型密钥放入代码、聊天或公开仓库。
 
 日报正文通过 GitHub 通知邮件发送，不需要 PushPlus Token 或 SMTP 密码。
 
-## 本机早间触发
+## Codex成稿提交
 
-Windows任务`SparseTerrainPaperMorningDispatch`每天09:30运行`dispatch_daily.ps1`，登录后可补触发，09:30前登录不会提前请求。它使用已有Git Credential Manager登录，不读取或导出API Token。`dispatch_daily.py`只在专用分支`codex/daily-digest-dispatch`创建同一天的触发提交，不切换分支、不提交工作区文件、不覆盖本地修改。该分支触发的工作流明确检出`main`，与备用定时运行共用并发组；归档存在时，在检索和模型调用前跳过，避免重复通知和费用。
+Codex按照`reading_prompt.md`撰写工作数据至`local-state/prepared/YYYY-MM-DD.json`，保留两类来源的实际核验信息。先运行`python submit_codex_report.py --draft local-state/prepared/YYYY-MM-DD.json --dry-run`，通过后去掉`--dry-run`提交。`public_report`只输出公开论文元数据和中文成稿，去除原摘要、核验摘录、私有来源记录及含Token的PDF地址。指标值和年份可随成稿发布，指标来源留本地。原始工作数据、PDF、密钥都不会由提交器上传。
 
-调度日志及日期去重状态仅放在`local-state`，不放E盘。Git push成功只代表已提交触发请求，不代表任务或手机发送成功。可以运行`python dispatch_daily.py --dry-run`检查远端读取，不创建提交、推送或发送消息。每日09:30的电脑必须开机联网；未开机时云端定时仍作备用，但可能延迟。若需绕过GitHub邮件链路直发企业微信，需要另行确定接收方式和授权，当前没有假设或启用直接机器人发送。
+提交器使用独立Git索引和`commit-tree`，只提交`reports/prepared/YYYY-MM-DD.json`，不切换工作区、不覆盖或提交用户修改。成稿提交到`main`自动触发发布，10:00前准备完成则等待，晚于10:00据实延后。旧`SparseTerrainPaperMorningDispatch`任务不再承担生成，专用触发分支也不再启动工作流。后台资料只放`local-state`；Git push成功只代表已提交，不代表手机已收到。若要企业微信直发，需要另行确认接收方式和授权。
 
 ## 手动测试
 
-打开仓库的 **Actions -> Daily sparse terrain paper digest -> Run workflow**，可以立即运行一次。运行成功后，日报会出现在固定的 `[论文日报] 稀疏地形重建文章日报` Issue 中，并触发 GitHub 邮件通知。
+打开仓库的**Actions -> Daily sparse terrain paper digest -> Run workflow**可验证当天Codex成稿，`dry_run`默认开启，不发送消息或更新记录。没有当天成稿时不生成、不发占位内容；正式发布需有通过检查的成稿，且取消`dry_run`。同一天已有相同评论时只补归档，不重复通知。
 
 本地运行：
 
 ```powershell
 python -m pip install -r requirements.txt
-python paper_digest.py --output digest.md --state seen_papers.json
+python codex_delivery.py --dry-run
 ```
 
 ## 本机归档

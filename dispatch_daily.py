@@ -11,8 +11,8 @@ BEIJING = timezone(timedelta(hours=8))
 SIGNAL_BRANCH = "codex/daily-digest-dispatch"
 
 
-def git(repo, *args, input_text=None, optional=False):
-    env = {**os.environ, "GIT_TERMINAL_PROMPT": "0", "GCM_INTERACTIVE": "never"}
+def git(repo, *args, input_text=None, optional=False, extra_env=None):
+    env = {**os.environ, "GIT_TERMINAL_PROMPT": "0", "GCM_INTERACTIVE": "never", **(extra_env or {})}
     tls_options = ["-c", "http.sslBackend=schannel"] if os.name == "nt" else []
     result = subprocess.run(
         ["git", *tls_options, "-c", "http.connectTimeout=15", "-c", "http.lowSpeedLimit=100", "-c", "http.lowSpeedTime=30", *args],

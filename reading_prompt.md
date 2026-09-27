@@ -57,3 +57,17 @@
 2026年9月27日起，用户目录只交付每日一份 `YYYY-MM-DD_稀疏地形重建文献简报.docx`，并持续更新同一个 `稀疏地形重建文献总表.xlsx`。Excel本身就是累计文献清单，不再另建清单文件。不得向用户目录额外输出 `.md`、`.json`、`.txt`、单独的Word台账、样稿、提示词文档、排版预览、核验附件或备份副本。正文可在内存中使用Markdown组织，但不另存为用户文件；新增全文细读整合进对应日报，不另建分析Word。
 
 去重台账、来源证据、日志、工作缓存及恢复备份统一保存在程序工作目录 `C:/Users/李先生/Documents/ChatGPT/稀疏地形重建/paper-sync/local-state`，不要提交到GitHub。持久台账使用该目录的 `文献收录与阅读台账.json`；核验资料使用 `verification/YYYY-MM-DD`。首次切换先读取并保留已有台账和人工修改；旧目录只作为历史回读，不继续追加内部文件。历史文件不擅自删除或移动。此前要求的高相关论文合法PDF下载仍放在独立的 `论文/YYYY-MM-DD` 子目录，PDF不是额外生成的阅读笔记，已有PDF不改动。
+
+## Codex生成与GitHub发布
+
+用户于2026年9月27日选择使用当前Codex生成中文，不向GitHub填写`SUMMARY_API_KEY`。自动化使用现有Codex模型连接，不读取、索取或导出当前连接的密钥，也不另外调用中转API。现有Codex连接所产生的模型用量仍按其原配置计算，不承诺免费。GitHub只校验和发布已生成的成稿，不能执行`paper_digest.py`主入口来请求中文模型，也不能因缺少AI密钥中断公开检索。
+
+北京时间09:30开始准备，成稿提交后由GitHub等待至10:00起发布。超过10:00完成就据实延后，不回填成准点送达。电脑、Codex及网络需保持可用。GitHub通知之外的微信转发尚未验证，不能声称企业微信直发或手机已收到。
+
+成稿工作数据只写`paper-sync/local-state/prepared/YYYY-MM-DD.json`，结构为`schema_version: 1`、`date`和`papers`数组。每篇提供英文`title`、`authors`、`publication_date`、`journal`、`source_type`、中文`categories`、`direction`、`relevance`、`relevance_reason`、真实`reading_scope`、`discovery_type`、已核验`journal_metrics`及`summary`。`summary`的字符串字段为`title_zh`、`background`、`background_plain`、`method`、`method_plain`、`innovation_overview`、`innovation_plain`、`results`、`conclusion`、`plain`；`innovations`数组每项包含中文`claim`和`analysis`。这些是当前Codex依据真实材料撰写的内容，不是另一次API调用。
+
+每篇私有数据还需`verified_sources`数组，列出实际核对过的来源`url`、来源类型`kind`及当天`checked_at`。类型可用`publisher`、`crossref`、`openalex`、`preprint`、`repository`，至少两种；DOI解析跳转本身不算第二类证据。原摘要、摘录、期刊来源和核验解释保留本地，不用假的来源或数字通过检查。开放PDF地址可填`open_access_pdf_urls`，只用公开HTTPS地址，不能包含学校凭据或临时访问Token。
+
+先执行`.venv/Scripts/python.exe submit_codex_report.py --draft local-state/prepared/YYYY-MM-DD.json --dry-run`。验证通过且确有新论文后，以同一路径去掉`--dry-run`提交。用户已授权把公开论文的中文成稿发到`hello1573/Search-for-papers`，日常仅用该脚本提交脱敏成稿，不修改程序、不提交整个工作区，不上传原始核验资料、PDF或账号信息。脚本使用已有Git凭据及隔离索引，不要求用户发Token。提交成功只记录已提交，GitHub实际发布确认后才记为已推送；用户已读状态不自动改变。
+
+GitHub发布脚本为`codex_delivery.py`，使用Actions临时GitHub凭据，不使用任何AI API密钥。没有当天成稿时安静退出，不发布英文占位内容；校验失败不得补造内容。云端把同一份成稿归档到`reports/daily`后，本机`sync_local.ps1`负责更新每日Word和累计Excel。可在确认归档后调用本机同步，不必反复生成独立本地Markdown。原有本机同步任务10:15开始，并在其后每小时补同步一次。若需要即时读取PDF和补充全文分析，仍依前述来源、阅读范围和用户文件限制执行；不得以仅完成GitHub上传当作手机送达或全文已阅读。
