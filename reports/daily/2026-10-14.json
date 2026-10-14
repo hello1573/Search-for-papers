@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "producer": "codex",
+  "date": "2026-10-14",
+  "papers": [
+    {
+      "id": "https://openalex.org/W7220844464",
+      "title": "GGFA-SwinIR: A gradient-guided and frequency-aware joint multi-scale framework for bathymetric DEM super-resolution",
+      "authors": "Xinye Cui; Houpu Li; Yanting Yu; Xin Xiong; Shaofeng Bian; Guojun Zhai",
+      "publication_date": "2026-10-07",
+      "journal": "International Journal of Applied Earth Observation and Geoinformation",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1016/j.jag.2026.105622",
+      "categories": [
+        "DEM超分辨率与稠密化",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "海底DEM超分辨率与多尺度地形结构保持",
+      "relevance": "高",
+      "relevance_reason": "直接研究稀疏观测背景下海底高程网格的细节恢复，但实验主要是规则降采样，不能等同真实不规则空洞填补。",
+      "reading_scope": "核读OpenAlex所收摘要及Crossref元数据，未核读全文",
+      "discovery_type": "近7天入库候选；OpenAlex日期为2026-10-07，Crossref卷期标为2026-11，出版方在线日期未核实",
+      "open_access_pdf_urls": [
+        "https://www.sciencedirect.com/science/article/pii/S1569843226005388/pdf"
+      ],
+      "summary": {
+        "title_zh": "GGFA-SwinIR：面向海底数字高程模型超分辨率的梯度引导与频率感知联合多尺度框架",
+        "background": "高分辨率海底数字高程模型有助于海洋地学研究，但在实测数据稀少的区域，全球格网产品常抹平细小地形。作者提出共享主干的多尺度超分辨率框架GGFA-SwinIR，分别处理二倍、四倍和八倍参考格网重建。方法同时考虑地形梯度、双三次插值基底上的残差，以及像素、梯度和复数频谱监督。摘要报告，在GEBCO_2025双三次退化实验中，模型在三个尺度的高程均方根误差分别为5.13、9.82和18.90米；在低通退化诊断及向GMRT产品迁移的比较中也保持优势。这里的结论针对所列实验条件，不证明真实缺测海底测线能够被唯一恢复。",
+        "background_plain": "海底实测点少时，粗格网会把海脊、沟槽等细节磨平；这篇文章尝试在放大格网时同时照顾高度、坡度和形状纹理。",
+        "method": "输入是较粗的海底高程格网，输出为指定放大倍率的参考格网估计。作者以共享主干处理二倍、四倍和八倍放大任务，避免为每个倍率完全分离建模。摘要指出，模型使用地形梯度幅值提示需要保留的局部变化，并在双三次插值形成的基础格网上预测残差，使网络主要学习基础插值遗漏的结构。\n\n训练监督同时比较像素高程、地形梯度与复数频谱。像素项约束高程数值，梯度项关注地形起伏边界，频谱项关注不同空间频率的结构；三者共同抑制只有数值接近、却把陡变地形抹平的结果。摘要没有交代各损失权重和网络层数，不能推断更具体的内部实现。",
+        "method_plain": "先把粗海底图放大作底稿，再让模型补上缺失的高低起伏；训练时同时检查高度、坡度和纹理结构。",
+        "innovation_overview": "将梯度提示与频率监督纳入同一共享主干的多尺度海底高程重建流程。",
+        "innovation_plain": "不是只把像素放大，而是同时教模型顾及山脊的陡峭程度和不同尺度的纹理。",
+        "results": "在GEBCO_2025双三次退化设置下，二倍、四倍、八倍的高程RMSE为5.13、9.82、18.90米，峰值信噪比为70.28、65.48、59.84分贝。四种强度的低通退化诊断中，该方法相对六种比较方法，在全部十二个强度与倍率组合取得最低高程RMSE和最高峰值信噪比，并在其中十一个组合取得最低坡角RMSE。与GMRT v4.3跨产品比较时，摘要称其在两个评估区域、三个倍率下均获得最低高程RMSE；具体各基线数值与统计检验未在摘要中报告。",
+        "conclusion": "作者认为，同时建模地形梯度与频谱结构，有助于多尺度海底参考格网增强。作者将该方法定位为探索性格网增强的实证依据；摘要未明确说明局限与未来工作。本报告分析：其双三次和低通退化实验不能直接替代真实稀疏测线或大片连续空洞验证。",
+        "plain": "这篇对海底DEM细节恢复很有参考价值，但不能把超分辨率成绩直接当作真实缺测区的重建成绩。",
+        "innovations": [
+          {
+            "claim": "联合约束高程、梯度和频谱。",
+            "analysis": "相较只关注逐格高程误差的思路，摘要所述监督把数值精度和地貌边界、频率结构放在同一训练目标中。低通退化实验的优势支持此组合在所测条件下有效，但摘要不足以单独归因各组件贡献。"
+          },
+          {
+            "claim": "共享主干处理多个放大倍率。",
+            "analysis": "论文将二倍、四倍与八倍参考格网重建放在一个离散多尺度框架中。其价值是用相同框架处理不同分辨率需求；摘要未给计算量或消融数据，不能断言参数效率优于独立模型。"
+          }
+        ]
+      },
+      "title_zh": "GGFA-SwinIR：面向海底数字高程模型超分辨率的梯度引导与频率感知联合多尺度框架",
+      "journal_metrics": {
+        "journal": "International Journal of Applied Earth Observation and Geoinformation",
+        "issn": "0303-2434",
+        "checked_at": "2026-10-14",
+        "indexing": "SCIE",
+        "jcr_failure": "公开期刊查询页要求登录，未取得可核验的JCR学科及分区",
+        "cas": "地球科学大类1区",
+        "cas_year": 2025,
+        "if_value": 8.2,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总所列2025年度IF；非JCR官方直接查询"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7216506271",
+      "title": "Assessing the influence of sample size and spatial sampling strategies on GeoAI-based digital elevation model error correction: A case study of the Sabaragamuwa University area, Sri Lanka",
+      "authors": "T. A. T. K. G. Jayathilaka; G. N. H. Wanigaratne",
+      "publication_date": "2026-10-02",
+      "journal": "Journal of Multidisciplinary & Translational Research",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.4038/jmtr.v11i4.346",
+      "categories": [
+        "曲面建模与插值",
+        "评价与数据集"
+      ],
+      "direction": "少量地面测点约束的DEM系统误差校正",
+      "relevance": "高",
+      "relevance_reason": "直接检验稀疏地面高程样本的数量与空间布样对DEM校正的影响；任务是误差校正而非空洞补全。",
+      "reading_scope": "核读出版元数据与Crossref摘要、OpenAlex记录，未核读全文",
+      "discovery_type": "近30天发表",
+      "open_access_pdf_urls": [
+        "https://jmtr.sljol.info/articles/346/files/6abf5ef814b54.pdf"
+      ],
+      "summary": {
+        "title_zh": "样本量与空间采样策略对地理人工智能数字高程模型误差校正的影响：斯里兰卡萨巴拉加穆瓦大学地区案例",
+        "background": "数字高程模型广泛用于地形分析、水文模拟和灾害评估，但免费产品可能因复杂地形、植被和传感器限制出现垂直误差。机器学习可利用少量地面测量对误差建模，不过在地面数据稀缺时，究竟采多少点、如何在空间上布点，仍缺少充分比较。作者以斯里兰卡萨巴拉加穆瓦大学地区为案例，把SRTM高程、坡度、坡向和粗糙度作为预测变量，以DEM垂直误差作为目标，利用全站仪和自动水准仪测得的地面高程作为参照。研究比较五十至五百个测点以及随机、聚集、分层三种布样方式，并用独立保留的测点验证校正结果。",
+        "background_plain": "手上只有少量实测高程点时，关键不只是点越多越好，还要考虑这些点在不同地形上怎样分布。",
+        "method": "输入包括原始SRTM DEM及从中计算的坡度、坡向、地形粗糙度，监督信息是实测高程与DEM之间的垂直误差。作者训练随机森林回归器预测误差，再据此校正DEM；这一方案学的是原有格网的误差场，并不是从零生成未观测高程。\n\n实验改变地面参照点数量，从五十个逐步增加到五百个，并分别采用随机、聚集和分层抽样。通过均方根误差、决定系数、改善比例及变差函数分析数值误差和空间相关误差，另以预留的实测点独立验证。摘要未列每个样本量的单独指标，也未说明随机森林超参数和具体训练测试比例。",
+        "method_plain": "先用少量真高程点教模型识别旧地图通常错在哪里，再把预测的误差从旧地图中扣掉；抽样方式会影响学到的规律。",
+        "innovation_overview": "把有限地面测点的数量与布样方式作为DEM误差校正的核心实验变量。",
+        "innovation_plain": "研究重点是有限经费下怎样安排实测点，让校正模型真正学到不同地形的误差。",
+        "results": "原始SRTM DEM的RMSE为5.010米，校正后在所测方案中降至1.541至2.575米。分层抽样取得摘要报告的最佳整体表现：RMSE为1.541米，决定系数为0.952。变差函数分析显示空间相关误差下降，预留测点验证支持结果可靠；摘要未逐项给出各样本量、各采样策略的完整数值，因而不能推断最少需要多少点。",
+        "conclusion": "作者认为，在有限地面测量条件下，地理人工智能误差校正能显著改善DEM精度，分层采样在此案例中效果最佳。作者在摘要中未明确提出局限或未来工作。本报告分析：误差校正依赖已有SRTM格网，与真实连续空洞重建不是同一任务，但其稀疏布样设计值得借鉴。",
+        "plain": "这篇最直接回答稀疏测点怎么布设；但它修的是已有高程值的误差，不是补全完全没有值的地方。",
+        "innovations": [
+          {
+            "claim": "系统比较三种空间布样方式。",
+            "analysis": "论文不仅评估随机森林是否能降误差，还直接对比随机、聚集和分层采样。摘要报告分层采样整体最好，说明实测点覆盖不同地貌条件可能比集中采集更有利；这属于该案例的结果，不能未经验证外推到所有区域。"
+          },
+          {
+            "claim": "结合数值与空间误差检验。",
+            "analysis": "除了RMSE和决定系数，研究用变差函数查看校正后的空间自相关误差，并用预留测点验证可靠性。摘要没有提供变差函数参数或显著性检验，细节仍需阅读全文。"
+          }
+        ]
+      },
+      "title_zh": "样本量与空间采样策略对地理人工智能数字高程模型误差校正的影响：斯里兰卡萨巴拉加穆瓦大学地区案例",
+      "journal_metrics": {
+        "journal": "Journal of Multidisciplinary & Translational Research",
+        "checked_at": "2026-10-14",
+        "jcr_failure": "公开期刊查询未返回同名记录，且未取得JCR官方学科分区",
+        "failure": "公开来源未取得有明确年度的IF及2025版中科院分区；收录类型亦未获得官方确认"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7219755725",
+      "title": "Improved estimation of lake storage variation via DEM reconstruction integrating elevation and morphological constraints",
+      "authors": "Pengzhan Zhao; Yifei Lu; Wei Cao; Wenbin Zhu; Jinwei Dong; Aifeng Lv; Sai Mei; Liguang Jiang; Yongkun Zhang; Guoxin Chen",
+      "publication_date": "2026-10-04",
+      "journal": "GIScience & Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1080/15481603.2026.2739663",
+      "categories": [
+        "缺失地形恢复与空洞填补",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "稀疏高程约束和无高程等高线联合的湖底DEM重建",
+      "relevance": "高",
+      "relevance_reason": "直接研究高程约束稀少时的DEM重建，并引入未赋高程的形态等高线；对象是湖底地形。",
+      "reading_scope": "核读OpenAlex与Crossref所载摘要及元数据，未核读全文",
+      "discovery_type": "近30天发表；Crossref另列后续卷期日期，不将其当首次上线日期",
+      "summary": {
+        "title_zh": "融合高程与形态约束的数字高程模型重建以改进湖泊蓄水量变化估计",
+        "background": "湖泊蓄水量变化估计需要可靠的湖底DEM，但现场测深成本高，难以大规模获取。遥感提取的湖岸等高线可提供低成本重建线索，既有方法却往往只使用能赋予高程值的等高线，舍弃没有高程标签的线条。当可用高程约束稀少时，丢掉这些形态线索会使重建地形结构失真、误差放大。作者提出统一DEM重建模型NUDEM，同时利用有高程和无高程等高线；前者约束绝对高程，后者约束地形形态，并在青藏高原四个湖泊评估DEM及蓄水量变化估计。",
+        "background_plain": "不知道湖底很多位置的深度，但湖岸线的形状仍可观察；这篇论文尝试把没有标明高度的轮廓也变成重建线索。",
+        "method": "输入为遥感获得的湖泊等高线，其中一部分能对应高程，另一部分没有高程值。输出是湖底连续DEM，并进一步据此估计湖泊蓄水量变化。方法把两类等高线置于同一重建模型：已赋值线提供高程锚点，未赋值线提供形态约束，避免因仅保留前者而损失地形结构。\n\n论文摘要称该模型兼顾高程约束与形态约束，并在四个青藏高原湖泊上与五种既有方法比较。摘要没有说明等高线提取误差、优化目标、求解步骤和数据划分；这些不能从名称推断，也不能将无高程线误写成实测深度。",
+        "method_plain": "像用少量标了海拔的线定高度，再用大量未标海拔的线定轮廓形状，两种线一起约束湖底表面。",
+        "innovation_overview": "保留无高程等高线的地貌形态信息，并与少量已知高程联合重建湖底DEM。",
+        "innovation_plain": "不浪费那些只知道形状、不知道高度的湖岸轮廓，让少量深度信息和大量轮廓一起决定湖底形状。",
+        "results": "在青藏高原四个湖泊上，NUDEM相对五种比较方法取得更低DEM重建误差；摘要称相对次优方法RMSE约下降百分之六十，平均RMSE为0.93米，最低为0.15米。用于估算湖泊蓄水量变化时，其决定系数相对其他基于DEM的方法约提升百分之三十，相对传统水位面积曲线方法接近翻倍。摘要未给每个湖泊的单独结果和比较方法名称，不能进一步细分适用边界。",
+        "conclusion": "作者认为，该方案提供了低成本、基于遥感的湖底DEM重建途径，有助于提高大范围湖泊蓄水量变化估计精度。摘要未明确讨论局限或未来工作。本报告分析：其关键是等高线拓扑与稀疏高程联合约束，迁移到陆地地形时需另行验证轮廓提取和高程基准。",
+        "plain": "对稀疏地形重建的启发是：即便某些观测没有高程数值，也可能有可用的地形形状信息。",
+        "innovations": [
+          {
+            "claim": "把无高程等高线纳入统一重建。",
+            "analysis": "相较只依赖能赋高程的等高线，作者利用被既有流程舍弃的形态约束，针对高程数据稀少时的结构错误。四湖实验中的DEM误差下降支持该整体方案，但摘要不能单独证明每一类约束的独立贡献。"
+          },
+          {
+            "claim": "同时检验DEM和下游蓄水量变化估计。",
+            "analysis": "研究把表面重建误差与实际水文估计联系起来，而非只评价地形格网本身。摘要所列决定系数改善表明下游任务也受益，但具体蓄水量时序、误差单位和统计检验未在摘要报告。"
+          }
+        ]
+      },
+      "title_zh": "融合高程与形态约束的数字高程模型重建以改进湖泊蓄水量变化估计",
+      "journal_metrics": {
+        "journal": "GIScience & Remote Sensing",
+        "issn": "1548-1603",
+        "checked_at": "2026-10-14",
+        "indexing": "SCIE",
+        "jcr_failure": "公开期刊查询页要求登录，未取得可核验的JCR学科及分区",
+        "cas": "地球科学大类1区",
+        "cas_year": 2025,
+        "if_value": 6.8,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总所列2025年度IF；非JCR官方直接查询"
+      },
+      "source_verification_count": 2,
+      "format_version": 2,
+      "open_access_pdf_urls": []
+    },
+    {
+      "id": "https://openalex.org/W7212310499",
+      "title": "Guided Super-Resolution of Digital Elevation Models with Diffusion-Based Image Generators",
+      "authors": "Armand Mihai Nicolicioiu; Dominik Narnhofer; Nando Metzger; Daniel Panangian; Ksenia Bittner; Konrad Schindler",
+      "publication_date": "2026-09-10",
+      "journal": "arXiv",
+      "source_type": "preprint",
+      "doi": "https://doi.org/10.48550/arxiv.2609.11886",
+      "categories": [
+        "DEM超分辨率与稠密化",
+        "多源数据与摄影测量重建"
+      ],
+      "direction": "高分辨率影像引导的城市DSM扩散超分辨率",
+      "relevance": "中高",
+      "relevance_reason": "方法涉及粗高程与影像融合，但目标是含建筑的DSM而非裸地DTM，且属于规则分辨率提升。",
+      "reading_scope": "核读arXiv页面摘要和OpenAlex记录，未核读全文",
+      "discovery_type": "历史未收录补充；预印本，不称期刊新发表",
+      "open_access_pdf_urls": [
+        "https://arxiv.org/pdf/2609.11886"
+      ],
+      "summary": {
+        "title_zh": "利用扩散图像生成模型引导数字高程模型超分辨率",
+        "background": "高分辨率数字表面模型对城市分析、建筑三维重建和基础设施监测很重要，却因采集昂贵而难以普及。相比之下，商业卫星的粗分辨率表面高程及航空、卫星高分辨率光学影像更容易获得。作者针对两者分辨率不匹配的问题，提出以影像引导的去噪扩散方法，把五米DSM提升至零点五米。方法利用光学影像中可见而粗高程图中缺失的屋顶边界与细部，生成更精细的地表结构。中欧多个城市的实验在摘要中显示结构细节和表面几何改善，但没有给出具体数值。",
+        "background_plain": "粗高程图看不清楼顶轮廓，高清照片看得清形状却没有直接高度；研究尝试把两种信息合在一起。",
+        "method": "输入是五米分辨率的城市DSM及更精细的光谱影像，输出是零点五米的表面高程估计。作者使用去噪扩散模型，把光学影像中的清晰轮廓、屋顶结构等可见信息转移到高程生成过程；与直接插值或普通滤波相比，目标是保留更明确的三维表面边界。\n\n摘要只解释了影像引导扩散的总体机制，没有公开具体条件注入方式、噪声日程、训练集划分和几何约束细节。本报告不把这些未报告环节当作已核实的方法步骤，也不将DSM中的建筑高度视为裸地高程。",
+        "method_plain": "照片负责提示楼顶边界在哪里，粗高程图负责提供大致高度，扩散模型把两者融合成更细的表面高程图。",
+        "innovation_overview": "把高分辨率影像的结构先验引入粗DSM到细DSM的扩散式重建。",
+        "innovation_plain": "让高清照片告诉高程模型哪里应该有清楚的轮廓，但具体高度仍需要粗高程约束。",
+        "results": "摘要报告在中欧多个城市进行实验，目标由五米DSM提升到零点五米DSM，并指出相对常规插值或滤波，建筑轮廓和表面几何更准确。摘要未列出城市名称、误差数值、具体基线或显著性检验；因此这里不量化提升幅度。",
+        "conclusion": "作者认为，影像先验与引导式扩散有潜力重建高质量的高分辨率城市表面模型。摘要未明确陈述局限或未来方向。本报告分析：DSM包括建筑和植被，不能把城市屋顶恢复直接视为自然地形裸地DEM重建的验证。",
+        "plain": "这篇适合借鉴多源影像约束，但与稀疏裸地地形恢复之间存在明显任务边界。",
+        "innovations": [
+          {
+            "claim": "用光学影像引导高程细节。",
+            "analysis": "影像提供粗DSM无法分辨的屋顶和建筑轮廓；作者将这些线索用于高程恢复，针对常规插值无法创造清晰结构的问题。摘要报告城市表面结构改善，但未给消融或误差指标。"
+          },
+          {
+            "claim": "将去噪扩散用于跨模态表面模型细化。",
+            "analysis": "扩散生成承担从粗DSM到细DSM的细节生成。作者称其结果优于常规插值或滤波；在未核读全文前，无法判断泛化到山地裸地或真实空洞的效果。"
+          }
+        ]
+      },
+      "title_zh": "利用扩散图像生成模型引导数字高程模型超分辨率",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7169827815",
+      "title": "GKTLF: a geographical knowledge-guided transfer learning framework for cross-regional DEM super-resolution",
+      "authors": "Xiaoyi Han; Manchun Li; Zhenjie Chen; Chen Zhou",
+      "publication_date": "2026-07-21",
+      "journal": "International Journal of Geographical Information Science",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1080/13658816.2026.2704882",
+      "categories": [
+        "DEM超分辨率与稠密化",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "跨区域迁移的地形特征引导DEM超分辨率",
+      "relevance": "高",
+      "relevance_reason": "关注稀缺目标区样本和地形异质性下的高程重建迁移，但实验任务仍是超分辨率。",
+      "reading_scope": "核读OpenAlex收录摘要、Crossref元数据和公开代码仓储摘要，未核读论文全文",
+      "discovery_type": "历史未收录补充，不称本周新发表",
+      "summary": {
+        "title_zh": "GKTLF：地理知识引导的跨区域数字高程模型超分辨率迁移学习框架",
+        "background": "现有DEM超分辨率方法在训练区和目标区地貌差异较大时，可能无法稳定生成高分辨率结果。作者提出地理知识引导的迁移学习框架GKTLF，试图在保留源区地形特征的同时提取目标区特征，并用地形骨架线掩膜和坡度特征提供地理先验。框架还设计地形相似性度量，以描述源区与目标区的空间异质性。摘要报告，在中国四个测试区，该框架嵌入增强型超分辨率生成对抗网络后，相对原网络取得不同幅度的精度改善；这一结果说明跨区迁移不能只考虑纹理分布，还应考虑地形结构差异。",
+        "background_plain": "在一个地区学会放大DEM的模型，到了另一种山地形态可能就不灵；这篇研究让模型学会看地形骨架和坡度再迁移。",
+        "method": "输入为源区域训练样本、目标区域地形样本及可提取的坡度和骨架线信息；输出为目标区域的高分辨率DEM。框架先采用跨区域迁移策略，在保持源区已学地形特征的同时提取目标区新特征，降低直接套用源模型的分布差异。\n\n地理特征引导策略将掩膜地形骨架线和坡度纳入学习；地形相似性度量则量化区域之间的地貌异质性，为判断迁移难度提供依据。摘要没有说明骨架线具体生成算法、相似性度量公式和模型训练比例，不能据标题推断。",
+        "method_plain": "先比较两地地形像不像，再让模型一边保留旧区学到的规律、一边吸收新区的坡度与山脊信息。",
+        "innovation_overview": "将跨区迁移策略、地理地形先验和相似性度量组合用于DEM超分辨率。",
+        "innovation_plain": "迁移时不把所有山地看成一种，而是先识别地形结构差别，再用少量目标区信息调整模型。",
+        "results": "中国四个测试区中，相对增强型超分辨率生成对抗网络，加入GKTLF后的精度在完整样本预训练设置下分别改善35.8%、25.2%、19.7%和4.6%；仅用40%样本预训练时分别改善31.2%、26.5%、20.4%和2.5%。摘要未说明这些百分比逐项对应何种误差指标或统计置信度，不能将其改写为RMSE下降。",
+        "conclusion": "作者认为地理知识引导迁移可缓解区域地形异质性带来的DEM超分辨率性能不稳定。摘要未明确报告局限与未来工作。本报告分析：其数据减少实验有启发，但目标区样本减少不等于真实测点不规则缺失，后者仍需单独验证。",
+        "plain": "这篇主要解决模型换一个地区后还能不能把DEM放大的问题。",
+        "innovations": [
+          {
+            "claim": "显式加入骨架线与坡度引导。",
+            "analysis": "相比只从原始高程格网学习纹理，摘要所述策略把地形形状线索作为先验；四区精度提升支持组合框架有效，但未从摘要单独识别每项先验的贡献。"
+          },
+          {
+            "claim": "把源区与目标区的地形差异纳入迁移设计。",
+            "analysis": "框架既考虑源区特征保留和目标区特征提取，也建立相似性量化方法，直接面对跨地貌区域泛化困难。摘要未给相似性与误差之间的定量关系。"
+          }
+        ]
+      },
+      "title_zh": "GKTLF：地理知识引导的跨区域数字高程模型超分辨率迁移学习框架",
+      "journal_metrics": {
+        "journal": "International Journal of Geographical Information Science",
+        "issn": "1365-8816",
+        "checked_at": "2026-10-14",
+        "jcr_failure": "公开期刊查询页要求登录，未取得可核验的JCR学科及分区",
+        "cas": "地球科学大类1区",
+        "cas_year": 2025,
+        "if_value": 5.9,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总所列2025年度IF；非JCR官方直接查询",
+        "failure": "公开查询结果未直接给出可核验的SCIE收录状态"
+      },
+      "source_verification_count": 2,
+      "format_version": 2,
+      "open_access_pdf_urls": []
+    },
+    {
+      "id": "https://openalex.org/W7163735785",
+      "title": "A terrain-guided and SAR fused network for mountainous DEM super-resolution",
+      "authors": "Qinglin Wu; Min Feng; Jinhao Xu",
+      "publication_date": "2026-06-06",
+      "journal": "Computers & Geosciences",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1016/j.cageo.2026.106205",
+      "categories": [
+        "DEM超分辨率与稠密化",
+        "多源数据与摄影测量重建",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "山地DEM的地形引导与合成孔径雷达信息融合",
+      "relevance": "高",
+      "relevance_reason": "直接研究复杂山地高程重建和地形属性保持，但验证为规则四倍超分辨率。",
+      "reading_scope": "核读OpenAlex摘要及Crossref元数据，未核读论文全文",
+      "discovery_type": "历史未收录补充，不称近期新刊",
+      "summary": {
+        "title_zh": "面向山地数字高程模型超分辨率的地形引导与合成孔径雷达融合网络",
+        "background": "复杂山地的高分辨率DEM有助于水文和地貌分析，但现有超分辨率方法容易在提升格网分辨率时损失坡度、坡向和河网等重要地形属性。作者提出地形引导融合网络TGFSR，结合地形组织规律与合成孔径雷达影像所含的互补表面结构信息，目标是同时改善高程数值精度和地形可用性。摘要中的试验将横断山区一百二十米DEM重建为三十米DEM，属于规则四倍超分辨率，不应视为真实缺失斑块的补洞实验。",
+        "background_plain": "把山地图像放大时，不能只让数字看起来更细，还要让坡向和河流走向保持合理。",
+        "method": "输入是较粗的山地DEM和合成孔径雷达影像线索，输出为更细格网的DEM。多阶段网络使用属性引导迭代演化模块，在特征空间提供与地形结构有关的引导，使模型关注高程起伏的组织方式。\n\n另一个基于核预测网络的自适应融合机制纳入雷达影像中的互补结构信息。两部分联合服务于高程重建、坡度坡向保持和水文相关地形可用性。摘要未给模块内部层数、雷达预处理和损失函数细节，这些不能按常见深度网络做法补写。",
+        "method_plain": "DEM提供已有的高度，雷达帮助看见表面纹理，网络再用地形规律约束放大后的坡和沟。",
+        "innovation_overview": "把地形属性引导与雷达自适应融合放进同一山地DEM超分辨率网络。",
+        "innovation_plain": "放大山地DEM时，同时参考地貌规律和雷达观测，尽量别把坡与河道画错。",
+        "results": "在横断山区数据集的四倍超分辨率实验中，DEM由一百二十米重建为三十米。摘要称相较双三次插值，RMSE和MAE均降低超过45%；相较包括TfaSR和DuffNet在内的代表性深度学习模型，两项误差降低超过8%。作者还报告坡度、坡向与提取河网恢复较好；摘要未给这些属性的具体数值，不能计算改善幅度。",
+        "conclusion": "作者认为该网络兼顾高程数值和地貌一致性，为复杂山地水文与地貌应用提供更可靠的DEM。摘要未明确给出局限或未来工作。本报告分析：从规则四倍放大迁移到不规则稀疏测点或真实连续空洞，仍需重新设计与验证。",
+        "plain": "论文适合学习如何把外部遥感影像和地形属性一起用于高程重建。",
+        "innovations": [
+          {
+            "claim": "以属性引导演化模块维持地形结构。",
+            "analysis": "作者明确将该模块用于特征空间的地形组织引导，针对高程准确但坡度、坡向失真的问题。摘要报告地形属性恢复更好，但未列各模块消融数值。"
+          },
+          {
+            "claim": "用自适应融合吸收雷达互补线索。",
+            "analysis": "基于核预测网络的融合不只依赖粗高程图，试图利用雷达对复杂地表的结构信息。摘要支持整体方法优势，但不能证明雷达单独贡献幅度。"
+          }
+        ]
+      },
+      "title_zh": "面向山地数字高程模型超分辨率的地形引导与合成孔径雷达融合网络",
+      "journal_metrics": {
+        "journal": "Computers & Geosciences",
+        "issn": "0098-3004",
+        "checked_at": "2026-10-14",
+        "jcr_failure": "公开期刊查询页要求登录，未取得可核验的JCR学科及分区",
+        "cas": "地球科学大类2区",
+        "cas_year": 2025,
+        "if_value": 4.1,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总所列2025年度IF；非JCR官方直接查询",
+        "failure": "公开查询结果未直接给出可核验的SCIE收录状态"
+      },
+      "source_verification_count": 2,
+      "format_version": 2,
+      "open_access_pdf_urls": []
+    },
+    {
+      "id": "https://openalex.org/W7165880751",
+      "title": "A transfer learning-based contourlet residual-driven terrain-aware method for Arctic seafloor DEM super-resolution",
+      "authors": "Wenjun Huang; Qun Sun; Qing Xu; Jingzhen Ma; Zheng Lv; Tian Gao; Anzhu Yu",
+      "publication_date": "2026-06-25",
+      "journal": "ISPRS Journal of Photogrammetry and Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1016/j.isprsjprs.2026.06.023",
+      "categories": [
+        "DEM超分辨率与稠密化",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "少数据北极海底DEM超分辨率与方向性地貌保持",
+      "relevance": "高",
+      "relevance_reason": "聚焦测量稀少的海底地形与地貌方向结构恢复，但任务仍是格网超分辨率。",
+      "reading_scope": "核读OpenAlex摘要及Crossref元数据，未核读全文",
+      "discovery_type": "历史未收录补充，不称今天新发表",
+      "summary": {
+        "title_zh": "基于迁移学习与轮廓波残差驱动的北极海底数字高程模型地形感知超分辨率方法",
+        "background": "北极海底高分辨率测深数据受环境条件限制而极为稀少，海中脊及邻近区域还包含裂谷、断层陡坎和冰山犁沟等破碎地貌，使DEM超分辨率十分困难。作者提出结合迁移学习、地形感知特征聚合和轮廓波高频细化的框架。先从全球沿海地形数据中学习通用地貌表示，再在北极海中脊数据上以分层学习率微调，以降低目标区样本稀少带来的过拟合；随后强化具有方向性的地形边缘，并联合优化高程、坡度与结构。",
+        "background_plain": "北极海底测点少，地形却复杂；研究先在别处学地形，再到北极小样本区域微调，同时特别保护断层和沟槽边缘。",
+        "method": "输入是低分辨率海底DEM及训练阶段可用的高分辨率参照，输出是更细的北极海底高程格网。训练分两阶段：先以全球沿海地形数据预训练，再以分层学习率适配北极海中脊，缓解目标数据不足导致的过拟合。\n\n网络中的地形感知特征聚合块把地形空间连续性和多属性相关性放入双分支注意力，提取多尺度结构。轮廓波细化门控通过地形复杂度自适应的拉普拉斯金字塔分解和可学习方向滤波器增强方向敏感的高频边缘。高程、坡度、结构的联合损失再由同方差不确定性权重平衡。摘要未公开具体数据量、倍率和每一组件消融细节。",
+        "method_plain": "先在较多地形数据上打基础，再在北极数据上补课；网络专门盯住沟槽和断层方向，训练时兼顾高程与坡形。",
+        "innovation_overview": "以迁移学习缓解北极样本不足，并利用方向性频率结构保护复杂海底地貌。",
+        "innovation_plain": "核心是在数据很少时借用别处经验，并有意识地保住北极海底沟槽的走向和陡边。",
+        "results": "摘要报告，在北极海中脊数据集上，相比所选先进方法，RMSE降低3.5%至4.7%，MAE降低17.5%至25.6%，峰值信噪比提高0.17至0.44分贝。摘要未给绝对RMSE单位数值、逐一基线名称、训练样本规模及统计置信区间，不能推断真实稀疏测线上的提升。",
+        "conclusion": "作者认为该框架可用于资料稀少的北极海底精细地形建模。摘要未明确讨论局限与未来工作。本报告分析：迁移学习和方向性结构约束对稀疏地形重建有参考价值，但超分辨率不能直接替代连续空洞补全验证。",
+        "plain": "适合借鉴少样本迁移和断层沟槽保护思路，实际缺测区还需另做实验。",
+        "innovations": [
+          {
+            "claim": "跨区域预训练后分层微调。",
+            "analysis": "全球沿海数据提供通用地形表示，北极海中脊数据负责适配局地断裂与冰川地貌。摘要将此作为应对样本稀缺和过拟合的设计，但未给单独迁移消融值。"
+          },
+          {
+            "claim": "将方向性细化与地形多属性联合优化。",
+            "analysis": "轮廓波与方向滤波器针对裂谷、断层陡坎等方向性边缘；联合损失及不确定性权重同时照顾高程、坡度和结构。整体误差改善有实验支持，单一模块效果仍需看全文消融。"
+          }
+        ]
+      },
+      "title_zh": "基于迁移学习与轮廓波残差驱动的北极海底数字高程模型地形感知超分辨率方法",
+      "journal_metrics": {
+        "journal": "ISPRS Journal of Photogrammetry and Remote Sensing",
+        "issn": "0924-2716",
+        "checked_at": "2026-10-14",
+        "indexing": "SCIE",
+        "jcr_failure": "公开期刊查询页要求登录，未取得可核验的JCR学科及分区",
+        "cas": "地球科学大类1区",
+        "cas_year": 2025,
+        "if_value": 12.9,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总所列2025年度IF；非JCR官方直接查询"
+      },
+      "source_verification_count": 2,
+      "format_version": 2,
+      "open_access_pdf_urls": []
+    }
+  ],
+  "github_publication": {
+    "id": 6159202637,
+    "created_at": "2026-10-14T02:00:00Z"
+  }
+}
