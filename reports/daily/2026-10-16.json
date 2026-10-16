@@ -1,0 +1,410 @@
+{
+  "schema_version": 1,
+  "producer": "codex",
+  "date": "2026-10-16",
+  "papers": [
+    {
+      "id": "https://openalex.org/W7221785189",
+      "title": "RGFNet: scene-adaptive airborne LiDAR ground filtering for robust digital terrain model generation",
+      "authors": "Ning Li",
+      "publication_date": "2026-10-14",
+      "journal": "Journal of Applied Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1117/1.jrs.20.044502",
+      "categories": [
+        "地面分类与滤波",
+        "DTM生成与联合重建",
+        "评价、综述与数据集"
+      ],
+      "direction": "异质场景和稀疏山地机载LiDAR地面点分类",
+      "relevance": "高",
+      "relevance_reason": "直接针对地面点稀疏、密度差异和离群点条件下的DTM前置分类；不直接恢复无观测连续空洞。",
+      "reading_scope": "核读Crossref所收完整摘要和OpenAlex摘要，未核读全文",
+      "discovery_type": "近7天在线发表；Crossref发表与记录创建均为2026-10-14",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "RGFNet：面向稳健数字地形模型生成的场景自适应机载LiDAR地面滤波",
+        "background": "机载激光雷达点云要生成数字地形模型，必须先准确分离地面与非地面点。当地形类型混杂、点密度剧烈变化或存在大尺度离群点时，统一的特征提取和分类损失难以同时适应城市与山地。作者提出场景自适应的RGFNet，让场景类型检测器从地面分割目标中学习软先验，而非依赖额外的场景类别标签；再结合密度感知的多尺度几何特征、双路径融合、自适应噪声建模和场景加权损失。摘要称该组合提高了稀疏山地和城市离群点条件下的分类鲁棒性，并报告跨数据集结果。",
+        "background_plain": "点云有的地方密、有的地方稀，城市还会混进杂点；这篇先让网络判断当前场景的特点，再决定怎样挑地面点。",
+        "method": "输入为机载LiDAR点云，输出为地面点与非地面点的分割结果，供后续DTM生成。场景类型检测器不另用人工场景标签，而是由分割任务学习一个软场景先验。先验引导密度感知的多尺度几何特征与双路径融合，以便兼顾不同尺度的地面形态。作者还用自适应噪声建模与场景加权损失处理离群点、标签噪声和类别不平衡。摘要未公开各模块的数学定义、训练划分及DTM插值和高程误差细节，因此不能把分类精度解释成DTM高程精度。",
+        "method_plain": "先识别场景，再根据点的疏密和地形尺度提特征，最后给地面/非地面点分类；输出还需要另外建面才能成为DTM。",
+        "innovation_overview": "作者的主要贡献是将无额外场景标签的软先验用于密度与噪声条件变化显著的地面点滤波。",
+        "innovation_plain": "它改变了“一套固定规则处理所有点云”的做法，但重点仍是找点，不是凭空补出地形。",
+        "results": "摘要报告OpenGF三个测试集的平均交并比依次为96.06%、92.51%和95.27%；在DALES和ISPRS跨数据集评价中分别为94.71%和81.57%。作者称优于所比较的点式方法及其先前模型，但摘要没有列出各基线的具体数值、显著性检验或DTM高程RMSE，因此这里只能比较分类任务。",
+        "conclusion": "作者认为场景条件化滤波有助于大范围DTM生产。可获得摘要未明确列出局限和未来工作。本报告分析：对稀疏地面点的可靠筛选有借鉴价值；无观测空洞中的地形恢复还需单独评估。",
+        "plain": "适合学习如何筛出地面点，不能把高分类分数直接当作补洞精度。",
+        "innovations": [
+          {
+            "claim": "以分割目标学习场景先验。",
+            "analysis": "场景检测器不要求单独标注城市或山地类别，而让最终地面分割目标反向约束先验，使特征提取更适配场景。摘要只有整体比较结果，未给出单模块消融数值，不能把全部增益归因于先验。"
+          },
+          {
+            "claim": "将密度感知、多尺度融合与噪声鲁棒训练结合。",
+            "analysis": "不同点密度和异常点会同时干扰几何描述与分类决策；作者在特征和损失两处处理这种异质性。跨数据集测试支持整体方法具备一定迁移能力，但摘要未报告在连续无地面观测区的补洞性能。"
+          }
+        ]
+      },
+      "title_zh": "RGFNet：面向稳健数字地形模型生成的场景自适应机载LiDAR地面滤波",
+      "journal_metrics": {
+        "journal": "Journal of Applied Remote Sensing",
+        "issn": "1931-3195",
+        "checked_at": "2026-10-16",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "LetPub的JCR字段需登录；未取得JCR官方2025年度各学科分区",
+        "cas": "地球科学大类4区",
+        "cas_year": 2025,
+        "if_value": 1.8,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新及上一年度IF口径，非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7140618664",
+      "title": "Lake bathymetric reconstruction and water storage estimation method based on terrain feature similarity",
+      "authors": "Xuteng Zhang; Changxian Qi; Dezhong Xu; Yao Chen; Hongjun Li; Haiyue Peng",
+      "publication_date": "2026-03-26",
+      "journal": "Scientific Reports",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1038/s41598-026-43121-7",
+      "categories": [
+        "缺失地形恢复与空洞填补",
+        "曲面建模、插值与隐式表示",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "缺少实测湖底高程时由周边地貌推断湖底及蓄水量",
+      "relevance": "高",
+      "relevance_reason": "直接以未观测湖底地形为重建对象，利用岸周坡度和剖面形态推断水下高程；误差范围较大，须谨慎迁移。",
+      "reading_scope": "核读Crossref与OpenAlex元数据、摘要及Europe PMC开放全文的摘要和方法概述，未逐页核读PDF与全部图表",
+      "discovery_type": "近365天内发表的历史未收录论文；2026-03-26上线，不称今日新发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "基于地形特征相似性的湖底地形重建与蓄水量估计方法",
+        "background": "高原内流湖的面积、水位和水量变化对气候研究重要，但青藏高原许多湖泊缺少水下地形实测，因而难以从水位可靠计算蓄水量。作者提出以湖泊周边地形参数推断湖底：计算岸周坡度变化等信息，向水下外推并组合多个方向的剖面，以得到可用于蓄水量计算的湖底数字表示。研究以九个具有监测或研究数据的青藏高原湖泊验证适用性。结果既显示部分湖泊误差较小，也揭示最大和平均水深可出现明显偏差，因此不能把外推曲面视作真实测深。",
+        "background_plain": "湖底没有实测点时，先看湖岸周围山坡如何延续，再估计水下盆地形状和装水量。",
+        "method": "输入为湖周可得的地形参数与湖泊边界、已有可比较的监测信息，输出为推断湖底曲面及蓄水量估计。作者利用岸周坡度变化建立向湖内延伸的剖面，并组合不同函数形式与多个方向的剖面，使所得曲面更符合地貌形态、减轻单方向外推受噪声影响的问题。九湖验证分别用可得的监测或研究数据比较模拟最大水深、平均水深及部分实测点。当前只核读了公开全文的方法概述，没有逐一核对全部参数、表格与方程，故不补写具体优化细节。",
+        "method_plain": "把湖岸看作湖底形状的线索，从四周向中间推测，而不是简单用一条直线把湖面下方填平。",
+        "innovation_overview": "作者的贡献是将岸周地形相似性和多方向剖面组合用于缺测湖底重建，并以实测信息检验偏差。",
+        "innovation_plain": "让四周看得见的坡共同约束看不见的湖底，同时承认这种推断会有大误差。",
+        "results": "九个青藏高原湖泊的验证中，模拟最大水深相对误差为8%至47%，其中羊卓雍错和东给措纳等偏差较大；平均水深相对误差为7.5%至47%。对Ra'ang Co、Cuoe Lake、Anglaren Co和Mapam Yumco，与实测点比较的相对误差小于20%。这些量分别针对不同指标和湖泊，不能混为整体RMSE。",
+        "conclusion": "作者认为周边地貌外推可为缺测湖泊的蓄水量估计提供参考。可获得摘要没有给出统一适用的误差保证。本报告分析：方法适合研究无观测区形态先验，但应把实测断面和不确定性区间纳入验证，避免把推断水深当观测。",
+        "plain": "能用湖岸推一个湖底草图，可靠程度要看当地地形和实际测深检验。",
+        "innovations": [
+          {
+            "claim": "用可见岸周地貌约束不可见湖底。",
+            "analysis": "方法不依赖完整湖底测线，而从坡度变化向水下推断，在无测深或少测深湖泊仍可形成连续曲面；但约束属于形态外推，不能保证真实深槽被恢复。"
+          },
+          {
+            "claim": "组合多种函数和多方向剖面。",
+            "analysis": "与单一方向延长岸坡相比，组合剖面旨在降低地形噪声及个别岸段的不代表性。摘要称形态更接近实际，但仍有部分湖泊水深误差达到47%，不能只展示较好案例。"
+          }
+        ]
+      },
+      "title_zh": "基于地形特征相似性的湖底地形重建与蓄水量估计方法",
+      "journal_metrics": {
+        "journal": "Scientific Reports",
+        "issn": "2045-2322",
+        "checked_at": "2026-10-16",
+        "jcr_failure": "公开查询页JCR字段需登录；未核得官方全部学科分区",
+        "cas": "综合性期刊大类3区",
+        "cas_year": 2025,
+        "if_value": 4.9,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总2026年6月更新及上一年度IF口径，非JCR官方直接核验",
+        "failure": "公开检索页未明确给出该刊SCIE或ESCI具体收录类别，不据影响因子推断"
+      },
+      "source_verification_count": 3,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7170705733",
+      "title": "Super-Resolution Reconstruction of Seafloor Topography Using ViT-GAN Model and 3-Arcsecond Multibeam Bathymetric Data",
+      "authors": "Zeyuan Zhang; Wei Feng; Min Zhong; Meng Yang; Mingzhi Sun; Dechao An",
+      "publication_date": "2026",
+      "journal": "IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1109/jstars.2026.3716897",
+      "categories": [
+        "DEM超分辨率与稠密化",
+        "拓扑结构与地形特征",
+        "评价、综述与数据集"
+      ],
+      "direction": "多波束海底高程规则网格超分辨率与频谱一致性",
+      "relevance": "高",
+      "relevance_reason": "直接研究海底高程稠密化、测线伪影筛除和地形高频结构保持；属于超分辨率而非不规则空洞补全。",
+      "reading_scope": "核读Crossref元数据及OpenAlex所收完整摘要，未核读全文",
+      "discovery_type": "历史未收录补充；Crossref仅给2026年，2026-07-24是索引创建日而非已证实的发表日",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "基于ViT-GAN与三角秒多波束测深数据的海底地形超分辨率重建",
+        "background": "高分辨率海底地形对航行与地质研究重要，但测量昂贵，且多波束数据常含条带伪影和大幅深度变化。常规图像超分辨率容易产生过平滑海床，损失真实地形的高频结构。作者提出地形感知流程：先以低分辨率参考筛除伪影严重的数据块，再采用逐样本归一化处理深度分布差异，以Swin Transformer与判别器组成ViT-GAN；除像元指标外，还比较功率谱密度，检验生成高频结构是否更接近自然海底。四个区域的实验显示方法多数指标占优，但并非所有像元保真度指标都最佳。",
+        "background_plain": "把粗海底图放大时，不能只画得平滑好看，还要避免把声呐条纹当山脊、把真正的小地形抹掉。",
+        "method": "输入为较粗的海底测深格网，输出为超分辨率海底高程格网。作者先用低分辨率参考对训练块作质量筛选：严重受条带伪影污染的块直接剔除，而非修改像元。随后采用逐样本最小最大归一化，以减小不同海域深度范围差别。模型把Swin Transformer块用于生成路径，并配合矩阵均值判别器学习地形纹理。评价除常见像元误差外，还用坡度、坡向及功率谱密度考察形态和空间频率。摘要未报告确切训练划分、降采样算子及完整损失定义，不能进一步推断真实未测区表现。",
+        "method_plain": "先扔掉有明显声呐条纹的训练样本，再让模型放大地形，最后同时看高度误差和山脊沟谷的细节频率。",
+        "innovation_overview": "作者的贡献主张是把测深数据质量控制、深度尺度适配与频谱形态检验串成超分辨率流程。",
+        "innovation_plain": "先把坏样本挑出来，再放大，并检查放大后的海底起伏有没有被抹平。",
+        "results": "摘要报告四个测试区域、共32个“指标×区域”组合中，模型有26项得分最佳；FID、NIQE、坡度RMSE和坡向相似度在四区均居首。其余部分像元保真度指标由其他方法小幅领先。摘要没有列出这些指标的具体数值或高程误差单位，不能补造RMSE幅度。",
+        "conclusion": "作者认为该流程更好保持海底高频地貌。可获得摘要未明确列出局限。本报告分析：研究对象是规则格网超分辨率，不能直接证明在真实连续空洞内推断的正确性；引入地形频谱评价值得借鉴。",
+        "plain": "放大海底图时，它尤其关注细地形有没有保留，但放大不等于新增测量。",
+        "innovations": [
+          {
+            "claim": "使用参考引导的数据块筛选抑制条带伪影。",
+            "analysis": "筛选而非逐像元修正可避免把明显错误测量当作模型应学习的地貌；摘要仅报告组合流程，未给出单独筛选增益。"
+          },
+          {
+            "claim": "以频谱指标补充像元指标。",
+            "analysis": "功率谱密度反映不同空间尺度的高程起伏，能够检查细节是否被过度平滑。作者报告高频能量分布更接近自然海底，但不能由此证明细节处处对应真实实测。"
+          }
+        ]
+      },
+      "title_zh": "基于ViT-GAN与三角秒多波束测深数据的海底地形超分辨率重建",
+      "journal_metrics": {
+        "journal": "IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing",
+        "issn": "1939-1404",
+        "checked_at": "2026-10-16",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "公开查询页JCR字段需登录；未核得官方全部学科分区",
+        "cas": "地球科学大类2区",
+        "cas_year": 2025,
+        "if_value": 6.3,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总2026年6月更新及上一年度IF口径，非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7171542097",
+      "title": "Terrain-aware cross-attention Swin transformer for digital bathymetric model super-resolution",
+      "authors": "Wuxu Cai; Mi Wang; Zhipeng Dong; Lu Li",
+      "publication_date": "2026-07-28",
+      "journal": "Geo-spatial Information Science",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1080/10095020.2026.2683151",
+      "categories": [
+        "DEM超分辨率与稠密化",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "复杂海底地貌中的坡度引导交叉注意力超分辨率",
+      "relevance": "高",
+      "relevance_reason": "针对海底数字高程模型放大时海山、海脊和海沟形态的保持；不规则稀疏测点与连续空洞需另外验证。",
+      "reading_scope": "核读Crossref元数据与OpenAlex所收完整摘要，未核读全文",
+      "discovery_type": "历史未收录补充；2026-07-28在线发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "面向数字海底地形模型超分辨率的地形感知交叉注意力Swin Transformer",
+        "background": "高分辨率海底地形模型难以大范围低成本获取，因而需要从较粗格网重建细节。传统卷积超分辨率对海山、海脊和海沟等复杂结构的保持不足。作者提出多海底地形Transformer框架MSTT：交叉注意力引导坡度相关特征与水深特征对齐，空间门控前馈网络按局部地貌调节信息流，并加入海底地形感知损失。数据由EPOTO 2022构建，包含规则裁块、复杂度分层和由栅格梯度计算坡度；实验在2倍、4倍放大任务中比较定量和视觉结果。摘要称其表现领先，但没有提供具体误差数值。",
+        "background_plain": "同一片海底里既有平缓地也有陡峭海脊，模型需要在放大时特别留住坡的变化。",
+        "method": "输入为低分辨率数字海底地形模型，输出为2倍或4倍分辨率的模型。预处理先裁出规则样本块，按地形复杂度分层，并从高程梯度推导坡度信息。MSTT的交叉注意力把坡度线索与水深特征关联，空间门控前馈网络在空间和跨空间Transformer层中按局部地形调节特征流。地形感知损失进一步约束输出的细地貌。摘要未公开各损失系数、训练验证地理独立性及具体基线表，不能将总体优势单独归于某一模块。",
+        "method_plain": "先算出哪里坡陡，再让模型放大海底时多照顾这些地形转折处。",
+        "innovation_overview": "作者的贡献主张是以坡度引导的跨特征注意力和地形感知约束，改善复杂海底形态的规则格网放大。",
+        "innovation_plain": "把海底坡度当成放大时的提醒，让模型尽量别把海脊和海沟磨平。",
+        "results": "摘要称MSTT在EPOTO 2022构建数据的2倍与4倍放大实验中，定量与视觉评价达到所比较方法的领先水平，复杂地形区域表现较好；但没有列出各指标、单位、基线数值或独立区域测试详情。因此这里不写虚构的百分比提升，也不推断真实无测深空洞表现。",
+        "conclusion": "作者认为地形感知注意力提高了复杂海底地貌的超分辨率效果。可获得摘要未明确讨论局限与未来工作。本报告分析：坡度引导值得迁移到稀疏高程重建，但规则降采样的结论不能代替真实缺测验证。",
+        "plain": "对海底图放大有用，尚不能证明没有测深点的洞也补得准。",
+        "innovations": [
+          {
+            "claim": "交叉注意力对齐坡度与水深特征。",
+            "analysis": "相对只依据水深像元的特征提取，坡度提供局部变化方向与强度线索，有助于突出陡坡和海脊；摘要未列出该模块独立消融数字。"
+          },
+          {
+            "claim": "空间门控按地貌调节特征传播。",
+            "analysis": "不同海底地形需要不同局部处理，门控前馈网络旨在避免统一特征流造成复杂区过平滑；摘要报告总体领先，但没有逐区误差表。"
+          }
+        ]
+      },
+      "title_zh": "面向数字海底地形模型超分辨率的地形感知交叉注意力Swin Transformer",
+      "journal_metrics": {
+        "journal": "Geo-spatial Information Science",
+        "issn": "1009-5020",
+        "checked_at": "2026-10-16",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "公开查询页JCR字段需登录；未核得官方全部学科分区",
+        "cas": "地球科学大类2区",
+        "cas_year": 2025,
+        "if_value": 5.4,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总2026年6月更新及上一年度IF口径，非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W4408877559",
+      "title": "Optimizing interpolation methods and assessing accuracy of UAS-Echo sounder data for enhanced bathymetric mapping in inland waters",
+      "authors": "Md Salman Bashit; Narcisa G. Pricope; Daniel McCraine; Adam Skarke; Qingmin Meng",
+      "publication_date": "2026-08-11",
+      "journal": "International Journal of Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1080/01431161.2026.2713782",
+      "categories": [
+        "曲面建模、插值与隐式表示",
+        "缺失地形恢复与空洞填补",
+        "评价、综述与数据集"
+      ],
+      "direction": "无人机单波束稀疏测线的湖底插值与采样间距优化",
+      "relevance": "高",
+      "relevance_reason": "直接比较稀疏单波束测线的十种建面方法及5米、10米测线间距，具有真实采样设计意义。",
+      "reading_scope": "核读Crossref元数据与OpenAlex所收完整摘要，未核读全文",
+      "discovery_type": "历史未收录补充；2026-08-11在线发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "内陆水域无人机单波束测深的插值方法优化与精度评估",
+        "background": "轻量单波束测深仪可搭载无人机测量浅水湖塘，但其数据沿航线呈稀疏条带，必须插值才能形成连续湖底曲面。作者在美国密西西比州Stoneville的Pond D1开展实测，将2024年8月21日无人机测深与9月9日排水后LiDAR地形作参照。研究一方面评估原始深度测量可信度，另一方面比较十种插值方法、5米与10米航线间距以及沿线采样间隔。结果显示Topo to Raster在所测条件下优于其余插值器，而较大的20至30米采样间隔在复杂水下地形中降低精度。",
+        "background_plain": "无人机声呐只在几条线上量到湖底，关键是航线隔多远、线上的点隔多远，以及怎样把点连成面。",
+        "method": "输入为无人机单波束测深点，输出为连续浅水湖底高程曲面。作者先用排水后的LiDAR测量作为独立地形参照，在11,439个对比点上核对声呐测深误差。之后对稀疏测线测试十种插值方法，并改变航线间距与沿线采样间隔，比较生成曲面的RMSE和决定系数。摘要明确给出Topo to Raster在5米和10米航线间距下的误差，但未列出全部十种方法的逐一数字和验证点划分；也没有交代两次测量之间湖底是否变化，不能假定完全同日真值。",
+        "method_plain": "先确认量出来的深度大致可靠，再试不同航线密度和插值器，找在精度与飞行成本之间较合适的组合。",
+        "innovation_overview": "本文的直接价值是用真实稀疏测线和排水后地形参照，联合检验采样设计与曲面插值。",
+        "innovation_plain": "不仅比哪个插值公式好，还问应该量多少条线、每条线上留多少点。",
+        "results": "11,439个测深对照点的RMSE为10.20厘米、R²为72.8%；限制在距均值两个标准差内的95.45%数据时，RMSE为6.59厘米、R²为86.6%，此筛选结果不能冒充全样本精度。十种插值法中，Topo to Raster在5米航线间距下RMSE为6.30厘米、R²为82.9%，在10米间距下为7.10厘米、R²为81.5%。沿线5米和10米采样间隔取得约6.6至8.1厘米RMSE及高于70%的R²；20至30米间隔明显降低精度。",
+        "conclusion": "作者认为无人机单波束测深结合适当的测线设计与插值可高效绘制浅水湖底。可获得摘要未明确列出全部局限或未来工作。本报告分析：这是不规则稀疏点重建的实证依据，但只针对浅水塘，迁移到深海或植被覆盖陆地须重新验证。",
+        "plain": "测线变稀会影响补出来的湖底，插值器和采样密度必须一起选。",
+        "innovations": [
+          {
+            "claim": "把单波束测量误差与建面误差分开评估。",
+            "analysis": "先比较原始测深和LiDAR参照，再评价插值曲面，有助于判断误差来自测量还是从稀疏点补全。摘要没有给出所有方法在同一独立点集上的完整明细。"
+          },
+          {
+            "claim": "联合考察航线间距和沿线间隔。",
+            "analysis": "两种稀疏程度对曲面有不同作用；作者报告5米、10米设置可保持较低误差，而20至30米间隔在复杂湖底明显退化。这对真实稀疏采样实验设计比只做规则图像降采样更直接。"
+          }
+        ]
+      },
+      "title_zh": "内陆水域无人机单波束测深的插值方法优化与精度评估",
+      "journal_metrics": {
+        "journal": "International Journal of Remote Sensing",
+        "issn": "0143-1161",
+        "checked_at": "2026-10-16",
+        "jcr_failure": "JCR官方多学科分区需机构登录，公开来源不足以列全2025年度分区",
+        "cas": "地球科学大类4区",
+        "cas_year": 2025,
+        "if_value": 2.6,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "Taylor & Francis官网标注2025 Impact Factor；LetPub公开汇总同值",
+        "failure": "本次公开期刊目录未明确SCIE/ESCI收录类型，保留上次馆藏记录但不视为本次官方核定"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W4412444791",
+      "title": "Bathymetric Prediction and Uncertainty Quantification Using a Bayesian Deep Neural Network Based on Gravity Data",
+      "authors": "Jiuqiang Yang; Chenguang Liu; Yanliang Pei; Pengyao Zhi; Niantian Lin; Long Ma",
+      "publication_date": "2025",
+      "journal": "IEEE Geoscience and Remote Sensing Letters",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1109/lgrs.2025.3589454",
+      "categories": [
+        "多源数据与摄影测量重建",
+        "评价、综述与数据集",
+        "缺失地形恢复与空洞填补"
+      ],
+      "direction": "重力数据推断海底地形并量化空间预测不确定性",
+      "relevance": "高",
+      "relevance_reason": "在缺少直接测深时利用重力场推断海床，并同时估计不确定性；不同于仅输出单一确定性高程。",
+      "reading_scope": "核读Crossref元数据与OpenAlex所收完整摘要，未核读全文",
+      "discovery_type": "历史未收录补充；Crossref只给2025年，2025-07-15为索引创建日而非确定发表日",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "基于重力数据和贝叶斯深度神经网络的海底水深预测与不确定性量化",
+        "background": "海底地形与海洋重力场存在联系，因而重力数据可用于缺乏直接测深的区域。常规深度神经网络虽然能预测水深，却往往只给单一高程估计，无法说明哪些区域更不确定及不确定性如何影响解释。作者提出贝叶斯深度神经网络，在普通网络中加入蒙特卡洛Dropout变分推断，并把估计的不确定性反馈到训练中约束模型参数、校准预测。摘要称相对传统网络及海床反演方法，输出更准确且更可靠；空间不确定性与海底地形存在明显相关。",
+        "background_plain": "不光要猜海底有多深，还要告诉使用者哪里猜得最没把握。",
+        "method": "输入是与海底形态有关的重力数据，输出为海底水深预测及相应的不确定性估计。作者在常规深度网络中启用蒙特卡洛Dropout，通过多次随机失活的预测近似贝叶斯变分推断，以较小结构改动取得预测分布信息。估得的不确定性还参与训练约束，帮助调整参数和校准水深。摘要未公开重力异常的具体种类、测深标签稀疏度、训练区域划分、重复抽样次数及校准指标，不能据此说明真实无测深空洞中的绝对误差。",
+        "method_plain": "同一个输入让网络多次带随机性地预测，看看答案有多分散，再利用这种分散程度提醒模型哪里可能不可靠。",
+        "innovation_overview": "作者的贡献主张是将海底水深预测与可反馈到训练过程的不确定性估计结合。",
+        "innovation_plain": "预测海底深度时顺手画出“可能不准”的区域，并让模型学习时考虑这些区域。",
+        "results": "摘要定性报告该贝叶斯网络比普通DNN及海底地形反演模型更准确可靠，且不确定性与海底地貌有显著空间相关；没有公开数据集规模、RMSE单位、改进百分比或不确定性覆盖率。因此不能写具体数值优势，也不能把相关性当作不确定性已充分校准的证明。",
+        "conclusion": "作者认为该方法有助于提高重力反演水深的可信解释。可获得摘要未明确列出局限或未来工作。本报告分析：在稀疏地形重建中保留空间不确定性很重要，但重力推断的证据不能直接等同于陆地LiDAR点云补洞。",
+        "plain": "地形预测值旁边还需要一张可靠程度地图，尤其是没有直接观测的地方。",
+        "innovations": [
+          {
+            "claim": "用蒙特卡洛Dropout为高程输出附带不确定性。",
+            "analysis": "普通网络只输出一个水深值，贝叶斯近似提供预测分散程度；摘要称仅需少量结构修改，但没有提供覆盖率或校准曲线数字。"
+          },
+          {
+            "claim": "把预测不确定性用于参数校准。",
+            "analysis": "作者不只在推理后绘制风险图，还将不确定性反馈到模型训练。摘要报告整体精度和可靠性提升，却未列出各基线的具体误差，不能量化单独作用。"
+          }
+        ]
+      },
+      "title_zh": "基于重力数据和贝叶斯深度神经网络的海底水深预测与不确定性量化",
+      "journal_metrics": {
+        "journal": "IEEE Geoscience and Remote Sensing Letters",
+        "issn": "1545-598X",
+        "checked_at": "2026-10-16",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "公开查询页JCR字段需登录；未核得官方全部学科分区",
+        "cas": "地球科学大类3区",
+        "cas_year": 2025,
+        "if_value": 4.8,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开汇总2026年6月更新及上一年度IF口径，非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W4411660184",
+      "title": "Enhancing digital bathymetric models by advanced measurement uncertainty analysis",
+      "authors": "Bahareh Mohammadivojdan; Frederic Hake; Felix Lorenz; Jan Ole Böllert; Robert Weiß; Thomas Artz; Ingo Neumann; Hamza Alkhatib",
+      "publication_date": "2025-05-01",
+      "journal": "The International Hydrographic Review",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.58440/ihr-31-1-a09",
+      "categories": [
+        "曲面建模、插值与隐式表示",
+        "评价、综述与数据集"
+      ],
+      "direction": "多波束测深测量误差传播及海底模型的加权建面",
+      "relevance": "高",
+      "relevance_reason": "直接研究观测精度不均条件下的曲面重建和不确定性传播，可用于稀疏地形数据的观测权重设计。",
+      "reading_scope": "核读Crossref、OpenAlex摘要及出版方23页PDF的第1、3-5、7、9、11、13、15、17-20页文本和表2；未逐页核读其余页面及全部图件",
+      "discovery_type": "一年以前的历史未收录补充；2025-05-01发表，不称近期论文",
+      "open_access_pdf_urls": [
+        "https://ihr.iho.int/wp-content/uploads/2025/05/IHR-31-1-A09.pdf"
+      ],
+      "summary": {
+        "title_zh": "通过高级测量不确定性分析改进数字海底地形模型",
+        "background": "安全航行依赖可靠海底模型，但水下测量会同时受到仪器精度、环境条件和未知海底几何影响。仅将测深值插成连续曲面，不能说明每个观测的可信度，更不能把观测误差怎样传到最终海底模型讲清楚。作者提出两阶段流程：先基于误差传播建立多来源测量不确定性模型，再通过模拟多波束测深系统和已知几何，评估这些不确定性怎样影响建面，并以观测权重纳入模型生成。摘要认为加权处理提高结果精度和可靠性；具体误差数值需从全文表2核对。",
+        "background_plain": "两条测深记录看起来都像一个高度值，其实仪器和水况不同，可靠程度也不同；建面时不能一视同仁。",
+        "method": "输入为多波束测深观测及其仪器和环境不确定性来源，输出为带有观测权重的数字海底曲面。第一阶段用误差传播原则描述设备精度、定位和环境扰动等误差如何汇合，区分垂直与三维不确定性。第二阶段在已知海底几何的受控仿真中模拟多波束测量，生成带误差的观测。第15页说明建面采用分层B样条的多层B样条逼近（MBA），分别不加权、按垂直不确定性加权、按三维不确定性加权，再与模拟真值比较。对真实海底的泛化仍需验证。",
+        "method_plain": "先给每个水深点估计“有多准”，再让较可靠的点在拼接海底面时更有分量。",
+        "innovation_overview": "本文将测量误差传播与海底曲面建模相接，使不确定性进入建面过程而非只留在事后报告。",
+        "innovation_plain": "不是先把点连起来再说误差，而是在连面时就考虑每个点的可信程度。",
+        "results": "在已知几何的多波束测深仿真中，第18页表2报告相对于模拟真值的曲面垂直RMSE：未加权0.044 m，按垂直不确定性加权0.023 m，按三维不确定性加权0.032 m。对应后验方差因子平方根分别为0.081、0.087、0.078 m；这是另一个统计量，不能混作曲面真值RMSE。结果支持本仿真条件下加权建面的改善，不等于真实海床已获相同精度。",
+        "conclusion": "作者认为不确定性建模有助于提高海底模型可靠性。第20页明确承认当前使用合成曲面和2.5D模型的限制，并建议后续在真实海床和完整3D模型上验证。本报告分析：稀疏高程重建可借鉴观测加权，但受控仿真结果不能直接推广到多源实测资料。",
+        "plain": "补地形不只看点在哪里，还要看每个点到底有多可信。",
+        "innovations": [
+          {
+            "claim": "系统分解多波束测深的不确定性来源。",
+            "analysis": "作者把设备与环境等误差经传播模型连接到单点测深可信度，避免给全部观测使用相同精度假设；摘要未给出各误差项贡献比例。"
+          },
+          {
+            "claim": "用模拟真值检验观测加权建面。",
+            "analysis": "受控仿真提供已知几何和测量误差，能检查加权策略是否改善曲面，而不只根据表面光滑程度判断。全文表2给出三种建面权重下的垂直RMSE；真实复杂海域的外推仍需验证。"
+          }
+        ]
+      },
+      "title_zh": "通过高级测量不确定性分析改进数字海底地形模型",
+      "journal_metrics": {
+        "journal": "The International Hydrographic Review",
+        "checked_at": "2026-10-16",
+        "jcr_failure": "未找到JCR官方学科和分区的可访问记录，不能把其他索引的分区当JCR",
+        "failure": "LetPub未返回同名期刊记录；公开出版页未提供可核实的SCIE收录、2025版中科院分区或2025年度IF"
+      },
+      "source_verification_count": 3,
+      "format_version": 2
+    }
+  ],
+  "github_publication": {
+    "id": 6206327544,
+    "created_at": "2026-10-16T02:00:01Z"
+  }
+}
