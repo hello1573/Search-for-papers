@@ -1,0 +1,429 @@
+{
+  "schema_version": 1,
+  "producer": "codex",
+  "date": "2026-10-17",
+  "papers": [
+    {
+      "id": "https://openalex.org/W4405661823",
+      "title": "Spatial interpolation of digital elevation model based on multi-scale conditional generative adversarial network with adaptive joint loss",
+      "authors": "Ziqiang Huo; Jiachen Yang; Desheng Chen; Liwen Zhang; Zhengjian Li; Lijiao Sun",
+      "publication_date": "2024-12-20",
+      "journal": "Journal of Applied Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1117/1.jrs.19.014504",
+      "categories": [
+        "曲面建模、插值与隐式表示",
+        "缺失地形恢复与空洞填补"
+      ],
+      "direction": "不均匀稀疏高程样点的DEM空间插值",
+      "relevance": "高",
+      "relevance_reason": "直接以稀疏且不均匀的高程采样为输入补全DEM，与课题目标高度一致。",
+      "reading_scope": "核读Crossref收录的完整摘要及OpenAlex题名、出版信息，未核读全文；具体采样比例、损失权重与误差表未核实",
+      "discovery_type": "历史未收录补充；Crossref记载2024-12-20发表，不称今日新论文",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "基于多尺度条件生成对抗网络与自适应联合损失的数字高程模型空间插值",
+        "background": "数字高程模型是三维地表建模的基础，但采样条件与成本常使可用高程点既稀疏又分布不均。要形成连续DEM，需要推断未测位置的高程。论文指出，传统插值模型表达能力有限，且多次迭代可能带来较大误差与计算负担，因此提出多尺度条件生成对抗网络，并在训练中联合生成器对抗损失、内容损失和感知损失，自适应调整它们的权重。摘要称其在坡地、谷地和山脊等典型陆地DEM上比传统插值和若干深度学习模型得到更小插值误差、较清晰的结果；摘要没有给出误差值和稀疏率。",
+        "background_plain": "手里只有零散测高点，想补成连续地形图；这篇研究尝试让网络同时顾及高度是否接近真值和地貌形状是否自然。",
+        "method": "输入是采样稀疏且分布不均的高程资料，目标输出为完整DEM。摘要确认采用多尺度条件生成对抗网络：生成器在条件输入下预测缺失高程，对抗训练用于约束生成结果的整体合理性。\n\n训练目标把对抗损失、内容损失和感知损失合在一起，且各项权重可适应性调整。内容约束面向数值接近，感知约束面向空间结构；这是根据损失名称作的功能解释，并非论文已核实的逐项消融结论。摘要未说明具体网络层次、稀疏点编码方式、训练划分与权重更新公式，不能推断其能处理任意形状的真实连续空洞。",
+        "method_plain": "先让网络填出一张完整高程图，再用数值、形状和对抗反馈共同纠正；各反馈的重要程度在训练中调整。",
+        "innovation_overview": "作者的贡献主张是把多尺度条件生成与自适应联合损失用于稀疏DEM插值。",
+        "innovation_plain": "把补点当成生成完整地形的任务，并让训练过程同时看高度误差和地貌形态。",
+        "results": "摘要报告在含坡地、谷地和山脊的典型陆地DEM数据上，相比传统空间插值和其他典型深度学习模型，插值误差较小，结果图像清晰度和与原图相似性较高。可获得摘要未列具体样本数、稀疏率、RMSE数值、统计显著性或推理时间，因此不能量化优势幅度。",
+        "conclusion": "作者认为该方法对复杂地形DEM插值有鲁棒性，并有扩展到其他地形的潜力。可获得摘要未明确报告局限或未来实验。本报告分析：方法直接对应稀疏采样重建，但真实缺测位置的空间聚集性以及独立区域泛化仍需用全文或新实验核查。",
+        "plain": "这是直接把零散高程点补成地形面的研究，但目前只能确认摘要层面的效果。",
+        "innovations": [
+          {
+            "claim": "将多尺度条件生成模型用于不均匀稀疏点插值。",
+            "analysis": "研究对象明确是采样稀疏且不均匀的高程点，而不只是在规则格网上放大像元。摘要报告相对传统插值和典型深度模型的误差与视觉改善，但未给采样机制和逐项数值。"
+          },
+          {
+            "claim": "联合三种训练损失并自适应调节权重。",
+            "analysis": "作者希望同时兼顾高程内容、生成图的地貌外观和对抗约束，减少固定权重对不同地形的限制。摘要未给损失消融结果，不能断言每一项分别贡献多少。"
+          }
+        ]
+      },
+      "title_zh": "基于多尺度条件生成对抗网络与自适应联合损失的数字高程模型空间插值",
+      "journal_metrics": {
+        "journal": "Journal of Applied Remote Sensing",
+        "issn": "1931-3195",
+        "checked_at": "2026-10-17",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "公开查询页JCR字段要求登录，未取得官方2025年度各学科分区",
+        "cas": "地球科学大类4区",
+        "cas_year": 2025,
+        "if_value": 1.8,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新及上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7166329599",
+      "title": "Advancing High‐Resolution Lake Bathymetry Reconstruction Through Geomorphologically Informed Deep Learning in High Mountain Asia",
+      "authors": "Minglei Hou; Jiamu Chen; Jiahua Wei; Yang Shi; Wenqian Zhang; Shengling Hou; Zhen Qiao; Jianshi Zhao",
+      "publication_date": "2026-06-27",
+      "journal": "Water Resources Research",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1029/2025wr041924",
+      "categories": [
+        "缺失地形恢复与空洞填补",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "无测深湖泊的地貌先验引导水下地形重建",
+      "relevance": "高",
+      "relevance_reason": "直接在水下观测不足条件下重建完整地形，并报告真实湖泊上的误差检验。",
+      "reading_scope": "核读Crossref与OpenAlex所收完整摘要、元数据及出版方开放PDF目录信息；PDF端点返回403，未核读全文",
+      "discovery_type": "近365天内发表的历史未收录论文；2026-06-27上线，非今日新发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "以地貌知识引导的深度学习推进高亚洲高分辨率湖底地形重建",
+        "background": "湖泊三维水下地形关系到水量评估与水文模拟，但实测水深样本稀缺，简单的几何盆地假设又难复现真实形态。作者提出地貌知识引导的深度学习框架GIDL：把陆地河谷和洼地作为水下地形的地貌类比体，构造大量虚拟湖泊样本；以地形连续性、坡度相关水深变化和盆地形状规律形成初始盆地骨架，再训练网络纠正数学先验的系统偏差。研究还按照矩形度和椭圆度对湖泊分类以学习不同形态。摘要报告在高亚洲真实湖泊和虚拟样本中改善水深重建，并将结果用于面积-水深-库容关系推算。",
+        "background_plain": "没有足够的湖底测点时，先借陆地河谷的形状猜一个湖盆，再让网络学会把这个粗猜改得更像真实湖底。",
+        "method": "输入包括可用于刻画湖泊平面形状与周围地貌的信息，以及由陆地河谷、洼地构造的虚拟训练样本；输出为高分辨率三维湖底地形，并可据此推算面积-水深-库容关系。论文摘要首先以连续性、坡度和盆地形状的数学先验构造初始湖盆骨架。\n\n其次，网络在地貌相容的虚拟样本上学习数学先验与目标地形之间的系统偏差，用于恢复仅凭简化几何难表现的形态细节。再用矩形度和椭圆度指标区分湖泊类型，使学习更贴近不同湖盆形状。摘要未给网络层次、真实湖泊实测断面的具体布置和不确定性计算方式，不能据此宣称每个湖泊都有相同误差。",
+        "method_plain": "先用地貌规律画出湖底的大轮廓，后用虚拟样本训练的网络修正它；不同形状的湖泊分开考虑。",
+        "innovation_overview": "作者将可解释的地貌盆地先验与虚拟样本训练结合，缓解无测深湖泊的监督数据缺口。",
+        "innovation_plain": "用山谷形状造训练题，先画合理的湖底草图，再让网络按湖泊形状细修。",
+        "results": "摘要报告高亚洲虚拟样本训练18,753个、独立验证测试4,688个；重建平均归一化RMSE为16.14%，R²为0.48，相对数学先验误差约降低35%，并优于所比较深度学习基线。30个真实高亚洲湖泊测试中，水深估计误差相对既有先进模型降低超过60%；应用至605个湖泊时，面积-水深-库容关系的R²为0.75。不同数据集与指标不可混作同一实验误差。",
+        "conclusion": "作者认为把地貌知识纳入数据驱动建模可改善无测深湖泊的地形恢复和库容估计。可获得摘要未明确交代局限与未来工作。本报告分析：虚拟地貌与真实湖盆的分布差异值得单独检验，尤其不能把湖盆形态先验直接用于陆地不规则空洞而不验证。",
+        "plain": "对完全缺测区域很有借鉴价值，但最重要的是分清虚拟数据上的好成绩和真实湖泊上的检验。",
+        "innovations": [
+          {
+            "claim": "以陆地河谷和洼地构造地貌相容的虚拟湖泊样本。",
+            "analysis": "水下地形标签昂贵，地貌类比体提供大量训练样本。摘要报告18,753个训练虚拟样本和4,688个独立验证测试虚拟样本，但虚拟到真实的迁移仍需另看实湖结果。"
+          },
+          {
+            "claim": "让网络学习修正带形态约束的初始盆地骨架。",
+            "analysis": "连续性、坡度与形态规则先提供一个有物理意义的粗模型，再由数据驱动部分纠偏。摘要称相对数学先验误差约降低35%，此数值限于其报告的评估设置。"
+          },
+          {
+            "claim": "按湖盆矩形度与椭圆度进行形态特异学习。",
+            "analysis": "不同湖形不共用单一形态假设，作者用形状指数分组；摘要未单独给出该分组的消融增益。"
+          }
+        ]
+      },
+      "title_zh": "以地貌知识引导的深度学习推进高亚洲高分辨率湖底地形重建",
+      "journal_metrics": {
+        "journal": "Water Resources Research",
+        "issn": "0043-1397",
+        "checked_at": "2026-10-17",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "公开查询页JCR字段要求登录，未取得官方2025年度各学科分区",
+        "cas": "地球科学大类2区；湖沼学小类1区；环境科学小类2区；水资源小类2区",
+        "cas_year": 2025,
+        "if_value": 6.3,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新及上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W4409151542",
+      "title": "Advancing bathymetric reconstruction and forecasting using deep learning",
+      "authors": "Irem Yildiz; Emil V. Stanev; Joanna Staneva",
+      "publication_date": "2025-04-03",
+      "journal": "Ocean Dynamics",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1007/s10236-025-01679-2",
+      "categories": [
+        "缺失地形恢复与空洞填补",
+        "曲面建模、插值与隐式表示"
+      ],
+      "direction": "不完整观测下的动态海底地形重建与时间预测",
+      "relevance": "高",
+      "relevance_reason": "直接以不完整海底测深输入重建空间地形，并独立评价时间预测。",
+      "reading_scope": "核读Crossref和OpenAlex完整摘要与元数据；出版方PDF请求只返回网页，未核读全文",
+      "discovery_type": "一年以前的历史未收录补充；2025-04-03在线发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "利用深度学习推进海底地形重建与预测",
+        "background": "近岸海底地形会随水动力、泥沙输运和地貌过程变化，瓦登海一类复杂海区尤其难以用传统形态动力模型准确表达反馈关系。研究使用德国湾1983至2012年的水深观测，探索两种不同任务：卷积神经网络从不完整的空间输入重建同期海底地形；卷积长短期记忆网络根据历史观测预测未来地形。摘要称空间重建能复现潮汐水道等活动区域的形态，而时序预测也得到较低的区域平均误差。",
+        "background_plain": "有些年份或位置测不到海底，作者一方面补同一时期缺的地方，一方面尝试预测后来海底会怎样变。",
+        "method": "空间重建以不完整测深格网为输入，卷积网络学习缺失与已测区域的空间模式，输出同一时期的完整海底地形。摘要特别提到潮汐水道这样的活跃区域，说明评估不只看平坦海底。\n\n时间预测另用卷积长短期记忆网络接收过去若干次地形观测，结合空间卷积与时间记忆输出后续海底形态。两项任务共用德国湾1983至2012年的观测资料，但摘要没有说明缺测掩膜如何构造、时间训练测试切分和卷积网络的具体结构，因此不能把时序预测误差当成空间补洞误差。",
+        "method_plain": "一套网络补同一张海底图的缺块，另一套网络根据过去几张图猜未来；这是两道不同的题。",
+        "innovation_overview": "作者把空间缺测重建和时间演化预测并列检验于长期德国湾测深序列。",
+        "innovation_plain": "先补已经发生但没测全的海底，再研究未来会变成什么样，并把两种结果分开评价。",
+        "results": "摘要给出德国湾1983至2012年的水深观测作为数据来源，报告卷积网络能重建不完整输入对应的空间地形，潮汐水道等动态区域表现较好，但未列重建任务的数值误差。卷积长短期记忆网络的时间预测区域平均RMSE为0.139 m；不能把0.139 m当作空间补洞的RMSE。",
+        "conclusion": "作者认为深度学习可作为复杂近岸海底重建与预测的候选方法，辅助沿岸管理与航行。可获得摘要未明确列出局限。本报告分析：这篇直接触及不完整观测补全，但缺测方式与独立区域泛化须从全文核实后才可与稀疏地形课题对比。",
+        "plain": "最值得学习的是把空间缺测和时间变化分成不同实验，不混报误差。",
+        "innovations": [
+          {
+            "claim": "用不完整测深输入检验卷积网络的空间重建能力。",
+            "analysis": "相对仅凭解析动力过程模拟，网络从观测学习复杂海床形态。摘要称潮汐水道区域复现良好，但未列空间重建RMSE，不能量化补洞效果。"
+          },
+          {
+            "claim": "另以时空网络预测海底后续变化。",
+            "analysis": "卷积长短期记忆网络把历史形态引入时间预测；摘要报告区域平均RMSE为0.139 m。这个数字针对预测而非空间缺测重建。"
+          }
+        ]
+      },
+      "title_zh": "利用深度学习推进海底地形重建与预测",
+      "journal_metrics": {
+        "journal": "Ocean Dynamics",
+        "issn": "1616-7341",
+        "checked_at": "2026-10-17",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "公开查询页JCR字段要求登录，未取得官方2025年度学科分区",
+        "cas": "地球科学大类3区；海洋学小类3区",
+        "cas_year": 2025,
+        "if_value": 2.5,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新及上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7153980700",
+      "title": "Fast and accurate graph-based ground filtering of ULS point clouds",
+      "authors": "Yu Zhou; Bingting Zha; Zhen Zheng",
+      "publication_date": "2026-06-19",
+      "journal": "Measurement Science and Technology",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1088/1361-6501/ae5e9b",
+      "categories": [
+        "地面分类与滤波",
+        "DTM生成与联合重建"
+      ],
+      "direction": "无人机激光扫描点云的图结构地面点提取",
+      "relevance": "高",
+      "relevance_reason": "解决稀疏和复杂地形建模前的可靠地面点筛选，但不是直接空洞补全。",
+      "reading_scope": "核读Crossref与OpenAlex所收完整摘要和元数据，未核读全文；两库发表日期不同，采用Crossref在线日期",
+      "discovery_type": "近365天内的历史未收录论文；Crossref在线日期2026-06-19，OpenAlex标2026-04-13，非今日发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "无人机激光扫描点云的快速准确图结构地面滤波",
+        "background": "地面点滤波是无人机激光扫描点云生成地形模型的前置步骤，但很多现有方法针对更高航高的机载扫描或车载扫描开发，直接用于无人机激光扫描未必适配。作者把点云编码成图，利用节点连接关系和地形模型辨认地面点。方法通过空间连通性与随地形变化的几何一致性阈值标记连接的地面节点，同时以扰动指数修正节点权重，估计地形采样点并形成更稳定的整体地形模型。摘要称在重复和非重复扫描的真实无人机点云上取得较好效果且满足实时要求，但未给具体数值。",
+        "background_plain": "先从树木、建筑和地面混在一起的点云里找出可信地面点，否则后续补地形会把非地面物体当真值。",
+        "method": "输入是无人机激光扫描的三维点云，输出是地面点类别及用于筛选的地形模型。先将邻近点组织为图，使空间相连关系成为判断依据，而不只逐点比较高度。\n\n随后评价相邻图节点的空间连通性，并根据不同地形动态调整几何一致性阈值，以减少固定阈值在起伏地貌上的误判。最后以扰动指数修正节点权重来估计地形采样点，抑制贴地物体的干扰，再形成整体地形表面。摘要未给图的建边尺度、阈值计算式和时间成本数字。",
+        "method_plain": "先把点连成邻接网络，再看一串相邻点是否像连续地面；山坡和平地使用不同的判断宽度。",
+        "innovation_overview": "作者的核心改动是让图节点的地面判定与采样权重都随地形条件调整。",
+        "innovation_plain": "它不只问单个点高不高，还看周围点是否连成合理地形，并调整可疑点的分量。",
+        "results": "摘要报告在重复扫描和非重复扫描两类真实无人机激光点云上进行实验，称滤波性能突出且达到实时处理要求；未给测试区数量、OA、IoU、耗时或地形RMSE数值，因此不能填写具体提升百分比。实验评价对象是地面点筛选，不是缺测区域地形恢复。",
+        "conclusion": "作者认为图结构与地形自适应策略有助于无人机点云滤波。可获得摘要未明确讨论局限或未来工作。本报告分析：可用作稀疏地形重建的数据清理前端，但其分类准确率不能替代连续空洞内的高程误差验证。",
+        "plain": "这篇解决的是补地形之前先挑对地面点，不能当作已经解决空洞补全。",
+        "innovations": [
+          {
+            "claim": "连通性与地形自适应阈值共同判断地面。",
+            "analysis": "邻接结构帮助区分连续地表和孤立非地面点；阈值随地形变化避免一个几何门槛覆盖所有坡度。摘要说明了设计思路，但没有可引用的单模块消融。"
+          },
+          {
+            "claim": "以扰动指数修正地形采样点权重。",
+            "analysis": "权重调整用于减轻近地物体对地表估计的污染，随后再建立全局地形模型。摘要只给整体性能判断，未说明该修正单独降低多少误差。"
+          }
+        ]
+      },
+      "title_zh": "无人机激光扫描点云的快速准确图结构地面滤波",
+      "journal_metrics": {
+        "journal": "Measurement Science and Technology",
+        "issn": "0957-0233",
+        "checked_at": "2026-10-17",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "公开查询页JCR字段要求登录，未取得官方2025年度各学科分区",
+        "cas": "工程技术大类3区；工程综合小类3区；仪器仪表小类3区",
+        "cas_year": 2025,
+        "if_value": 3.7,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新及上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W7161738953",
+      "title": "A Scanline-Based Sliding Window Filtering Method for UAV-Borne LiDAR Bathymetry Point Clouds",
+      "authors": "Jiayong Yu; Jing Zhang; Jiangchao Mu; Jiachun Guo; Deliang Lv; Xiaoxue Du; Peng Lin",
+      "publication_date": "2026-05-19",
+      "journal": "Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.3390/rs18101635",
+      "categories": [
+        "地面分类与滤波",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "无人机测深LiDAR点云的噪声剔除与地形细节保留",
+      "relevance": "高",
+      "relevance_reason": "研究浅水复杂地貌中错误测点对后续DEM的影响，直接关联稀疏有效样点质量。",
+      "reading_scope": "核读Crossref、OpenAlex摘要及出版方21页PDF的第1、10、13、18-20页正文和表1-3；未逐页核读全部图件",
+      "discovery_type": "近365天内的历史未收录论文；2026-05-19发表，非今日新发表",
+      "open_access_pdf_urls": [
+        "https://mdpi-res.com/d_attachment/remotesensing/remotesensing-18-01635/article_deploy/remotesensing-18-01635.pdf"
+      ],
+      "summary": {
+        "title_zh": "面向无人机载激光测深点云的扫描线滑动窗口滤波方法",
+        "background": "无人机载激光测深可在浅水区获取稠密水下点云，但水体散射、深度变化和复杂湖底形态使噪声与真实地形点混杂。固定阈值滤波容易把陡变地形误删，或保留近地噪声。作者提出沿原始扫描线处理的滑动窗口方法：先分离扫描线并以半径离群点剔除清除明显异常，再把扫描时间和高程构成二维序列；窗口内用稳健最小二乘拟合，以残差中位数绝对偏差表征地形复杂度并自适应设置阈值。全文在四川九寨沟五花湖和江苏苏州翡翠湖数据上报告噪声检出和地形细节保留情况。",
+        "background_plain": "测深点云里既有真的湖底起伏也有激光噪声，关键是别把陡坡误删，又别把噪声留给后续DEM。",
+        "method": "输入是保留原始扫描线和获取时间的无人机激光测深点云，输出为过滤噪声后的水下地形点。先从原始点云提取扫描线，以半径离群点算法清除远离地形的明显噪声。\n\n再以点的获取时间为横轴、高程为纵轴，把三维问题化成逐条扫描线的二维曲线拟合；在滑动窗口内进行稳健最小二乘拟合。拟合残差的中位数绝对偏差越大，局部地形越复杂，过滤阈值就相应放宽，以减轻陡变处误删。第10页给出的系统标称测深精度为0.2 m，阈值由该精度与地形因子相乘。需要原始扫描线信息，不能默认普通无序点云可直接运行。",
+        "method_plain": "先去掉特别离谱的点，再沿激光扫过的轨迹画局部曲线；平坦处严筛，复杂地形处稍宽容。",
+        "innovation_overview": "作者将扫描线顺序、局部稳健拟合与地形复杂度阈值结合，平衡噪声剔除和湖底细节保留。",
+        "innovation_plain": "按扫描轨迹看局部形状，再按地形难易程度调节删点力度。",
+        "results": "全文第10页说明两湖采集航高80 m、航速10 m/s，水下点密度约28点/平方米；第13页表3以人工标注为参考。数据1最终噪声召回99.46%、精确率97.37%、F1为0.984、总体准确率99.85%；数据2分别为96.80%、86.28%、0.912和99.64%。作者还报告与SVB联合滤波相比处理更快，但不能把噪声分类准确率当作缺失湖底的高程重建精度。",
+        "conclusion": "作者认为两阶段扫描线滤波能为复杂浅水地形建模保留更多可靠测点。第18至19页明确承认陡变地形可能误删真点、局部高密度噪声会干扰拟合；植被等非地形目标也可能被剔除。作者拟继续提高复杂情形下的鲁棒性。本报告分析：对稀疏地形课题，滤波后的有效点密度与地形边缘保留率应单独评价。",
+        "plain": "它主要帮你把测深点洗干净，不会凭空填出没测到的湖底。",
+        "innovations": [
+          {
+            "claim": "把原始三维测深点云转成扫描线二维拟合问题。",
+            "analysis": "获取时间提供稳定顺序，先做粗离群点清理，再沿扫描轨迹拟合水下高程变化。该步骤依赖扫描线原始记录；全文第15页说明无此信息时不能直接套用。"
+          },
+          {
+            "claim": "以局部残差中位数绝对偏差调整滤波阈值。",
+            "analysis": "平缓区域采用严格阈值，起伏区域放宽阈值以保留真实地貌。第13页表3在两种复杂程度的实验区给出最终噪声召回96.80%至99.46%，但陡变区域仍可能漏保留地形点。"
+          }
+        ]
+      },
+      "title_zh": "面向无人机载激光测深点云的扫描线滑动窗口滤波方法",
+      "journal_metrics": {
+        "journal": "Remote Sensing",
+        "issn": "2072-4292",
+        "checked_at": "2026-10-17",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_subjects": [
+          {
+            "quartile": "Q1",
+            "subject": "Geosciences, Multidisciplinary"
+          },
+          {
+            "quartile": "Q2",
+            "subject": "Remote Sensing"
+          },
+          {
+            "quartile": "Q2",
+            "subject": "Environmental Sciences"
+          },
+          {
+            "quartile": "Q2",
+            "subject": "Imaging Science and Photographic Technology"
+          }
+        ],
+        "jcr_year_label": "此前出版方统计页2026-09-26显示；页面未单列分区年度；今日访问返回403",
+        "jcr_basis": "沿用已核验的出版方四学科显示值，不将CiteScore分区充作JCR",
+        "cas": "地球科学大类2区",
+        "cas_year": 2025,
+        "if_value": 4.3,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新及上一年度IF口径"
+      },
+      "source_verification_count": 3,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W4401666547",
+      "title": "Multistage strategy for ground point filtering on large-scale datasets",
+      "authors": "Diego Teijeiro Paredes; Margarita Amor López; Sandra Buján; Rico Richter; Jürgen Döllner",
+      "publication_date": "2024-08-17",
+      "journal": "The Journal of Supercomputing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1007/s11227-024-06406-0",
+      "categories": [
+        "地面分类与滤波",
+        "DTM生成与联合重建"
+      ],
+      "direction": "大范围多地貌LiDAR数据的场景自适应地面点滤波",
+      "relevance": "高",
+      "relevance_reason": "研究按地貌选择滤波算法以获得可靠地面样本，为大范围DTM恢复提供前置数据保障。",
+      "reading_scope": "核读Crossref与OpenAlex所收完整摘要及发表信息；出版方PDF端点返回网页，未核读全文",
+      "discovery_type": "历史未收录补充；2024-08-17在线发表，非近期新论文",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "大规模数据集的多阶段地面点滤波策略",
+        "background": "全国尺度激光点云跨越多种地貌，单一滤波算法或固定参数难以兼顾城市、山地和植被区。先由人工划分地貌类型再选择方法又非常耗时，给大范围地面点分类及DTM生产带来瓶颈。作者提出多阶段自动流程：从点云提取多项指标识别地貌类型，再为不同地貌匹配合适的地面滤波算法；同时使用Apache Spark构建分布式内存并行实现。摘要报告12个计算节点上最高可达34倍加速，但未列地面分类误差数值。",
+        "background_plain": "同一个删树木和建筑点的规则不可能适合全国所有地形，先识别是什么地貌再选工具更合理。",
+        "method": "输入是覆盖大范围多种地貌的LiDAR点云，输出为经过不同算法选择后提取的地面点。第一阶段从点云计算若干地貌描述指标，用于自动辨认区域类型，减少人工分区。\n\n第二阶段将地貌类别与适当的地面点过滤算法匹配，而不是在所有区域使用同一套参数。作者另给出基于Apache Spark的分布式内存实现，使区域分块可并行处理。摘要没有公布具体指标表、分类器、各地貌对应算法清单或滤波精度，因此不能推断每一区都优于最佳单方法。",
+        "method_plain": "先给地形分区，再给各区选合适的点云滤波器，最后用多台机器并行跑大范围数据。",
+        "innovation_overview": "作者把自动地貌识别、分区算法匹配和分布式执行整合为大范围地面点筛选流程。",
+        "innovation_plain": "不是发明一个万能滤波器，而是先分清地貌，给不同地方选合适的方法并加快批量处理。",
+        "results": "摘要明确给出的定量结果为Apache Spark分布式实现使用12个计算节点时最高34倍速度提升；该值与具体硬件和数据划分相关。摘要没有列各地貌地面点分类IoU、DTM RMSE或真实空洞补全效果，不能把速度提升写成地形精度提升。",
+        "conclusion": "作者认为地貌自适应的多阶段流程有利于全国尺度激光点云的自动过滤。可获得摘要未明确列出局限与未来工作。本报告分析：可借鉴其按地貌选择重建策略，但这里验证的是地面点过滤和计算效率，不是缺失高程推断。",
+        "plain": "它帮助批量找对地面点，并让全国尺度任务跑得更快；补洞仍是后续问题。",
+        "innovations": [
+          {
+            "claim": "先识别地貌类型再选择地面点滤波算法。",
+            "analysis": "研究回应不同景观对滤波规则和参数要求不同的问题，减少全国尺度数据的人工选择成本。摘要未给具体分类准确率与每区误差。"
+          },
+          {
+            "claim": "采用Spark分布式内存并行处理。",
+            "analysis": "把大量点云块交给多个节点处理，摘要报告12个节点最高34倍加速；加速是计算吞吐结果，不等于地面分类或高程重建精度提高。"
+          }
+        ]
+      },
+      "title_zh": "大规模数据集的多阶段地面点滤波策略",
+      "journal_metrics": {
+        "journal": "The Journal of Supercomputing",
+        "issn": "0920-8542",
+        "checked_at": "2026-10-17",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "公开查询页JCR字段要求登录，未取得官方2025年度各学科分区",
+        "cas": "计算机科学大类4区；工程电子与电气小类3区；计算机硬件小类4区；计算机理论方法小类4区",
+        "cas_year": 2025,
+        "if_value": 3.5,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新及上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://openalex.org/W4399505553",
+      "title": "Airborne LiDAR Point Cloud Filtering Algorithm Based on Supervoxel Ground Saliency",
+      "authors": "Weiwei Fan; Xinyi Liu; Yongjun Zhang; Dongdong Yue; Senyuan Wang; Jiachen Zhong",
+      "publication_date": "2024-06-10",
+      "journal": "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
+      "source_type": "conference",
+      "doi": "https://doi.org/10.5194/isprs-annals-x-2-2024-73-2024",
+      "categories": [
+        "地面分类与滤波",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "以超体素地面显著性保持复杂地形边界的ALS滤波",
+      "relevance": "高",
+      "relevance_reason": "全文报告稀疏山地地面点的失败情形，对重建前的样点筛选和难例设计直接有用。",
+      "reading_scope": "核读Crossref、OpenAlex及出版方7页开放PDF全文文本，检查第2-6页方法、表2、讨论与结论；未逐幅审读全部图像细节",
+      "discovery_type": "历史未收录会议论文；2024-06-10发表，不称今日新发表",
+      "open_access_pdf_urls": [
+        "https://isprs-annals.copernicus.org/articles/X-2-2024/73/2024/isprs-annals-X-2-2024-73-2024.pdf"
+      ],
+      "summary": {
+        "title_zh": "基于超体素地面显著性的机载LiDAR点云滤波算法",
+        "background": "机载激光点云穿透稀疏植被后可获得地面高程，但地面点与建筑、树木等非地面点在复杂场景中常难区分。规则格网分割容易切断对象边界，并把大型建筑屋顶凹陷误认为地面。作者提出SGSF：先以保边界超体素划分三维点云，再沿八个方向比较相邻单元的高度变化并累计地面显著性，最后在显著性引导下通过半全局优化求各超体素的过滤平面。全文在OpenGF的九个测试场景中比较CSF、MCC、SGF等方法。",
+        "background_plain": "建筑屋顶凹下去和地面山谷看起来可能很像；方法尝试保住物体边界，再多方向判断哪些点真属于地面。",
+        "method": "输入是机载LiDAR点云，输出是地面与非地面点分类。第2页首先使用保边界TBBP超体素把点云分成自适应大小的三维单元，计算单元中心，为后续多方向扫描提供空间组织。\n\n第2至3页沿八个方向建立扫描条带，比较相邻超体素最低点的高度差，累计地面显著性；遇到大型建筑顶部凹陷可重复扫描，避免单次方向判断误认其为地面。第3至4页再为每个单元构造候选过滤平面，以显著性协调贴合当前数据与相邻平面平滑的代价，采用半全局优化选择地面参考面，最终分类点。文中阈值与分辨率需要输入，不是完全无参数。",
+        "method_plain": "先按真实边界把点云分块，四面八方观察每块是否像地面，再拼出一张过滤参考面。",
+        "innovation_overview": "作者把保边界的三维超体素与多方向地面显著性及半全局平面优化结合。",
+        "innovation_plain": "把点分成更像真实物体的块，再综合多个方向的证据，避免把建筑凹槽轻易当成地面。",
+        "results": "全文第4页表2在OpenGF九场景中，SGSF平均总体准确率92.33%、地面IoU 78.93%；CSF分别为90.23%和75.37%，MCC为88.88%和73.98%，SGF为90.20%和72.10%。第6页在最大S2块约需24秒，慢于SGF约5秒和CSF约4秒，但快于通常超过4分钟的MCC。作者指出陡峭山地森林区的稀疏地面点仍较难识别；分类指标不能代替高程补洞RMSE。",
+        "conclusion": "作者认为超体素显著性提高多数复杂场景的地面点滤波效果。第5至6页明确承认陡峭山地的稀疏地面点识别弱于专门针对森林的MCC，且超体素划分带来额外耗时；后续拟改进山地适应性并用并行计算提速。本报告分析：这些失败区域正可作为稀疏地形重建的输入可信度与难例测试。",
+        "plain": "平均成绩不错，但最稀疏、最陡的山地恰恰会漏掉真地面点，不能只看总平均数。",
+        "innovations": [
+          {
+            "claim": "以保边界超体素取代规则格网单元。",
+            "analysis": "全文第2页解释规则格网可能跨越路缘和物体边界；超体素在竖直方向也分离点群，使后续显著性评估更少受边界混叠影响。"
+          },
+          {
+            "claim": "多方向显著性引导最优过滤平面。",
+            "analysis": "八方向高度比较处理单一视角的歧义，显著性参与平面数据项与平滑项权衡。第4页表2显示九场景平均总体准确率92.33%，但并非所有场景最优。"
+          }
+        ]
+      },
+      "title_zh": "基于超体素地面显著性的机载LiDAR点云滤波算法",
+      "journal_metrics": {
+        "journal": "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
+        "checked_at": "2026-10-17",
+        "not_applicable": "该文载于2024年ISPRS TC II中期研讨会论文集；期刊JCR、中科院期刊分区及IF不适用"
+      },
+      "source_verification_count": 3,
+      "format_version": 2
+    }
+  ],
+  "github_publication": {
+    "id": 6228238273,
+    "created_at": "2026-10-17T02:00:00Z"
+  }
+}
