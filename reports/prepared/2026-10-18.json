@@ -1,0 +1,386 @@
+{
+  "schema_version": 1,
+  "producer": "codex",
+  "date": "2026-10-18",
+  "papers": [
+    {
+      "id": "https://doi.org/10.1117/1.jrs.20.044502",
+      "title": "RGFNet: scene-adaptive airborne LiDAR ground filtering for robust digital terrain model generation",
+      "authors": "Ning Li",
+      "publication_date": "2026-10-14",
+      "journal": "Journal of Applied Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1117/1.jrs.20.044502",
+      "categories": [
+        "地面分类与滤波",
+        "DTM生成与联合重建"
+      ],
+      "direction": "场景自适应机载激光点云地面点提取",
+      "relevance": "高",
+      "relevance_reason": "直接处理稀疏山地与城市异常点环境中的地面点识别，是可靠DTM生成的上游环节；不直接验证高程空洞补全",
+      "reading_scope": "核读Crossref与OpenAlex所收完整摘要及出版信息，未获取或核读全文；网络模块和损失函数细节只按摘要描述",
+      "discovery_type": "近7天新发表；Crossref记载2026-10-14发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "RGFNet：面向稳健数字地形模型生成的场景自适应机载激光点云地面滤波",
+        "background": "从机载激光雷达（LiDAR）点云中准确识别地面点，是生成数字地形模型（DTM）的前提。复杂区域的点密度可能剧烈变化，城市有大范围异常点，山地又有稀疏地面回波；统一的地面分类表示因此难以兼顾各种场景。作者提出RGFNet，希望在异质环境中更稳健地分离地面与非地面点。摘要称其使用场景类型检测器提供软先验，由分割任务直接学习场景条件，而不需要显式的场景标签；先验再引导密度感知多尺度几何特征和双路径融合，并配合自适应噪声建模与场景加权损失。作者在OpenGF、DALES和ISPRS数据上报告了地面分类结果，认为这种条件化策略有助于大范围DTM生产。",
+        "background_plain": "要做地形图，先得把建筑和植被点剔除；同一套固定规则在城市和地面点稀疏的山地都容易失灵。",
+        "method": "输入是机载LiDAR点云，输出是供DTM生成使用的地面点分类。摘要确认网络设有场景类型检测器，但其输出是由分割目标学习的软场景先验，并非预先人工标好的城市、山地类别。这样模型可以根据当前点云条件调整后续特征提取。\n\n场景先验指导密度感知的多尺度几何特征，并由双路径融合组合不同表示；自适应噪声建模针对异常点和错误标签，场景加权损失则处理类别不平衡及场景差异。摘要未给检测器结构、邻域尺度、融合公式、损失权重或DTM插值步骤，不能据此推断直接补全了缺失高程。",
+        "method_plain": "先判断这片点云更像哪类环境，再调整找地面点的特征和训练关注点；筛出可信地面点之后，仍需要单独生成连续地形面。",
+        "innovation_overview": "作者的贡献主张是让地面点滤波随场景和点密度变化，并增强对异常点的稳健性。",
+        "innovation_plain": "不是给所有地形用一个滤波标准，而是让模型结合环境与点密度挑出更可靠的地面点。",
+        "results": "摘要报告在OpenGF Tests I、II、III上的平均交并比（mIoU）分别为96.06%、92.51%、95.27%，在跨数据集DALES和ISPRS上分别为94.71%和81.57%。作者称城市异常点和稀疏山地场景较有优势，并与代表性点方法及前期多点聚焦Transformer比较；摘要没有逐基线数值、地面点密度范围或最终DTM的高程RMSE。上述百分比是点分类指标，不是连续地形重建误差。",
+        "conclusion": "作者认为场景条件化地面滤波有助于可靠、大范围DTM生产。可获得摘要未明确列出局限或未来工作。本报告分析：这篇适合借鉴输入点可信度筛选，但其证据尚不能证明对真实连续缺测区域的高程补全有效。",
+        "plain": "这篇先把可能属于真实地面的点找准，地形补洞本身还要另做。",
+        "innovations": [
+          {
+            "claim": "用分割任务学习软场景先验。",
+            "analysis": "场景检测器不依赖显式场景类别标签，而把场景条件传给几何表示。作者以此回应统一上下文表征难以覆盖混合地貌的问题；摘要未提供该模块单独消融的数值。"
+          },
+          {
+            "claim": "将密度感知多尺度特征、双路径融合与噪声建模联合使用。",
+            "analysis": "这一组合面向点密度差异、大异常点和标签噪声。摘要报告了多数据集平均交并比，但没有给逐模块贡献或生成DTM后的高程误差，不能把分类增益等同于补洞精度。"
+          }
+        ]
+      },
+      "title_zh": "RGFNet：面向稳健数字地形模型生成的场景自适应机载激光点云地面滤波",
+      "journal_metrics": {
+        "journal": "Journal of Applied Remote Sensing",
+        "issn": "1931-3195",
+        "checked_at": "2026-10-18",
+        "indexing": "SCIE（LetPub公开期刊目录）",
+        "jcr_failure": "LetPub公开页JCR字段要求登录；未取得官方2025年度各学科分区",
+        "cas": "地球科学大类4区",
+        "cas_year": 2025,
+        "if_value": 1.8,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新的上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.4038/jmtr.v11i4.346",
+      "title": "Assessing the influence of sample size and spatial sampling strategies on GeoAI-based digital elevation model error correction: A case study of the Sabaragamuwa University area, Sri Lanka",
+      "authors": "T. A. T. K. G. Jayathilaka; G. N. H. Wanigaratne",
+      "publication_date": "2026-10-02",
+      "journal": "Journal of Multidisciplinary and Translational Research",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.4038/jmtr.v11i4.346",
+      "categories": [
+        "曲面建模、插值与隐式表示",
+        "评价、综述与数据集"
+      ],
+      "direction": "有限地面测高点的采样设计与现有DEM误差订正",
+      "relevance": "高",
+      "relevance_reason": "直接量化50至500个地面高程点及空间采样方式对连续DEM订正的影响；任务是已有DEM订正，不是无底图的空洞生成",
+      "reading_scope": "已下载并核对15页PDF的题名与文件头，核读正文第1至13页的摘要、方法、表1至表2、讨论和结论；第14至15页主要为参考文献，未逐条核读",
+      "discovery_type": "近30天发表；Crossref记载2026-10-02发表，非今日新论文",
+      "open_access_pdf_urls": [
+        "https://jmtr.sljol.info/articles/346/files/6abf5ef814b54.pdf"
+      ],
+      "summary": {
+        "title_zh": "样本数量与空间采样策略对GeoAI数字高程模型误差订正的影响：斯里兰卡萨伯勒格穆沃大学地区案例",
+        "background": "免费的数字高程模型（DEM）服务于地形、水文和灾害分析，但复杂地貌、植被和传感器限制会造成垂直误差。机器学习可利用实测高程订正现有DEM，然而外业测点有限时，究竟需要多少点、点应如何分布，仍缺乏直接比较。作者在斯里兰卡萨伯勒格穆沃大学周边以30 m SRTM DEM为底图，用全站仪和自动水准仪测得的高程作参考，比较50至500点的随机、低坡度聚集和按坡度分层三类采样。随机森林预测原DEM的高程误差，订正后以保留的独立测点和变差函数评估。摘要称误差明显下降，分层采样最优；但摘要将1.541 m误写为RMSE，正文表1显示该数值实际上是MAE。",
+        "background_plain": "已有地形图不够准，外业只能测少量点；关键问题不仅是测多少，还要不要把点都挤在容易到达的平地。",
+        "method": "输入是30 m SRTM原始DEM与少量实测高程。作者先在测点位置取出DEM高程，计算DEM减实测的垂直误差；再从原DEM提取高程、坡度、坡向和粗糙度，把这些属性作为随机森林的输入，以该垂直误差为预测目标。订正时从原DEM减去模型预测的误差。\n\n正文第5页先按空间分箱留出独立验证点；余下训练候选分别按随机、低于坡度第30百分位的聚集、以及坡度四分位分层抽取50、100、150、200、300、400、500点。每种设置重复30次，随机森林使用100棵树。正文第7页说明将栅格单元转换成点，应用误差模型后再用普通克里金形成连续订正DEM；因而最后的连续面同时包含误差预测和插值步骤。\n\n评价包括均方根误差（RMSE）、平均绝对误差（MAE）、决定系数、改进比例和误差变差函数。论文还用Welch检验及Holm调整比较采样策略。研究区仅一个较小校园周边，不能据此推断所有地貌的最佳点数。",
+        "method_plain": "拿少量实测点教模型认出旧地形图哪里偏高或偏低，再把预测的偏差从旧图扣掉；测点覆盖不同坡度，比只测平地更有代表性。",
+        "innovation_overview": "论文的主要贡献是把样本量与采样位置设计作为DEM误差订正的独立实验变量，并进行重复与独立验证。",
+        "innovation_plain": "最实用的发现是：有限测点要覆盖多种坡度，光在方便测的地方堆点，增加点数也未必有效。",
+        "results": "正文第8页表1给出原SRTM DEM的RMSE为5.010 m。500个分层点时，30次重复的平均RMSE为2.173 m、MAE为1.541 m、R²为0.952；同为500点的随机采样RMSE为2.211 m，低坡度聚集采样为2.632 m。第9页表2显示随机与分层的差异经Holm调整后各样本量均未达到显著性，不能称分层显著优于随机。正文摘要和第8页文字把1.541 m称RMSE，与表1不一致，此处以表1列名为准。第10页报告500点时原误差变差函数基台值22.759降至分层订正后的13.067；这是单研究区、现有DEM订正结果，不等于真实空洞从无到有重建。",
+        "conclusion": "作者认为有限实测点可有效订正SRTM DEM，测点应覆盖地貌差异；低坡度聚集采样易遗漏其他地形条件。正文第13页明确承认研究区较小、只用了DEM派生变量，并建议在更大、更复杂地貌和更多环境变量下检验。本报告分析：可把坡度分层策略用于稀疏采样实验设计，但此方法依赖已有DEM底图和参考测点，不能直接替代连续空洞填补。",
+        "plain": "在这一个案例里，500个分散到不同坡度的测点效果最好，但与随机布点的优势没有通过调整后的显著性检验。",
+        "innovations": [
+          {
+            "claim": "在同一订正模型下比较三种测点布局与七档样本量。",
+            "analysis": "固定随机森林框架后，作者用30次重复采样隔离测点布局的影响。正文第8页表1显示低坡度聚集采样在500点时平均RMSE仍为2.632 m，而分层为2.173 m；差异来自实验设置，不表示提出了全新随机森林。"
+          },
+          {
+            "claim": "用独立保留测点与空间误差分析检查订正效果。",
+            "analysis": "作者先留出空间分散的测点，再用RMSE和变差函数检查误差大小及空间结构。这比只报告训练拟合更接近实际使用，但仍只覆盖一个较小研究区。"
+          }
+        ]
+      },
+      "title_zh": "样本数量与空间采样策略对GeoAI数字高程模型误差订正的影响：斯里兰卡萨伯勒格穆沃大学地区案例",
+      "journal_metrics": {
+        "journal": "Journal of Multidisciplinary and Translational Research",
+        "checked_at": "2026-10-18",
+        "jcr_failure": "未取得Clarivate JCR可核验条目或具体学科分区",
+        "failure": "LetPub公开期刊查询未返回同名记录；未找到可核验的JCR、2025版中科院分区及有年份的IF，不据此断言该刊未被收录"
+      },
+      "source_verification_count": 3,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.1080/01431161.2026.2617166",
+      "title": "Development of global diffusion filling model for voids filling of Digital elevation models (DEMs)",
+      "authors": "Guoqing Zhou; Kun Li; Cong Li; Hanwen Gao; Ertao Gao; Xiang Zhou; Jiasheng Xu; Jianjun Chen",
+      "publication_date": "2026-01-27",
+      "journal": "International Journal of Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1080/01431161.2026.2617166",
+      "categories": [
+        "缺失地形恢复与空洞填补",
+        "多源数据与摄影测量重建"
+      ],
+      "direction": "不依赖预定义缺失掩膜的陆地与水下DEM扩散补洞",
+      "relevance": "高",
+      "relevance_reason": "直接研究DEM连续缺失区填补，并比较两类缺失掩膜及陆地、水下数据",
+      "reading_scope": "核读OpenAlex收录完整摘要、Crossref在线发表元数据及LetPub期刊公开页；未取得或核读全文，掩膜构造、数据分辨率和各表数值未核实",
+      "discovery_type": "近365天已发表、此前未收录；2026-01-27在线发表，非今日新论文",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "用于数字高程模型空洞填补的全局扩散填充模型开发",
+        "background": "数字高程模型（DEM）的连续空洞会限制地形分析。作者认为已有补洞模型通常在训练时使用掩膜或其他辅助条件，这使其学习依赖特定缺失图样，遇到新的空洞形状时可能泛化不足。论文提出全局扩散填充模型（GDFM），将多头注意力加入U-Net并设计混合损失，还用重采样生成保留地理特征和细节的训练样本。摘要称模型无需外部数据或预定义掩膜，可同时用于陆地和水下DEM空洞。作者在三套陆地DEM和三套水下DEM数据、两种掩膜下验证，并报告结构相似性和相对增益。Crossref记录2026年1月27日在线发表、3月4日列入印刷记录，这两个日期不能混作今日新发表。",
+        "background_plain": "地形图缺了一块，这篇让模型学习完整地形的样子，避免训练时只记住某一种固定洞形。",
+        "method": "输入是有缺失区的DEM，输出是填补后的连续高程面。摘要称GDFM采用扩散式生成思路，以U-Net为主干，在跳跃连接后加入多头自注意力，让编码端传给解码端的特征更有选择性；这一结构用于从周围地貌恢复空洞内的空间形态。\n\n作者另提出混合损失增强填补精度，并以重采样策略构造具有真实地理特征和细节的训练样本。摘要说训练无需预定义掩膜约束，但实验仍用两类掩膜评估；这不等于推理时无需标识待填区域。原文摘要未说明扩散步数、噪声日程、混合损失公式、掩膜几何及训练测试划分，不能扩展成已验证任意真实缺测形态。",
+        "method_plain": "先让网络学会地形纹理和形状，再根据已知区域生成缺失部分；训练时尽量不把它锁死在一种洞形上。",
+        "innovation_overview": "作者主张将不依赖预定义训练掩膜的扩散补洞与注意力增强U-Net用于陆地及水下DEM。",
+        "innovation_plain": "重点是减少模型对特定洞形的记忆，并让它更会利用地形上下文填洞。",
+        "results": "摘要报告三套陆地和三套水下DEM数据、两种缺失掩膜。陆地空洞区域的结构相似性约80%至90%；作者称相对传统方法提高24%、相对深度学习方法提高14%，水下数据平均改善约2%至10%。摘要没有写清这些百分比对应的全部指标、具体基线名称、样本数量、分辨率及置信区间，不能将相对增益写成统一RMSE降低。",
+        "conclusion": "作者认为GDFM有望提高陆地与水下DEM补洞质量。可获得摘要未明确讨论局限或未来工作。本报告分析：它直接对应连续空洞恢复，但仍需核查真实缺测和跨地区测试，而不能把两种模拟掩膜的结果视为普适证明。",
+        "plain": "这篇正面解决地形图缺块问题，但目前只掌握摘要级的效果数据。",
+        "innovations": [
+          {
+            "claim": "训练目标避免固定缺失掩膜的条件依赖。",
+            "analysis": "论文把既有方法的掩膜分布依赖作为问题，并在两种测试掩膜下评价。摘要支持其设计意图及整体效果，但没有给出跨任意真实空洞的外部验证。"
+          },
+          {
+            "claim": "注意力增强U-Net并配合混合损失与地形重采样。",
+            "analysis": "作者希望筛选有用的跳跃连接特征，同时提高生成高程的形态和数值质量。摘要未提供逐项消融幅度，不能把整体改进分别归功于每个模块。"
+          }
+        ]
+      },
+      "title_zh": "用于数字高程模型空洞填补的全局扩散填充模型开发",
+      "journal_metrics": {
+        "journal": "International Journal of Remote Sensing",
+        "issn": "0143-1161",
+        "checked_at": "2026-10-18",
+        "indexing": "SCIE（LetPub公开期刊页）",
+        "jcr_failure": "公开页JCR字段要求登录；未取得2025年度具体学科的官方分区",
+        "cas": "地球科学大类4区；遥感小类4区；成像科学与照相技术小类4区",
+        "cas_year": 2025,
+        "if_value": 2.6,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新的上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.22541/essoar.15006116/v1",
+      "title": "TerraComp: Geological Prior-Guided Point Cloud Completion for Earth Science Terrain and Structure Reconstruction",
+      "authors": "Yifan Lin",
+      "publication_date": "2026-07-15",
+      "journal": "ESS Open Archive",
+      "source_type": "preprint",
+      "doi": "https://doi.org/10.22541/essoar.15006116/v1",
+      "categories": [
+        "跨领域与通用点云补全",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "地质方向先验引导的地形与断层点云补全",
+      "relevance": "高",
+      "relevance_reason": "直接补全地学点云并约束地形法向与断层走向；其中断层结构结果不能等同于DEM高程误差",
+      "reading_scope": "核读Crossref与OpenAlex收录的预印本摘要及元数据，未取得或核读预印本全文；地质基准的细节只按摘要表述",
+      "discovery_type": "近365天发布的历史未收录预印本；2026-07-15发布，非今日新论文",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "TerraComp：地质先验引导的地学地形与构造点云补全",
+        "background": "常见点云补全方法大多在通用物体数据上设计，即使几何距离指标表现较好，也未必能保留地貌、地层及断层的方向规律。该预印本提出TerraComp，希望将地质先验纳入结构传播，使缺失点云既在空间位置上接近真值，也在地质解释上合理。摘要介绍了地质方向场，它编码层理法向、断层走向和地形法向；模型沿该方向场传播特征，并联合欧氏与双曲Chamfer距离、对比项和多尺度方向一致性损失训练。作者建立两个带方向标注的地质点云基准，比较七种方法，并请12名地质学者评价结果。",
+        "background_plain": "把缺失的点补出来还不够，地层和断层的延伸方向也不能乱接。",
+        "method": "输入是残缺的地学地形或构造点云，输出是补全点云。模型先估计含地形法向、层理法向和断层走向的地质方向场；地质引导结构传播模块沿这些方向传递局部结构信息，期望补点时延续真实构造趋势。\n\n训练同时使用欧氏、双曲及对比Chamfer距离，并加入多尺度方向一致性约束；前几项约束点集位置与表征，方向项约束补全后的地质走势。摘要未给方向场估计所需数据、网络层数、训练划分和各损失权重，也未说明如何从补全点云生成栅格DEM。",
+        "method_plain": "补点时除了看附近哪里该有点，还沿着山体或断层本来的走势接下去。",
+        "innovation_overview": "作者主张把地质方向先验直接放入点云结构传播和训练目标，以提高地学补全的几何与地质一致性。",
+        "innovation_plain": "不仅追求补点位置像原图，还要求补出来的山体和断层方向说得通。",
+        "results": "摘要称在地质数据集上，相对最强基线的L1-Chamfer距离降低7.4%至9.6%，断层走向偏差降至2.15度，并报告12名地质学者评价更合理。未给具体点密度、遮挡比例、各数据集误差表或栅格DEM高程RMSE；这些点云和断层指标不可直接当作DEM补洞精度。",
+        "conclusion": "作者认为地质先验能增强地学点云补全的几何和方向一致性。可获得摘要未明确列出局限或未来工作。本报告分析：地形法向先验值得迁移到稀疏地形重建，但地质方向注释的获取成本及非地质点云适用性需另行检验。",
+        "plain": "这篇把地质方向作为补点规则，适合借鉴形态约束，但还不是直接输出DEM的算法。",
+        "innovations": [
+          {
+            "claim": "沿估计的地质方向场传播点云结构。",
+            "analysis": "相较主要面向通用物体的补全网络，模型显式利用层理、断层和地形的方向信息。摘要报告断层走向偏差，但未给该模块独立消融的数值。"
+          },
+          {
+            "claim": "构建带方向标注的地质点云基准并检验地质合理性。",
+            "analysis": "GeoPC-300和Fault-Face使评价不局限于点位距离；12名地质学者的人评为地质可解释性提供另一种证据。摘要未说明人评一致性统计。"
+          }
+        ]
+      },
+      "title_zh": "TerraComp：地质先验引导的地学地形与构造点云补全",
+      "journal_metrics": {
+        "journal": "ESS Open Archive",
+        "checked_at": "2026-10-18",
+        "not_applicable": "预印本而非期刊论文；JCR、中科院期刊分区和期刊IF不适用"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.1080/13658816.2025.2594002",
+      "title": "Terrain breakline-aware smoothing interpolation for producing high-accuracy digital elevation models from LiDAR data",
+      "authors": "Chuanfa Chen; Xingjie Wang; Yanyan Li; Jinda Hao",
+      "publication_date": "2025-12-09",
+      "journal": "International Journal of Geographical Information Science",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1080/13658816.2025.2594002",
+      "categories": [
+        "曲面建模、插值与隐式表示",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "保地形折线的激光雷达散乱点平滑插值",
+      "relevance": "高",
+      "relevance_reason": "直接将随机分布且有噪声的LiDAR地面高程点插值为DEM，并强调山脊、谷地和陡坎保真",
+      "reading_scope": "核读OpenAlex收录完整摘要、Crossref上线/印刷日期及LetPub期刊公开页；未取得或核读全文，核函数和定量表格未核实",
+      "discovery_type": "近365天在线发表的历史未收录论文；2025-12-09上线，2026-07-03印刷记录，非今日新论文",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "面向激光雷达高精度数字高程模型的地形折线感知平滑插值",
+        "background": "激光雷达（LiDAR）提取的地面点常随机散布，既含测量噪声，又以隐含方式保留山脊、谷地和陡坎等地形折线。直接用传统空间插值，可能把误差过拟合成表面起伏，或把真实的地貌转折抹平。作者提出地形折线感知平滑插值（TBASI）：在惩罚最小二乘回归框架下平滑采样误差，设计四边形核函数恢复不同类型折线，并用迭代策略增强复杂地形中的稳定性。摘要报告十套公开数据与五种经典插值方法的比较，认为大多数样本上精度较好且能保留关键地形特征。",
+        "background_plain": "散乱测高点既有噪声又藏着山脊和陡坎；做成地形图时既不能照单全收噪声，也不能把真棱线磨掉。",
+        "method": "输入为LiDAR地面散点高程，输出为规则数字高程模型（DEM）。作者在惩罚最小二乘回归中加入平滑插值，平衡测点拟合和噪声抑制，避免输出表面过分追随每个采样误差。\n\n同一插值框架中，四边形核函数用于恢复多类地形折线；迭代更新被用于复杂地貌下保持稳定和稳健。摘要没有给出核函数解析式、折线检测机制、迭代停止准则和分辨率设置，故这里只解释已公开的模块作用，不能臆测实现顺序的更多细节。",
+        "method_plain": "先让散点拟合出一张平滑面，再特别照顾山脊、谷底和陡坎这些不能被抹平的位置。",
+        "innovation_overview": "作者将平滑误差抑制与折线保护放进同一散点插值框架。",
+        "innovation_plain": "把去噪和保棱线一起考虑，避免地形面既抖又平。",
+        "results": "摘要报告在十套不同地形的公开数据上与五种经典插值方法比较，TBASI在几乎所有样本中精度更高，并能保留山脊、谷地和陡坎。可获得摘要未公布样本点密度、具体基线名称、RMSE或MAE数值、统计检验和计算开销，因此不能量化优势幅度；实验对象是有散点的插值，不等于大面积完全无观测空洞。",
+        "conclusion": "作者认为TBASI能从随机且含噪的LiDAR地面点生成较高精度DEM并保护关键地貌。可获得摘要未明确列出局限或未来工作。本报告分析：可将其作为稀疏高程点重建的传统基线，尤其检验折线保持；还需全文核实在极低采样密度或连续遮挡下的表现。",
+        "plain": "给散乱测高点插值时，既压住噪声，又尽量保留山脊和陡坎。",
+        "innovations": [
+          {
+            "claim": "在惩罚最小二乘插值中处理LiDAR采样噪声。",
+            "analysis": "方法针对散乱点的噪声与过拟合，在插值而非后处理阶段控制平滑。摘要报告整体优于多数经典基线，但没有给出各数据集RMSE及独立的平滑消融。"
+          },
+          {
+            "claim": "以四边形核函数与迭代策略保留折线并提高复杂地形稳定性。",
+            "analysis": "作者明确把山脊、谷地和陡坎作为需保留的结构；摘要称这些特征恢复较好，但未给折线定位误差或逐模块结果。"
+          }
+        ]
+      },
+      "title_zh": "面向激光雷达高精度数字高程模型的地形折线感知平滑插值",
+      "journal_metrics": {
+        "journal": "International Journal of Geographical Information Science",
+        "issn": "1365-8816",
+        "checked_at": "2026-10-18",
+        "indexing": "SCIE（LetPub公开期刊页）",
+        "jcr_failure": "公开页JCR字段要求登录；未取得2025年度具体学科的官方分区",
+        "cas": "地球科学大类1区",
+        "cas_year": 2025,
+        "if_value": 5.9,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新的上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.51489/tuzal.1679932",
+      "title": "Digital elevation model prediction in Sudan’s data scarce mining regions: A comparison of neural network and classical interpolation approaches",
+      "authors": "Hossamaldeen Mohamed; Abubakr Hassan",
+      "publication_date": "2025-12-30",
+      "journal": "Turkish Journal of Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.51489/tuzal.1679932",
+      "categories": [
+        "曲面建模、插值与隐式表示",
+        "评价、综述与数据集"
+      ],
+      "direction": "测高稀缺矿区的DEM神经网络与经典插值比较",
+      "relevance": "高",
+      "relevance_reason": "直接比较测高点不足且地形复杂条件下从GPS高程生成连续DEM的四种方法",
+      "reading_scope": "核读Crossref与OpenAlex收录完整摘要及出版元数据，未取得或核读全文；训练测试点数量与划分未核实",
+      "discovery_type": "近365天发表的历史未收录论文；Crossref记载2025-12-30，OpenAlex列2025-12-14，取出版方登记日期，不称今日新论文",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "苏丹测高资料稀缺矿区的数字高程模型预测：神经网络与经典插值方法比较",
+        "background": "数据稀缺的复杂矿区很难从有限测高点建立准确数字高程模型（DEM）。研究以苏丹港矿区为例，先对GPS高程作电离层与对流层影响相关的订正，再比较前馈人工神经网络（ANN）、反距离权重（IDW）、普通克里金（OK）和泛克里金（UK）生成连续地形面的效果。ANN在MATLAB中以Levenberg-Marquardt算法训练，经典插值在ArcGIS Pro中实现；作者用三维地表、等高线、误差分布和MAE、RMSE、R²评估。摘要称ANN优于这些经典方法，OK次之，IDW对突变高程较弱，UK在该地复杂趋势拟合中表现最差。",
+        "background_plain": "矿区只量到零散高程点，作者问：用神经网络铺成地形图是否比常见插值更准。",
+        "method": "输入是经过校正的GPS高程观测，输出为矿区连续DEM。作者分别用前馈ANN学习测点到高程面的关系，并用IDW、OK、UK三种传统空间插值形成对照，保持研究区相同后比较误差。\n\nANN以Levenberg-Marquardt算法训练；OK利用空间自相关，IDW依据邻近距离加权，UK还需拟合空间趋势。摘要没有报告ANN输入特征清单、网络层数、测点数、空间验证划分和栅格分辨率，不能将其称为已验证跨矿区泛化。",
+        "method_plain": "用同一批测高点分别做四张地形图，再看哪张最接近保留的参考值；神经网络在这个研究区胜出。",
+        "innovation_overview": "这项研究的价值主要是对测高稀缺矿区进行神经网络与经典插值的同场景经验比较，而非宣称发明ANN。",
+        "innovation_plain": "贡献更像一次有针对性的比试：在这个缺测矿区，神经网络比三种常见插值更合适。",
+        "results": "摘要报告ANN的R²=0.9963、MAE=1.3896 m、RMSE=1.9829 m；OK的R²=0.9915，IDW的R²=0.9773，UK表现最弱。摘要未列三种经典方法的MAE和RMSE、点数、测试划分或空间外推误差，故不能计算ANN相对各基线的RMSE改善率，也不能将单地区结果称为跨区域泛化证据。",
+        "conclusion": "作者认为ANN适合该矿区复杂地形的DEM预测，并建议未来探索神经网络与地统计方法结合。可获得摘要未明确列出研究局限。本报告分析：它可作为稀疏测点插值的对比参照，但应补做空间独立测试，避免邻近测点令分数过于乐观。",
+        "plain": "一处苏丹矿区里，神经网络插值最好；是否在别的地形也最好，还不能从摘要断定。",
+        "innovations": [
+          {
+            "claim": "在复杂矿区同场景比较ANN、IDW、OK与UK。",
+            "analysis": "作者把不同方法放在相同应用背景下评价，使坡度突变和趋势拟合困难成为可观察的比较因素。摘要未给采样密度或公平性设置的完整细节。"
+          },
+          {
+            "claim": "结合GPS高程订正与数值、地形可视化评价。",
+            "analysis": "摘要提及电离层、对流层订正，以及误差分布、三维面和等高线检查。这些环节有助于理解高程数据质量，但没有单独消融，不能声称各自带来多少精度提升。"
+          }
+        ]
+      },
+      "title_zh": "苏丹测高资料稀缺矿区的数字高程模型预测：神经网络与经典插值方法比较",
+      "journal_metrics": {
+        "journal": "Turkish Journal of Remote Sensing",
+        "checked_at": "2026-10-18",
+        "jcr_failure": "未取得Clarivate JCR可核验条目或具体学科分区",
+        "failure": "LetPub公开查询未返回同名期刊；未取得可核验的SCIE、JCR、2025版中科院分区或有年份IF，不据此断言该刊一定未收录"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.1109/tfuzz.2026.3720457",
+      "title": "Transfer Learning With Fuzzy Elevation-Aware Experts for Bathymetric DEM Super-Resolution",
+      "authors": "Chaofan Yang; Mingjun Yang; Chenhao Wu; Mengyue Sun; Xiaomeng Huang; Meng Zhang; Bo Zhang; Chenhu Huang; Haifeng Zhang",
+      "publication_date": "2026-10",
+      "journal": "IEEE Transactions on Fuzzy Systems",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1109/tfuzz.2026.3720457",
+      "categories": [
+        "DEM超分辨率与稠密化",
+        "多源数据与摄影测量重建"
+      ],
+      "direction": "稀疏异质水深观测监督下的海底DEM迁移超分辨率",
+      "relevance": "高",
+      "relevance_reason": "针对稀疏且分布不均的ATL24与船测水深监督重建高分辨率海底DEM，但主体任务是超分辨率，不等同于无底图连续空洞填补",
+      "reading_scope": "核读Semantic Scholar完整摘要，并以Crossref和OpenAlex核对题名、作者、期刊及日期；未获取或核读全文，实验协议和不确定性实现细节未核实",
+      "discovery_type": "2026年10月卷期论文；Crossref精确在线发表日未报告，2026-08-10为DOI登记日，不能写成10月18日新发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "基于模糊高程感知专家的迁移学习海底DEM超分辨率",
+        "background": "海峡导航、海岸管理与海洋工程需要高分辨率的陆海一体数字高程模型（DEM），但已有产品较粗，水深实测点又稀疏、异质且空间分布不均。论文提出TFEA-MoE框架，先利用巴斯海峡数据迁移到台湾海峡，再用可学习高斯隶属函数对不同高程像元进行软路由，交给浅水、过渡和深水专家做残差修正。摘要称这种模糊专家混合在稀疏ATL24和船载测深监督下，既能平滑跨水深区域的预测，又使修正更易解释；实验还考虑空间独立测试、不确定性和接缝连续性。",
+        "background_plain": "海底测深点很少而现成地形图太粗；作者把不同水深交给不同专家，再把别处学到的经验迁到目标海峡。",
+        "method": "输入是粗分辨率陆海DEM及稀疏ATL24、船测水深监督，输出是更细的台湾海峡DEM。框架先从巴斯海峡学习可迁移表示，再在目标域调整，以减少目标测点不足造成的训练困难。\n\n核心的模糊高程感知专家路由使用可学习高斯隶属函数，将像元软分配给浅水、过渡和深水专家；软分配避免水深类别边界突然换模型，专家对底图做残差修正。摘要未给各专家网络结构、输入通道、训练比例、目标分辨率或不确定性计算公式，不能把它解释为纯粹从无数据区域恢复海底地形。",
+        "method_plain": "先借别的海峡学会大体规律，再让浅水、深水等专家一起修正较粗的海底图，边界处平滑交接。",
+        "innovation_overview": "作者把跨海峡迁移学习与高程软路由专家结合，以利用稀疏水深观测提升DEM分辨率。",
+        "innovation_plain": "有限测深点不够学一张精细海底图，就先借外地经验，再让不同水深的专家共同修正。",
+        "results": "摘要称在留出的稀疏水深观测上，相较全部基线方法的平均表现，RMSE、MAE、坡度RMSE和坡度MAE分别降低23.87%、34.01%、22.02%和21.48%；模糊细化消融对应四项改善为12.36%、34.89%、12.26%和16.05%。这些是相对平均基线而非最强单一基线；摘要未给绝对误差、观测点数和栅格分辨率。作者明确提示点级结果可能受空间自相关影响，因此以空间独立测试作为目标域泛化的主要证据。",
+        "conclusion": "作者认为迁移与模糊专家路由对稀疏异质水深监督下的DEM超分辨率有潜力，并以不确定性和接缝分析支持稳定性。摘要明确提醒点级改善可能受空间自相关影响；其他局限和未来方向未明确报告。本报告分析：可借鉴按高程带分专家及空间独立验证，但超分辨率有粗底图，不等于真实大空洞补全。",
+        "plain": "有粗海底图和少量测深点时，它能把图修细；完全没有底图的洞仍是另一种问题。",
+        "innovations": [
+          {
+            "claim": "用高斯隶属度把不同水深软分配给专家。",
+            "analysis": "相较硬切分水深区，模糊路由允许过渡像元同时借助多个专家，旨在减少接缝不连续。摘要称消融中的模糊细化改进四项误差，但具体协议需全文核查。"
+          },
+          {
+            "claim": "从巴斯海峡向台湾海峡迁移并重视空间独立测试。",
+            "analysis": "作者针对目标域实测点稀疏问题借源域训练，再用空间独立划分检验泛化，以避免邻近观测点造成过于乐观的评估。摘要同时承认观测点级改善可能受空间自相关影响。"
+          }
+        ]
+      },
+      "title_zh": "基于模糊高程感知专家的迁移学习海底DEM超分辨率",
+      "journal_metrics": {
+        "journal": "IEEE Transactions on Fuzzy Systems",
+        "issn": "1063-6706",
+        "checked_at": "2026-10-18",
+        "indexing": "SCIE（LetPub公开期刊页）",
+        "jcr_failure": "公开页JCR字段要求登录；未取得2025年度具体学科的官方分区",
+        "cas": "计算机科学大类1区",
+        "cas_year": 2025,
+        "if_value": 10.2,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "LetPub公开页2026年6月更新的上一年度IF口径；非JCR官方直接核验"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    }
+  ]
+}
