@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "producer": "codex",
+  "date": "2026-10-21",
+  "papers": [
+    {
+      "id": "https://doi.org/10.1016/j.apor.2026.105301",
+      "title": "Coastal bathymetry mapping from heterogeneous-density ICESat-2 ATL03 photon point clouds using position-adaptive convolution PointNet++",
+      "authors": "Hai Sun; Zhenguo Wang; Bingchen Liang; Hao Xu; Wanxiang Yao; Yuan Qu; Danning Zhao",
+      "publication_date": "2026-10-16",
+      "journal": "Applied Ocean Research",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1016/j.apor.2026.105301",
+      "categories": [
+        "稀疏高程采样重建",
+        "点云地形恢复"
+      ],
+      "direction": "异质密度光子点云中的海底点识别与连续水深重建",
+      "relevance": "高",
+      "relevance_reason": "直接解决稀疏且密度不均的水深观测如何转化为连续海底DEM；需区分点分类精度与最终高程误差",
+      "reading_scope": "核读OpenAlex所收录的出版方摘要、Crossref书目信息；未取得全文，方法步骤及数值仅按摘要报告",
+      "discovery_type": "近7天上线；OpenAlex记录2026-10-16，Crossref卷期为2026年11月，未将卷期月份当上线日期",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "利用位置自适应卷积PointNet++从异质密度ICESat-2光子点云绘制近海水深",
+        "background": "浅海水深资料是海岸工程和环境监测的基础。ICESat-2的光子计数激光雷达能够提供大范围观测，但水体散射、海底回波弱以及光子密度变化大，使海底光子难以可靠识别。作者提出从ATL03光子点云到连续水深模型的一条流程：先构造较可信的训练样本，再用位置自适应卷积PointNet++识别海底光子，最后进行折射、潮汐校正和局部稳健估计。摘要报告了分类精度和两个重建区的DEM误差，说明研究既关注点的筛选，也关注最后的地形面。",
+        "background_plain": "卫星量到的是密密疏疏混在一起的光子点，必须先找出真正来自海底的点，才能绘制水下地形。",
+        "method": "输入是ICESat-2 ATL03光子点云，输出是沿轨有效海底控制点以及区域连续水深DEM。第一步利用物理知识与统计特征辅助构造样本标签，以缓解水柱噪声和弱底部回波造成的训练误标；摘要未给出标签阈值、训练样本数和完整数据划分。\n\n第二步采用带多尺度邻域学习和位置自适应卷积的PointNet++进行光子语义分割。多尺度邻域用于处理不同密度的局部点结构，位置自适应卷积用于随相对几何配置调整特征提取；输出不是直接的完整DEM，而是筛出的海底光子。\n\n第三步对海底点进行折射和潮汐校正，再以局部稳健估计形成连续水深。物理校正处理观测位置和高程的系统性偏差，局部估计负责在点间补面。摘要未说明具体插值核、网格分辨率及不确定性计算，不能将这部分说成已核读全文。",
+        "method_plain": "先从有噪声的光子里挑出海底点，校正水中传播和潮位影响，再在这些可信点之间补成水深地图。",
+        "innovation_overview": "作者的贡献是把适应点密度变化的海底光子识别与物理校正后的连续水深重建接成完整流程。",
+        "innovation_plain": "不仅让网络更会找海底点，还把找到的点校正后连成真正可用的水深面。",
+        "results": "摘要报告海底光子分类Precision 93.42%、Recall 92.27%、F1 92.84%、IoU 86.64%；基础PointNet++对应F1为87.41%、IoU为77.64%。两处研究区使用2019—2025年的ICESat-2轨迹，交叉轨道位置用于多时相核对。机载LiDAR验证RMSE为0.282 m；两个水下DEM的MAE分别为0.976 m和1.378 m。摘要没有给出全部区域分辨率、各比较法的DEM误差或显著性检验，不能扩大为所有海况均有同等精度。",
+        "conclusion": "作者认为动态几何特征有助于在密度变化的光子点云中辨别海底回波，并为海岸水深提取提供可行流程。摘要未明确陈述局限或未来工作。本报告分析：对不规则稀疏测点任务尤其有价值的是先把点的可靠性和物理偏差处理好；其水下光学误差机制不能直接移植到陆地DEM。",
+        "plain": "这是先清洗测点再补地形的研究，分类分数和最终高程误差都要分别看。",
+        "innovations": [
+          {
+            "claim": "以多尺度邻域和位置自适应卷积处理密度不均的光子点云。",
+            "analysis": "相对基础PointNet++，方法让邻域和几何特征表达更适应不同密度的海底回波。摘要报告F1由87.41%升至92.84%、交并比由77.64%升至86.64%，支持点分类改善；但分类提升不等同于所有海底地形细节都被恢复。"
+          },
+          {
+            "claim": "将分类出的海底点与折射、潮汐校正及稳健重建结合。",
+            "analysis": "该环节把语义分割结果转换成可用于测深的高程控制点，再形成DEM。摘要给出机载激光验证RMSE 0.282 m及两个区域的DEM MAE，说明输出接受了高程层面的检查。"
+          }
+        ]
+      },
+      "title_zh": "利用位置自适应卷积PointNet++从异质密度ICESat-2光子点云绘制近海水深",
+      "journal_metrics": {
+        "journal": "Applied Ocean Research",
+        "issn": "0141-1187",
+        "checked_at": "2026-10-21",
+        "indexing": "SCIE",
+        "jcr_failure": "公开查询页的JCR字段要求登录；未读取受限数据",
+        "cas": "工程技术大类2区",
+        "cas_year": 2025,
+        "if_value": 5.1,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+        "failure": "缺失指标的官方逐学科详情未公开；不使用SJR或CiteScore替代"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.1016/j.jag.2026.105622",
+      "title": "GGFA-SwinIR: A gradient-guided and frequency-aware joint multi-scale framework for bathymetric DEM super-resolution",
+      "authors": "Xinye Cui; Houpu Li; Yanting Yu; Xin Xiong; Shaofeng Bian; Guojun Zhai",
+      "publication_date": "2026-10-07",
+      "journal": "International Journal of Applied Earth Observation and Geoinformation",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1016/j.jag.2026.105622",
+      "categories": [
+        "DEM超分辨率与增强",
+        "深度学习地形重建"
+      ],
+      "direction": "海底DEM多尺度超分辨率与坡度、频谱约束",
+      "relevance": "高",
+      "relevance_reason": "直接针对稀疏测深造成的粗网格海底DEM增强，但实验主要是规则降采样网格而非真实连续空洞",
+      "reading_scope": "核读OpenAlex所收录的出版方摘要与Crossref书目信息；公开PDF访问被出版方拒绝，未核读全文",
+      "discovery_type": "近30天发表或上线；非今日新发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "GGFA-SwinIR：梯度引导与频率感知的海底DEM多尺度超分辨率框架",
+        "background": "全球海底数字高程模型（DEM）常在测深稀少地区把细小地貌平滑掉。作者针对粗分辨率网格的细节恢复，提出在共享SwinIR主干上同时处理2倍、4倍和8倍尺度的框架。研究并非直接寻找缺失测线，而是从已有低分辨率格网生成更密的参考格网。方法同时利用高程梯度、双三次插值的基础面和频谱信息来约束输出。摘要强调在GEBCO_2025双三次退化实验、不同程度的低通模糊诊断及跨产品GMRT测试中的表现。",
+        "background_plain": "海底图太粗时，海山和坡折会被抹平；这篇研究想把粗网格放大，同时尽量保住起伏形状。",
+        "method": "输入为低分辨率海底DEM网格及目标放大倍数，输出为目标尺度高程网格。共享主干学习不同放大比例下可重复利用的高程特征，而不是给2倍、4倍、8倍各训练一套完全独立的网络；摘要未披露各层具体连接方式。\n\n模型以双三次插值形成基础高程面，网络预测其残差，减少直接从零生成绝对高程的负担。梯度幅值引导关注地形边界和坡折，像素、高程梯度与复频谱三个监督项分别约束点位误差、形态变化和不同空间频率上的结构。\n\n论文还以不同程度的低通退化检验方法是否只适合一种输入频谱，并以GMRT v4.3做跨海底数据产品的转移比较。摘要未说明实际缺测比例、真实测线空洞形状、训练划分和每项损失权重。",
+        "method_plain": "先把海底图按常规方法放大，再让网络专门补遗漏的起伏；训练时既看每个点高不高，也看坡有多陡、整体纹理是否合理。",
+        "innovation_overview": "作者把梯度形态和频谱结构同时纳入可共享的多尺度海底DEM超分辨率框架。",
+        "innovation_plain": "放大时不仅追求点位接近，还努力让海底坡面和大、小尺度纹理看起来与参考地形一致。",
+        "results": "在GEBCO_2025双三次退化设置下，2倍、4倍、8倍的高程RMSE分别为5.13、9.82、18.90 m，PSNR分别为70.28、65.48、59.84 dB。四种低通强度与三个尺度组合的12组条件中，方法在六种比较方法里均取得最低高程RMSE及最高PSNR，坡角RMSE在11组条件最低；GMRT v4.3跨产品比较在两个区域和三个尺度下也获得最低高程RMSE。这些数值属于参考格网重建，不能当作真实连续空洞补全的误差。",
+        "conclusion": "作者认为同时刻画坡度与频谱有助于多尺度海底参考格网恢复，并把方法定位为探索性格网增强。摘要未明确说明局限和未来工作。本报告分析：可借鉴多尺度及形态约束，但若用于稀疏测线或大空洞，必须另设真实缺测模式和实测高程验证。",
+        "plain": "规则低清图放大得不错，不代表完全没测到的海底区域也能凭空补准。",
+        "innovations": [
+          {
+            "claim": "用一个共享主干处理三个放大尺度，并学习相对双三次基础面的残差。",
+            "analysis": "这一设计针对多尺度输出和基础插值不足的问题；摘要报告三个尺度的结果，但没有足够全文信息断言它比所有单尺度模型更省参数。"
+          },
+          {
+            "claim": "把梯度幅值引导与像素、梯度、复频谱监督组合。",
+            "analysis": "相比只用像素误差，模型还被要求保持坡度边界与频域结构。低通诊断中，12个强度—尺度条件的高程RMSE和PSNR均为六种方法中最好，坡角RMSE在其中11个条件最好，支持形态约束的作用，但不能证明生成细节都是真实测深。"
+          }
+        ]
+      },
+      "title_zh": "GGFA-SwinIR：梯度引导与频率感知的海底DEM多尺度超分辨率框架",
+      "journal_metrics": {
+        "journal": "International Journal of Applied Earth Observation and Geoinformation",
+        "issn": "0303-2434",
+        "checked_at": "2026-10-21",
+        "indexing": "SCIE",
+        "jcr": "Q1",
+        "jcr_subject": "REMOTE SENSING；其他可能学科未取得官方逐项记录",
+        "jcr_year": 2025,
+        "jcr_failure": "公开查询页的JCR字段要求登录；未读取受限数据",
+        "cas": "地球科学大类1区",
+        "cas_year": 2025,
+        "if_value": 8.2,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+        "failure": "缺失指标的官方逐学科详情未公开；不使用SJR或CiteScore替代"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.1080/15481603.2026.2739663",
+      "title": "Improved estimation of lake storage variation via DEM reconstruction integrating elevation and morphological constraints",
+      "authors": "Pengzhan Zhao; Yifei Lu; Wei Cao; Wenbin Zhu; Jinwei Dong; Aifeng Lv; Sai Mei; Liguang Jiang; Yongkun Zhang; Guoxin Chen",
+      "publication_date": "2026-10-04",
+      "journal": "GIScience & Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1080/15481603.2026.2739663",
+      "categories": [
+        "稀疏高程采样重建",
+        "地形插值与不确定性评估"
+      ],
+      "direction": "有高程与无高程湖岸线联合约束的湖底DEM重建",
+      "relevance": "高",
+      "relevance_reason": "直接研究仅有稀疏高程约束时如何利用未赋高程的等高形态信息恢复湖底面",
+      "reading_scope": "核读出版方公开摘要及OpenAlex、Crossref书目信息；未下载PDF，以下仅使用摘要可核实信息",
+      "discovery_type": "近30天发表或上线；非今日新发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "结合高程与形态约束重建DEM以改进湖泊蓄水量变化估计",
+        "background": "高质量DEM决定湖泊蓄水量变化估计是否可靠，但实地测深昂贵且难以覆盖大量湖泊。遥感影像能提供历次湖岸线，有些岸线能配到水位高程，有些却只有形状。以往方法主要保留已知高程的岸线，把没有高程的岸线丢弃；在高程稀疏时，这会失去湖盆形态约束，造成错误的地形结构。作者提出NUDEM统一重建模型，同时使用赋值岸线和未赋值岸线，让前者约束高程，让后者约束形态，并在青藏高原四个湖泊检验重建和水量推算。",
+        "background_plain": "湖边界常常看得见，但并非每一条边界都知道海拔；作者想把这些只有形状的信息也利用起来。",
+        "method": "输入是遥感提取的多时相湖岸线，其中一部分有相应高程，另一部分无高程；输出为湖底DEM及其推算的蓄水量变化。已赋值的湖岸线给出水位与空间位置的直接高程条件，无高程岸线虽不能确定绝对高度，却提供不同水位下湖盆外形如何变化的几何约束。\n\nNUDEM把两类岸线放在同一重建框架中，以减少只依靠少量已知高程轮廓导致的地形扭曲。生成湖底面后，再利用DEM计算不同水位对应的蓄水变化，并与既有DEM法及传统面积—高程曲线方法比较。摘要未说明网络结构或优化方程、岸线获取频次和训练测试划分，因此不能进一步描述内部模块。",
+        "method_plain": "知道高度的湖岸线负责定标，不知道高度的湖岸线负责告诉模型湖盆形状，二者一起帮助推测湖底。",
+        "innovation_overview": "作者强调把未赋高程岸线从被丢弃的信息变成湖底形态约束。",
+        "innovation_plain": "别人只用知道海拔的线，这篇把不知道海拔但能看出轮廓的线也用上了。",
+        "results": "青藏高原四湖测试中，NUDEM相较五种已有重建方法，DEM RMSE比第二名约低60%，平均RMSE为0.93 m，最小RMSE为0.15 m。蓄水量变化估计的R²相对其他DEM方法约提升30%，相对于传统面积—高程曲线法接近翻倍。摘要未说明每湖的误差表、岸线缺值比例或置信区间，以上是其报告范围内的比较，不能推出所有湖盆均同幅度提升。",
+        "conclusion": "作者认为在稀疏实测高程条件下利用遥感湖岸线的形态信息，可低成本改善湖底DEM和水量变化推算。摘要未明确承认局限或提出未来工作。本报告分析：适合借鉴“无绝对高程的几何线索也可约束重建”的思路；陆地山脊、谷线与湖岸线的形成机制不同，迁移时需独立验证。",
+        "plain": "高度点少，不等于其余遥感轮廓毫无用处；轮廓能帮助模型少画错地形。",
+        "innovations": [
+          {
+            "claim": "统一利用有高程和无高程的湖岸线重建湖底DEM。",
+            "analysis": "与只使用高程匹配岸线的方案相比，未赋值轮廓也参与限制湖盆形态。摘要把这一改变与高程稀疏时减少错误结构联系起来，但没有给出完整方程，不能擅自解释权重细节。"
+          },
+          {
+            "claim": "同时检验地形精度和蓄水量变化这一实际下游任务。",
+            "analysis": "四湖实验不仅比较DEM误差，也比较蓄水量变化估计的拟合优度，说明约束是否改善了使用DEM做水文计算的结果。"
+          }
+        ]
+      },
+      "title_zh": "结合高程与形态约束重建DEM以改进湖泊蓄水量变化估计",
+      "journal_metrics": {
+        "journal": "GIScience & Remote Sensing",
+        "issn": "1548-1603",
+        "checked_at": "2026-10-21",
+        "indexing": "SCIE",
+        "jcr": "Q1",
+        "jcr_subject": "REMOTE SENSING；GEOGRAPHY, PHYSICAL；具体逐学科分区见第三方2025 JCR汇总",
+        "jcr_year": 2025,
+        "jcr_failure": "公开查询页的JCR字段要求登录；未读取受限数据",
+        "cas": "地球科学大类1区",
+        "cas_year": 2025,
+        "if_value": 6.8,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+        "failure": "缺失指标的官方逐学科详情未公开；不使用SJR或CiteScore替代"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.48550/arxiv.2609.29864",
+      "title": "Efficient Continuous DEM Reconstruction under Limited Target-Resolution Supervision",
+      "authors": "Zekai Shi; Meng Zhang; Haokun Zhang; Bo Zhang",
+      "publication_date": "2026-09-24",
+      "journal": "arXiv",
+      "source_type": "preprint",
+      "doi": "https://doi.org/10.48550/arxiv.2609.29864",
+      "categories": [
+        "DEM超分辨率与增强",
+        "深度学习地形重建"
+      ],
+      "direction": "有限目标分辨率监督下的连续高程场和跨尺度推理",
+      "relevance": "高",
+      "relevance_reason": "处理高分辨率配对训练样本不足的DEM恢复，并分析跨尺度计算量；不是不规则散点或连续空洞补全",
+      "reading_scope": "已下载19页arXiv全文；核读摘要、引言、方法与实验主要图表及结论，未逐项核对全部参考文献",
+      "discovery_type": "近30天发表或上线；非今日新发表",
+      "open_access_pdf_urls": [
+        "https://arxiv.org/pdf/2609.29864"
+      ],
+      "summary": {
+        "title_zh": "在目标分辨率监督有限时高效重建连续DEM",
+        "background": "高分辨率DEM有助于地貌分析，但实际能获得的成对低清和高清训练样本常只覆盖较粗的目标分辨率。若要求模型输出比训练时更密的网格，一方面需要跨尺度泛化，另一方面逐像素查询的计算成本会快速增加。作者提出SCOPE：在低分辨率网格上预测潜在系数场，利用可重复使用的局部傅里叶残差函数生成连续高程，再通过几何引导的集成融合邻域结果。论文在分布广泛的陆地和海洋样本上比较监督尺度、未见过的尺度以及跨域推理。",
+        "background_plain": "训练只教过模型放大到某个尺度，但实际想放大得更细；作者同时关心能否推准和计算是否会变慢。",
+        "method": "输入是低分辨率DEM及目标输出坐标，输出为任意指定网格位置的连续高程值。SCOPE先用网络在低分辨率格网上预测潜在系数场，这一步集中完成较重的特征计算；之后在目标坐标评估局部傅里叶基函数及其残差，从复用的系数得到细格网高程。\n\n邻域格点对同一查询位置可能给出不同局部预测，模型以几何引导的集成融合这些估计，减少网格拼接不连续。把高维系数预测与输出网格构建分离，使目标网格变密时无须对每一个新像素重复完整主干计算。\n\n实验区分训练尺度、未见尺度和冻结模型跨海域数据产品转移。方法针对低分辨率规则网格的连续超分辨率；论文没有声称已解决完全没有周围高程信息的真实大空洞。",
+        "method_plain": "先把粗图每个位置的地形变化规律算好并存成系数，之后需要多细的图，就用这些系数快速计算相应位置的高度。",
+        "innovation_overview": "作者以可复用的低分辨率系数场支持连续高程查询，兼顾跨尺度重建和计算开销。",
+        "innovation_plain": "先算出一套可以反复用的地形系数，再按需要输出不同精度的DEM，避免每次放大都从头重算。",
+        "results": "论文主监督尺度实验在六项指标上领先所比较方法。在未见过、放大因子为训练因子三倍的陆地测试中，相对双三次插值，RMSE与MAE均约降低12%，与目标尺度微调结果接近。输出密度增至九倍时，计数乘加运算仅约增加2%。在外部未见海域上冻结模型，与DEM专用隐式基线EBCF-CDEM相比，自降采样设置的RMSE约低19%，跨产品输入时约低2%，并在两种设置下低于LIIF-MS。这里没有把规则格网超分辨率误差解释成真实空洞补全误差。",
+        "conclusion": "作者认为可复用系数场有助于有限监督条件下的跨尺度重建，并降低更密查询的新增计算量。本文也用外部海域测试展示迁移，但跨产品改善较小。本报告分析：值得借鉴连续场表达和分离计算步骤；若迁移至不规则稀疏测点，应改造输入编码并增加真实空洞、陡坡及跨地貌验证。",
+        "plain": "模型学会了用一张粗图快速算出更密的高度，但它并没有证明自己能猜准完全没量过的大块区域。",
+        "innovations": [
+          {
+            "claim": "分离潜在系数预测与目标网格查询。",
+            "analysis": "与每放大一次就重新进行高成本密集特征计算的思路不同，SCOPE先在粗网格预测系数，再把目标格点查询变成较轻的基函数求值。论文报告输出密度提高九倍时，计数乘加运算仅约增加2%；这是特定复杂度口径，不等同实际端到端运行时间。"
+          },
+          {
+            "claim": "通过局部傅里叶残差和几何融合支持未见过的放大尺度。",
+            "analysis": "频率基函数描述局部高程细节，几何融合减少邻域预测的不一致。未见尺度测试与外部海域冻结模型结果支持一定泛化能力，但跨产品收益较小，不能保证所有海底类型都稳定。"
+          }
+        ]
+      },
+      "title_zh": "在目标分辨率监督有限时高效重建连续DEM",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.1029/2026gl125708",
+      "title": "SWOT‐Fitted River Bathymetry for Global Hydrodynamic Models",
+      "authors": "Augusto Getirana; Elyssa L. Collins; Sujay V. Kumar; Yeosang Yoon; Wanshu Nie",
+      "publication_date": "2026-10-08",
+      "journal": "Geophysical Research Letters",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1029/2026gl125708",
+      "categories": [
+        "稀疏高程采样重建",
+        "地形插值与不确定性评估"
+      ],
+      "direction": "由卫星水面高程反推全球河床高程并沿河段插值",
+      "relevance": "高",
+      "relevance_reason": "利用稀疏卫星水面高程及水动力约束修正未直接观测的河床，属于物理约束的间接地形恢复",
+      "reading_scope": "核读AGU摘要及OpenAlex、Crossref元数据；出版方PDF访问受限，未核读全文",
+      "discovery_type": "近30天发表或上线；非今日新发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "为全球水动力模型拟合SWOT观测的河床水深",
+        "background": "全球水动力模型需要河床地形，但许多河段的床面高程缺乏直接测量。卫星SWOT能够观测绝对水面高程，若模型所用河床偏高或偏低，模拟水面会产生系统误差。作者提出全球适用的迭代校正方法：先区分传感器偏差和观测代表性误差，再利用水面高程残差调整模型河床；调整必须满足DEM与最小水深可行性约束，随后沿河段插值。研究把模型与观测的匹配、独立站点验证及流量模拟表现分别检验。",
+        "background_plain": "测不到很多河床，但能从卫星看到河面的高度；作者反过来利用河面误差校正河底。",
+        "method": "输入是SWOT卫星水面高程、水动力模型已有河床以及DEM等约束，输出为修正后的河床高程。首先消除卫星测量偏差和观测代表性差异，避免把非地形因素全部错误归咎于河床。\n\n随后计算模拟与观测水面高程的差异，迭代更新河床，更新量受DEM和最小水深限制，以避免得到地形上或水力上不可能的河道。修正后的高程再沿河段插值，使有限卫星信息能够影响连续河网。摘要未给出迭代停止准则、插值核或各河流类型的局部误差。",
+        "method_plain": "先排除卫星量测的偏差，再看模型水面比实际高还是低，据此在合理水深范围内上下调整河底，并把改动沿河道接起来。",
+        "innovation_overview": "作者将卫星绝对水面高程转化为受物理可行性约束的全球河床修正。",
+        "innovation_plain": "从水面倒推河底时先扣除测量偏差，还规定河底不能被改到不合理的位置。",
+        "results": "2023—2025年全球0.05°模型实验中，水面高程全球中位绝对偏差由3.10 m降至0.18 m，中位相关系数保持0.38。标准差比由1.07升至1.11，表明方差略增。对2015—2025年16,746个Hydroweb站点和2,123个GRDC站点的独立评价，限于已更新河床的河段，发现偏差显著减小，相关与方差几乎不变，全球中位流量技能无显著变化。这些是水面和流量验证，不是大范围实测河床高程RMSE。",
+        "conclusion": "作者认为偏差感知的河床修正可改善全球洪水模拟所需的河道几何表达，但现有摘要没有证明流量中位技能同步提高，也未报告独立河床高程的全球误差。摘要未明确讨论其他局限或未来工作。本报告分析：适合借鉴间接观测与物理约束结合的思路；其沿河道一维传播不同于二维面状DEM补洞。",
+        "plain": "河面确实被拟合得更准，但这不能自动证明每段河底都量对了。",
+        "innovations": [
+          {
+            "claim": "在河床迭代更新前分离观测偏差与模型代表性偏差。",
+            "analysis": "如果直接用水面误差修正河床，传感器或尺度不匹配可能被误当成地形问题。摘要明确把偏差处理放在更新之前；但未给出各偏差项的详细估计公式。"
+          },
+          {
+            "claim": "以DEM和最小水深约束河床修正并沿河段传播。",
+            "analysis": "河床不只是数值上贴合卫星水面，也必须保持可行的水深；沿程插值把离散校正扩展到河网。独立测站验证减小水面偏差，但未显著改善全球中位流量技能，说明几何改善不等于所有下游指标均改善。"
+          }
+        ]
+      },
+      "title_zh": "为全球水动力模型拟合SWOT观测的河床水深",
+      "journal_metrics": {
+        "journal": "Geophysical Research Letters",
+        "issn": "0094-8276",
+        "checked_at": "2026-10-21",
+        "indexing": "SCIE",
+        "jcr_failure": "公开查询页的JCR字段要求登录；未读取受限数据",
+        "cas": "地球科学大类2区",
+        "cas_year": 2025,
+        "if_value": 5.0,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+        "failure": "缺失指标的官方逐学科详情未公开；不使用SJR或CiteScore替代"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.5194/isprs-annals-xi-2-2026-577-2026",
+      "title": "Reconstructing Multibeam Echosounder Bathymetry with Generative Adversarial Networks: Toward Efficient Use of Survey Resources",
+      "authors": "Haitham Ezzy; Dror L. Angel; Anna Brook",
+      "publication_date": "2026-07-03",
+      "journal": "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences",
+      "source_type": "conference",
+      "doi": "https://doi.org/10.5194/isprs-annals-xi-2-2026-577-2026",
+      "categories": [
+        "DEM超分辨率与增强",
+        "深度学习地形重建"
+      ],
+      "direction": "多波束测深向高分辨率海底地形的对抗生成增强",
+      "relevance": "高",
+      "relevance_reason": "直接比较低分辨率多波束水深与高分辨率LiDAR参考地形，并分析不同地貌下的形态偏差",
+      "reading_scope": "已下载7页ISPRS Annals全文，核读摘要、方法、结果与讨论；属于会议论文集，非普通期刊",
+      "discovery_type": "近365天发表的历史未收录论文；非今日新发表",
+      "open_access_pdf_urls": [
+        "https://isprs-annals.copernicus.org/articles/XI-2-2026/577/2026/isprs-annals-XI-2-2026-577-2026.pdf"
+      ],
+      "summary": {
+        "title_zh": "利用生成对抗网络重建多波束测深地形：提高测量资源利用效率",
+        "background": "多波束测深仪覆盖范围广、历史数据多，但其空间精度和分辨率通常低于局地高分辨率水下LiDAR；后者成本较高、覆盖有限。作者希望利用已有多波束数据获得更细的海底模型，因此引入超分辨率生成对抗网络（SRGAN），并直接使用LiDAR进行准确度对照。论文不仅比较高程统计误差，也比较坡度、坡向等地貌量，尤其关注平坦砂底与复杂岩底是否具有不同表现。",
+        "background_plain": "大范围的旧测深图比较粗，精细激光测深又贵；作者想学习两者差别，把粗图增强，同时检查坡面有没有画歪。",
+        "method": "输入为多波束测深仪得到的海底栅格，参考数据是覆盖较小但更细的水下LiDAR模型；输出为SRGAN增强后的海底高程面。论文首先采用不同深度梯度表达把多波束高程转成灰度影像，构造网络可处理的训练输入；这一步会影响坡面细节的表达，不能把灰度图误认为新增实测水深。\n\n随后以超分辨率生成对抗网络学习粗细格网之间的映射，生成更高分辨率的结果。作者使用LiDAR参考模型比较增强面和实测面，并与双三次、克里金等插值结果对照。评价除垂直误差外，计算坡度和坡向差异及其空间热图，避免只看单个RMSE而忽略地形方向失真。\n\n实验分别检查较平坦砂底与复杂岩质海底。结论表明区域地貌对增强质量有明显影响，因此不可将砂底上的结果直接外推到陡峭岩质区域。",
+        "method_plain": "用少量精细激光测深教网络如何把普通多波束地图画细，再分别检查高度、坡有多陡、坡朝哪边。",
+        "innovation_overview": "作者把多波束超分辨率与地貌形态验证结合，强调高程相近不一定意味着坡面方向可靠。",
+        "innovation_plain": "地图变细以后还要问它的坡向对不对，不能只因为高度误差小就认定海底形状是真的。",
+        "results": "论文以LiDAR地形作验证，报告SRGAN增强相较双三次和克里金插值，在平坦砂质区的垂直误差下降超过50%，在复杂岩质区下降约30%。文中进一步展示近似RMSE的模型仍可能有平均26°的坡向差异；复杂岩底的坡向偏差更明显。论文没有据此证明网络在没有LiDAR参考、跨远距离海域或真实大空洞条件下同样可靠。",
+        "conclusion": "作者认为SRGAN可提升已有多波束资料的细节和使用价值，但复杂岩质区域仍有更明显的形态偏差。讨论中指出跨区域泛化仍待检验。本报告分析：值得迁移的是多指标地貌评价，尤其应把坡向误差与高程误差并列；其任务主要是分辨率增强，不是整块无数据区恢复。",
+        "plain": "粗海底图可以学着变细，但岩石区容易把坡面朝向画错，必须用实测地形检查。",
+        "innovations": [
+          {
+            "claim": "以LiDAR作为独立的精细地形参考评估SRGAN增强。",
+            "analysis": "相对只在规则下采样图上做视觉对比，直接与另一传感器测得的海底面核对更贴近实际测绘应用。但LiDAR覆盖面积有限，跨区域普适性仍需单独验证。"
+          },
+          {
+            "claim": "同时评价高程、坡度和坡向，识别RMSE掩盖的形态失真。",
+            "analysis": "全文讨论指出两个模型RMSE接近，但一个保持近零坡向偏差，另一个平均方向偏差达26°；这说明只看垂直误差会漏掉地貌方向问题。"
+          }
+        ]
+      },
+      "title_zh": "利用生成对抗网络重建多波束测深地形：提高测量资源利用效率",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 3,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.1080/01431161.2026.2617166",
+      "title": "Development of global diffusion filling model for voids filling of Digital elevation models (DEMs)",
+      "authors": "Guoqing Zhou; Kun Li; Cong Li; Hanwen Gao; Ertao Gao; Xiang Zhou; Jiasheng Xu; Jianjun Chen",
+      "publication_date": "2026-01-27",
+      "journal": "International Journal of Remote Sensing",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.1080/01431161.2026.2617166",
+      "categories": [
+        "DEM修复与补全",
+        "深度学习地形重建"
+      ],
+      "direction": "陆地与海底DEM空洞的全局扩散填补",
+      "relevance": "高",
+      "relevance_reason": "直接针对DEM无数据空洞，使用两种掩膜评估陆海多组数据，是本课题的核心近邻研究；该刊2025版中科院公开汇总出现大类3区与4区冲突，官方记录不可访问，故不报未经确认的单一区值",
+      "reading_scope": "核读Taylor & Francis出版方摘要及OpenAlex、Crossref元数据；全文需访问权限，未核读完整方法与实验表格",
+      "discovery_type": "近365天发表的历史未收录论文；非今日新发表",
+      "open_access_pdf_urls": [],
+      "summary": {
+        "title_zh": "用于数字高程模型空洞填补的全局扩散填补模型",
+        "background": "DEM空洞会影响地形分析和下游应用。作者提出全局扩散填补模型GDFM，意在不依赖外部辅助数据或预先给定的掩膜来修复陆地和水下DEM。论文摘要说明，该方法在U-Net结构中整合多重注意力机制，通过混合损失学习地形特征，并以重采样策略生成带有地理形态和细节的训练样本。作者在三个陆地DEM数据集和三组水下DEM数据上使用两类缺失掩膜比较填补效果，报告空洞区结构相似性及相对基线的提升。",
+        "background_plain": "高程图破了洞，作者想让模型只凭DEM本身把陆地和海底的缺失部分补上。",
+        "method": "输入是存在空洞的DEM，输出是补齐后的高程图。作者将多重注意力机制加入U-Net结构，以加强模型对全局和局部地形特征的学习；摘要没有列明注意力位置或每个模块的连接顺序，不能推断具体架构。\n\n训练中使用混合损失约束地形恢复，并通过重采样构造具有不同地貌细节的样本。方法宣称推理时不需要额外外源数据或预定义掩膜；这不表示训练实验没有掩膜，摘要明确说明验证使用两类掩膜。\n\n陆地与水下数据分别评估，让跨环境适用性有直接试验依据，但摘要未给出空洞大小分布、真实缺口比例、训练测试区域隔离方式及每一项损失的定义。",
+        "method_plain": "让网络看着破损高程图学习周围山谷和海底起伏，再把洞里缺的高度补出来；训练时仍要用设计好的缺口检验它。",
+        "innovation_overview": "作者把多注意力U-Net、混合地形损失与重采样组合成不依赖外部数据的DEM空洞填补流程。",
+        "innovation_plain": "它把补洞网络、训练样本生成和地形约束结合起来，并尝试同时处理陆地和海底。",
+        "results": "摘要报告三组陆地DEM和三组水下DEM、两类掩膜的实验。陆地空洞填补区结构相似性约80%—90%，相对传统方法提升24%，相对所比深度学习模型提升14%；水下DEM相对已有方法平均提升约2%—10%。摘要没有完整指标定义、逐数据集数值及单位，也没有真实连续空洞与人工掩膜的分开统计，因此不能据此保证自然缺口的绝对高程误差。",
+        "conclusion": "作者认为GDFM可在不使用外源数据的条件下改善陆地与水下DEM空洞重建。摘要未明确列出局限和未来工作。本报告分析：应优先复核两类掩膜的形状、缺口尺度和区域隔离验证，再比较与真实缺测带的一致性；结构相似性高也不必然代表坡度或绝对高程误差低。",
+        "plain": "这篇确实在补高程图里的洞，和课题很接近；但要看清实验里的洞是不是和真实缺口一样。",
+        "innovations": [
+          {
+            "claim": "在同一框架内评估陆地和水下DEM空洞填补。",
+            "analysis": "许多模型只在单一环境报告效果，作者以三组陆地和三组水下数据及两种掩膜检验方法。摘要支持跨两类环境的比较，但不足以证明对全球全部地貌普适。"
+          },
+          {
+            "claim": "把多重注意力和混合损失用于保留空洞中的地形结构。",
+            "analysis": "相较仅以简单像素拟合填洞，模型试图兼顾地形细节与整体结构。摘要报告空洞区结构相似性80%—90%及对比较方法的提升，但未提供完整消融表，不能把所有提升单独归功于其中某个模块。"
+          }
+        ]
+      },
+      "title_zh": "用于数字高程模型空洞填补的全局扩散填补模型",
+      "journal_metrics": {
+        "journal": "International Journal of Remote Sensing",
+        "issn": "0143-1161",
+        "checked_at": "2026-10-21",
+        "indexing": "SCIE",
+        "jcr": "Q3",
+        "jcr_subject": "IMAGING SCIENCE & PHOTOGRAPHIC TECHNOLOGY；REMOTE SENSING学科未取得可靠分区",
+        "jcr_year": 2025,
+        "jcr_failure": "公开JCR查询需机构登录；未取得可核实的学科逐项分区",
+        "if_value": 2.6,
+        "if_year": 2025,
+        "if_release_year": 2026,
+        "if_year_basis": "页面6月更新年份及本站上一年度IF口径",
+        "failure": "中科院2025版第三方公开页在大类3区与4区之间冲突，未找到官方可访问记录，故不报单一数值"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    }
+  ]
+}
