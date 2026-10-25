@@ -1,0 +1,362 @@
+{
+  "schema_version": 1,
+  "producer": "codex",
+  "date": "2026-10-25",
+  "papers": [
+    {
+      "id": "https://doi.org/10.31223/x5dr5m",
+      "title": "NepalDTM: A National 8-Metre Bare-Earth Digital Terrain Model of Nepal from Multi-Source Satellite Data Fusion",
+      "authors": "Achyut Paudel",
+      "publication_date": "2026-10-24",
+      "journal": "EarthArXiv预印本",
+      "source_type": "repository",
+      "doi": "https://doi.org/10.31223/x5dr5m",
+      "categories": [
+        "多源数据与摄影测量重建",
+        "稀疏高程采样重建",
+        "DTM生成与联合重建"
+      ],
+      "direction": "融合卫星表面高程与稀疏激光测高点生成尼泊尔全国裸地DTM",
+      "relevance": "高",
+      "relevance_reason": "直接用稀疏ICESat-2与GEDI高程观测纠正连续表面模型，并明确评估空间留出和高山误差",
+      "reading_scope": "已下载17页EarthArXiv预印本；核读第1至5页、第5至8页主要结果表及第14至15页局限，参考文献未逐条核读",
+      "discovery_type": "近7天发布的非同行评审预印本；EarthArXiv封面与Crossref均记2026-10-24，不称期刊发表",
+      "open_access_pdf_urls": [
+        "https://eartharxiv.org/repository/object/15728/download/27245/"
+      ],
+      "summary": {
+        "title_zh": "NepalDTM：多源卫星数据融合的尼泊尔全国8米裸地数字地形模型",
+        "background": "洪水、滑坡和工程分析需要植被与建筑物下面的真实地面高程，而常见公开全球模型多是数字表面模型。尼泊尔从低地到高山变化剧烈，30米表面模型在森林和建筑区偏高，单靠局部高分辨率影像又无法覆盖全国。作者制作存储在8米网格上的NepalDTM：优先使用高山亚洲8米立体影像表面拼图，在其缺值处接入Copernicus GLO-30，再利用ICESat-2与GEDI稀疏激光测高观测学习表面高于地面的残差并予以扣除。作者用空间分块留出的ICESat-2点和独立差分GPS检验成果，同时强调8米是交付网格间距，并非全国各处都有8米地形细节。",
+        "background_plain": "先拼出一张不间断的地表高度图，再用少量可信激光高程点估计树木和建筑造成的抬高量；网格细不代表每格都有同样细的真实地形信息。",
+        "method": "输入为高山亚洲8米立体影像表面拼图、Copernicus 30米表面模型、ICESat-2与GEDI地面测高点，以及冠层高度、土地覆盖和地形形态辅助层；输出为裸地DTM、原始表面及来源标志和预测绝对误差层。作者先把高山亚洲拼图的椭球高转为EGM2008正高，剔除相对于Copernicus局部中位差超过40米的异常像元，再用Copernicus填补缺口；若单块有效拼图像元过少，则整块采用Copernicus（全文第3至4页）。\n\n每个8米格网形成冠层高度统计量、土地覆盖、坡度、坡向、粗糙度、不同尺度的地形位置以及表面来源等预测变量。以表面高度减去通过质量筛选的激光地面高度作为监督目标，训练直方图梯度提升回归器；GEDI因足迹更大、噪声更强而以ICESat-2一半权重参与。预测得到表面到裸地的高度差后，将其从表面扣除；另以ICESat-2训练绝对残差模型，输出误差提示层（第3至4页）。\n\n评估先按整条卫星轨道留出，再按48公里空间块做五折留出，最终交付模型在评估后重训。国家范围的共同有效比较集有4463463个ICESat-2点；这是已有连续表面的误差校正，不是只凭稀疏激光点凭空生成所有地形细节。",
+        "method_plain": "先用两张卫星高程图拼成底图，再让稀疏激光点教模型哪里被树冠或建筑抬高，最后逐格减掉估计的抬高量；整块地区留出检验比随机留点更接近迁移到新地区。",
+        "innovation_overview": "作者将全国连续表面拼接、稀疏激光残差学习和空间留出验证连成可复建的裸地地形成图流程，并公开说明细网格的真实分辨率边界。",
+        "innovation_plain": "它把有细节但有缺口的表面图与有覆盖但较粗的底图结合，再用稀疏激光点校正为裸地；同时明确告诉读者哪些地方只有粗底图。",
+        "results": "全文第5页表2：在尼泊尔境内4463463个共同有效、按48公里空间块留出的ICESat-2点上，NepalDTM的RMSE为6.10米、NMAD为2.61米、偏差为负0.15米；Copernicus GLO-30、GEDTM30和FABDEM的RMSE分别为9.07、8.47和7.78米。第5至6页表3：300米以下RMSE为1.96米，海拔2.5至4公里为8.27米；陡坡40度及以上为10.81米。独立的Khumbu差分GPS在冰川边缘83点上给出2.49米RMSE。全国格网37%源于8米立体拼图，63%为30米Copernicus补值；误差不能解释为全国一致的8米地形细节。",
+        "conclusion": "作者认为此流程给尼泊尔提供开放、连续的裸地地形参考，并降低相对公开比较模型的测高误差。作者明确承认：8米网格多数区域仍只有30米底图形态；超过40度的坡面误差逾10米，冰川表面与旧GPS调查时间不一致，误差层也不是独立地面测量。本报告分析：稀疏高程课题可借鉴源标志、分块留出和稀疏点残差建模，但应另检验连续真空洞而非把有底图的校正性能当成无底图补洞能力。",
+        "plain": "整体比几种公开底图更接近测高点，但陡坡和粗数据填补区仍需要谨慎使用。",
+        "innovations": [
+          {
+            "claim": "将8米立体拼图与30米全球表面模型按有效覆盖融合并保留来源标志。",
+            "analysis": "有高分辨率立体表面时使用其细节，缺值时由全国覆盖的Copernicus补齐；来源层使使用者知道哪里只是30米信息重采样。文中说明交付区域37%采用8米拼图、63%采用Copernicus填补，并未宣称后者产生真实8米纹理（第3至4、15页）。"
+          },
+          {
+            "claim": "用双激光测高数据学习表面与裸地的高差，并以空间分块留出检验。",
+            "analysis": "质量筛选后的ICESat-2与GEDI为残差模型提供地面高程，空间块留出减少邻近点泄漏。第5页表2在尼泊尔境内共同有效点上报告6.10米RMSE，低于Copernicus的9.07米、FABDEM的7.78米；GEDTM30本身使用过ICESat-2，作者提示与其比较并非完全独立。"
+          }
+        ]
+      },
+      "title_zh": "NepalDTM：多源卫星数据融合的尼泊尔全国8米裸地数字地形模型",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.53030/tjags.2011590",
+      "title": "Ground-return density and internal vertical differences in 1 m airborne lidar terrain models",
+      "authors": "Mustafa Hayri Kesikoğlu",
+      "publication_date": "2026-09-30",
+      "journal": "Turkish Journal of Applied Geoinformation Sciences",
+      "source_type": "journal",
+      "doi": "https://doi.org/10.53030/tjags.2011590",
+      "categories": [
+        "稀疏高程采样重建",
+        "曲面建模与插值",
+        "评价与数据集"
+      ],
+      "direction": "地面回波稀释对1米机载LiDAR DTM内部高程差的影响",
+      "relevance": "高",
+      "relevance_reason": "直接量化稀疏地面点密度及空间分布对TIN地形插值的影响，并明确内部误差不是独立地面精度",
+      "reading_scope": "已下载13页出版方PDF；核读第1至3页、结果与讨论相关段落及第10至11页结论，其余页未逐页细读",
+      "discovery_type": "近30天发表的期刊论文；PDF及Crossref均记2026-09-30。期刊于2026年更名，出版方说明新刊名索引更新仍在进行；公开官方页和Clarivate公开查询未取得SCIE、逐学科JCR、2025版中科院分区或有年度的正式IF，故不推定这些指标",
+      "open_access_pdf_urls": [
+        "https://dergipark.org.tr/en/download/article-file/6304256"
+      ],
+      "summary": {
+        "title_zh": "地面回波密度与1米机载激光雷达地形模型内部高程差",
+        "background": "机载激光雷达任务常按总脉冲密度规划，但地形插值只使用判为地面的回波；植被、陡坡和遮挡会使真正可用的地面点远少于名义密度。作者选取美国犹他州和爱达荷州两次公开航测中的四种地貌样区，研究已经分类的地面回波被逐渐稀释后，1米DTM与高密度参考DTM之间的内部高程差怎样变化。实验对比空间均衡留点与纯随机删点，并单独留出10%地面回波作内部检查。作者明确指出：同一次航测数据之间的差值并非独立测量的绝对垂直精度，也不能把事后稀释等同一次真实低密度飞行。",
+        "background_plain": "买到每平方米很多激光点，不代表树林下面或陡坡上真的有足够地面点；点聚成一团也不如同样数量分布均匀。",
+        "method": "输入是美国3DEP中两次航测已分类的地面回波，输出是不同保留密度下的1米线性TIN插值DTM及其内部高程差。四个样区覆盖低起伏平原、陡崖、高原与林坡；每处先留出10%地面点作控制集合，其余90%构造高密度参考面。作者再对工作点集作空间均衡稀释，目标密度从每平方米4点逐级降到0.03125点，并与同数量的纯随机稀释比较（全文第1至3页）。\n\n每一密度重新建立线性TIN并栅格化为1米DTM，计算相对于高密度参考面的高程差；在留出点位置比较残差，同时按坡度、地貌特征和非地面首回波比例分层分析。这样能隔离可用地面点数量和空间布局对插值的影响，但地面分类、航测定位与树冠穿透率仍继承原始高密度数据，不能模拟新的低密度飞行。",
+        "method_plain": "从同一批已认出的地面点里逐级拿掉一些，分别尽量均匀地拿和随机地拿，观察重建地形图在平地、陡坡与树林里变得多不一样。",
+        "innovation_overview": "论文把名义脉冲密度与实际地面回波密度分开，并用同数量不同空间布局的稀释实验量化1米TIN地形面的敏感性。",
+        "innovation_plain": "同样少的点，铺得均匀和挤成团会让地形图差很多，而且陡坡对缺点更敏感。",
+        "results": "四个样区来自犹他州与爱达荷州的两次3DEP采集，目标地面点密度为每平方米4至0.03125点，栅格间距1米。每平方米1点时，相对高密度参考面的RMSE在平原为0.010米、陡崖0.084米、高原0.046米、林坡0.026米；纯随机稀释相对于空间均衡稀释提高RMSE 13%至120%。这些都是同一航测内部差值；留出10%回波不等于独立大地测量控制点，因此不可作为USGS或ASPRS产品绝对精度。",
+        "conclusion": "作者认为地面点密度与空间布置需要同时评估，陡坡、地形断裂线和非地面遮挡区的误差尤其集中。作者承认只有四个样区、两次航测和一种线性TIN插值；地面分类未经独立复核，事后稀释保留了原航测的树冠穿透特性，后续需独立测量控制点和不同森林及插值法。本报告分析：可将其密度与空隙布局作为稀疏高程重建实验变量，但不可把0.010至0.084米写成真实连续空洞补全的绝对精度。",
+        "plain": "这篇主要告诉我们怎样设计稀疏度实验和怎样解释误差，而不是提出新的补洞网络。",
+        "innovations": [
+          {
+            "claim": "以实际可用地面回波密度而非总发射密度解释DTM差异。",
+            "analysis": "作者展示四种地貌中总点密度与地面密度差距显著，重点落在插值真正使用的地面点上。每平方米1个地面点时，低起伏平原内部RMSE为0.010米，陡崖为0.084米，说明相同密度不能用单一精度标准概括。"
+          },
+          {
+            "claim": "在相同点数下检验空间均衡与随机稀释的差异。",
+            "analysis": "随机删点会留下更不规则的空隙；文中跨样区和密度的随机方案RMSE比空间均衡方案高13%至120%。该数值支持布局影响，但只适用于论文的事后稀释与1米线性TIN条件，不能推广为真实航测的通用增益。"
+          }
+        ]
+      },
+      "title_zh": "地面回波密度与1米机载激光雷达地形模型内部高程差",
+      "journal_metrics": {
+        "journal": "Turkish Journal of Applied Geoinformation Sciences",
+        "issn": "3108-818X",
+        "checked_at": "2026-10-25",
+        "indexing": "2026年更名后收录状态未取得可验证的SCIE/SSCI/ESCI记录，出版方称索引更新中",
+        "jcr_failure": "Clarivate公开查询未返回该新刊名逐学科JCR分区，机构数据库未登录",
+        "failure": "出版方更名说明未给2025版中科院分区或正式JIF及年度，公开JCR页无可核对值；不以其他指标替代"
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.5194/isprs-archives-xlix-b2-2026-151-2026",
+      "title": "Integrating Airborne LiDAR and OpenStreetMap Features for Automated Hydrological Conditioning of Urban Digital Elevation Models",
+      "authors": "Tommaso Destefanis; Elena Durando; Matilde Oliveti; Emanuele Artù Cassin; Martina Di Rita",
+      "publication_date": "2026-07-23",
+      "journal": "The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences（ISPRS大会论文）",
+      "source_type": "conference",
+      "doi": "https://doi.org/10.5194/isprs-archives-xlix-b2-2026-151-2026",
+      "categories": [
+        "DTM生成与联合重建",
+        "多源数据与摄影测量重建",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "融合机载LiDAR与道路设施矢量信息修正城市DEM水流连通性",
+      "relevance": "高",
+      "relevance_reason": "直接处理高程网格中的桥隧涵洞虚假阻隔和窄墙缺失，体现地形重建须满足下游水文结构约束",
+      "reading_scope": "已下载9页出版方会议PDF；核读第1至7页的方法、主要实验及第8至9页结论，参考文献未逐条核读",
+      "discovery_type": "历史未收录补充；出版方与Crossref记2026-07-23，属同行评审会议论文而非期刊论文",
+      "open_access_pdf_urls": [
+        "https://isprs-archives.copernicus.org/articles/XLIX-B2-2026/151/2026/isprs-archives-XLIX-B2-2026-151-2026.pdf"
+      ],
+      "summary": {
+        "title_zh": "融合机载激光雷达与开放街图设施信息的城市DEM自动水文修正",
+        "background": "城市洪水模拟不仅需要细高程，还需要道路、桥、隧道和防洪墙在网格里保持正确的通水或挡水作用。未经处理的LiDAR表面模型会把桥面误当实心土坝，漏掉地下涵洞，也可能因点密度不足漏画窄墙。作者利用已分类机载LiDAR和开放街图的设施几何构造0.5米模型，先建立地面DTM及包含建筑的DSM，再按设施类型局部降低或抬高DSM高程，形成用于后续洪水模型的条件化高程面。论文在哥本哈根16平方公里区域评估高程一致性及静态洼地体积变化，但明确不把这些变化当成洪水事件的水动力验证。",
+        "background_plain": "地面高度即使量得很准，地图上若把桥堵死、把防洪墙抹平，水还是会走错路。",
+        "method": "输入是2023年已分类的哥本哈根机载LiDAR约每平方米13.5点及开放街图桥、隧道、涵洞和墙体矢量；输出为0.5米条件化DSM、供局部修正使用的DTM及修改记录。作者以地面类别生成DTM，以地面加建筑类别生成DSM；选择每格最高点后用12邻点、幂次2、最大半径5米的反距离加权插值，无有效点的约22%格子用最近邻补齐并保留有效性掩膜（全文第3至4页）。\n\n随后按桥梁开通、浅层隧道开通、涵洞开通、墙体栅格化四个顺序修改局部像元。前三类从DSM降至DTM以恢复通道，墙体则从LiDAR窄缓冲区内的高程点估计墙顶后抬高DSM；建筑掩膜阻止缓冲区误切建筑，5厘米阈值过滤无意义改动。每一步均保留几何和元数据供质检（第4至5页）。\n\n作者以丹麦官方地形模型检查高程误差，再比较修正前后静态洼地的总体积；这套流程依赖可靠的LiDAR分类和开放街图设施记录，最近邻补出的水面并不是实测河床。",
+        "method_plain": "先把点云变成地面与含建筑两张高程图，再凭桥隧涵洞和墙的位置对症改图：该通水处降下来，该挡水处抬起来。",
+        "innovation_overview": "作者把开源设施矢量转为四类可审计的局部高程修正，使城市地形网格更符合桥下通行与墙体阻水的结构。",
+        "innovation_plain": "外部设施图告诉模型哪里需要开口、哪里需要筑墙，原始点云提供高程，但没有足够点时也会明确跳过。",
+        "results": "在哥本哈根16平方公里、2023年LiDAR约13.5点每平方米、0.5米栅格条件下，基础DTM对官方模型的像元比较NMAD为0.066米，LE90为0.265米，但存在重尾离群值，RMSE为0.611米。条件化降低198733个像元，中位降低0.69米；抬高27022个像元，墙体距地面中位高3.00米。静态洼地体积由14.50百万立方米降至13.78百万立方米，减少718496立方米即5.0%；这是网格形态变化，不是洪水模拟准确率。",
+        "conclusion": "作者认为程序化、可追踪的基础设施修正能改善城市高程面中的通水与挡水表达。作者明确承认：完整水动力验证尚未做，开放街图漏标会导致漏修，默认12米桥隧缓冲宽度未做敏感性分析，水面最近邻补齐可能继承岸边高度。本报告分析：稀疏地形补全也应在高度误差之外检查流路、桥隧和陡坎的结构约束，但本文利用密集城市LiDAR，不能直接证明稀疏高程点的恢复能力。",
+        "plain": "修正后的地图少了假土坝、多了该有的墙；目前只证明地形结构有所改变，还没有证明真实洪水预报更准。",
+        "innovations": [
+          {
+            "claim": "在一条自动流程中依次处理桥、浅隧道、涵洞与防洪墙。",
+            "analysis": "仅用高程洼地算法无法判断桥下是否可通水；设施几何为修正位置提供外部约束。文中实际降低108处桥足迹、53处隧道及8处涵洞，抬高199处墙体；隧道步骤贡献了显著的洼地体积下降（第6至7页）。"
+          },
+          {
+            "claim": "以LiDAR点估计窄墙的墙顶并记录有效性。",
+            "analysis": "作者在开放街图墙线附近提取点，以第90百分位高度估计墙顶，并要求至少3个有效点。309处墙中201处通过可靠性筛选，199处真正修改；108处被排除表明方法不会把缺证据位置强行补成已知墙高。"
+          }
+        ]
+      },
+      "title_zh": "融合机载激光雷达与开放街图设施信息的城市DEM自动水文修正",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.5194/isprs-archives-xlix-b3-2026-177-2026",
+      "title": "A Dual-Task Optimization Approach for Digital Elevation Model Correction with Spaceborne LiDAR Data",
+      "authors": "Yibo Ling; Ting On Chan; Wing Sum Yan",
+      "publication_date": "2026-07-30",
+      "journal": "The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences（ISPRS大会论文）",
+      "source_type": "conference",
+      "doi": "https://doi.org/10.5194/isprs-archives-xlix-b3-2026-177-2026",
+      "categories": [
+        "DEM修复与补全",
+        "稀疏高程采样重建",
+        "多源数据与摄影测量重建"
+      ],
+      "direction": "利用稀疏ICESat-2高程观测联合预测DEM误差大小与修正方向",
+      "relevance": "高",
+      "relevance_reason": "直接将轨道稀疏高程点用于连续SRTM DEM校正并设计符号辅助监督，但仍以现成DEM为底图",
+      "reading_scope": "已下载6页出版方会议PDF；核读第1至5页方法和实验、第5至6页结论，参考文献未逐条核读",
+      "discovery_type": "历史未收录补充；出版方与Crossref记2026-07-30，属同行评审会议论文而非期刊论文",
+      "open_access_pdf_urls": [
+        "https://isprs-archives.copernicus.org/articles/XLIX-B3-2026/177/2026/isprs-archives-XLIX-B3-2026-177-2026.pdf"
+      ],
+      "summary": {
+        "title_zh": "利用星载激光雷达数据双任务优化数字高程模型校正",
+        "background": "SRTM等全球公开DEM覆盖广，却在植被、地貌变化和观测几何复杂处出现高程误差；ICESat-2给出精确但沿轨离散的高程点，无法直接形成连续表面。通常的学习式校正只回归误差数值，若预测的正负方向错了，原DEM甚至会被推得更远。作者在加拿大新不伦瑞克省Kent县将ICESat-2点与SRTM格网、坡度和植被等辅助变量配对，同时学习应升高还是降低以及应改多少。实验同随机森林、XGBoost和普通单任务深层网络比较，主张方向辅助监督能改善校正的大小与方向一致性。",
+        "background_plain": "卫星激光点能告诉我们少数位置的真高程；除了问每格差多少，还要先弄清这格该往上改还是往下改。",
+        "method": "输入是SRTM DEM、35823个ICESat-2控制点以及候选地形与环境变量；输出为校正后的DEM高程。作者在激光点处求参考高程减原SRTM高程作为回归目标，并据其正负生成二分类标签。先用Spearman相关分析筛选变量，文中最后突出坡度与植被覆盖率作为核心因素（全文第2至4页）。\n\n网络共享多层全连接特征骨干，之后分为回归分支和上升/下降方向分类分支；分类使用类别加权损失以缓和正负样本不平衡，回归使用均方误差，两项加权联合训练。最后把预测校正量加到SRTM，方向分支提供辅助约束；文中没有足够的独立实验证据说明它能从零生成没有基础DEM的地形（第3至4页）。\n\n作者在Kent县低起伏及湿地、林地环境评估RMSE、MAE和方向一致率，并与未校正SRTM及三种学习基线比较；跨地貌、跨DEM产品的迁移仍列为未来工作。",
+        "method_plain": "把已有高程图当底稿，用零散测高点教网络每格该改多少；另一个小任务专门提醒它不要把上调写成下调。",
+        "innovation_overview": "论文把DEM误差校正值与升降方向作为共享特征的两个任务共同训练，并在同一地区检验数值与符号是否改善。",
+        "innovation_plain": "方向监督确实带来小幅但可量化的提升；它改善已有DEM，不是在无观测区域凭空测出地形。",
+        "results": "在Kent县约4550平方公里、35823个ICESat-2点的实验中，第5页表1报告：未校正SRTM的RMSE/MAE为2.43/1.85米；随机森林为1.92/1.49米，XGBoost为1.92/1.48米，单任务DNN为1.81/1.42米；双任务为1.76/1.37米，方向一致率75.05%。相对原DEM，RMSE下降约27.6%、MAE下降约25.9%；相对DNN，方向一致率增加1.66个百分点。作者未提供跨地区的正式迁移误差。",
+        "conclusion": "作者认为方向分类作为辅助任务可让ICESat-2驱动的SRTM校正更可靠，并建议检验不同地貌和DEM产品的可迁移性。论文研究区主要是低起伏地形，不能据此宣称陡山或无底图空洞的效果。本报告分析：可借鉴校正符号监督和稀疏点配对设计，但需用空间留出及独立高程控制排查邻近样本泄漏，并单独设计真实连续空洞实验。",
+        "plain": "相同训练点和地区里，既学改多少又学往哪边改，比只学改多少略准；换地区能否有效仍未证实。",
+        "innovations": [
+          {
+            "claim": "将修正方向分类加入连续高程误差回归的联合训练。",
+            "analysis": "传统单任务网络只最小化数值误差；方向分支提供正负标签的额外监督。与普通DNN相比，文中RMSE由1.81降至1.76米，MAE由1.42降至1.37米，方向一致率从73.39%升至75.05%，差异为1.66个百分点（第5页表1）。"
+          },
+          {
+            "claim": "同时报告原DEM、传统学习器及单任务网络基线。",
+            "analysis": "未校正SRTM的RMSE为2.43米、MAE为1.85米，随机森林和XGBoost的RMSE均为1.92米；这使双任务的改进范围可辨，而非仅凭视觉图示判定有效。论文只在一个低起伏地区报告结果，尚不能推断山区与真实空洞表现。"
+          }
+        ]
+      },
+      "title_zh": "利用星载激光雷达数据双任务优化数字高程模型校正",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.5194/isprs-archives-xlix-b2-2026-1283-2026",
+      "title": "Monocular 3D Reconstruction for Martian Terrain Based on Diffusion Model",
+      "authors": "Jiarui Cao; Rong Huang; Yusheng Xu; Zhen Ye; Xiaohua Tong",
+      "publication_date": "2026-07-23",
+      "journal": "The International Archives of the Photogrammetry, Remote Sensing and Spatial Information Sciences（ISPRS大会论文）",
+      "source_type": "conference",
+      "doi": "https://doi.org/10.5194/isprs-archives-xlix-b2-2026-1283-2026",
+      "categories": [
+        "深度学习地形重建",
+        "多源数据与摄影测量重建",
+        "DEM修复与补全"
+      ],
+      "direction": "用单幅火星高分辨率影像与低分辨率高程尺度先验生成高分辨率DTM",
+      "relevance": "高",
+      "relevance_reason": "重建连续地形并讨论高分辨率立体数据不足时的生成路径；但实验输入是单幅影像而非稀疏地面点",
+      "reading_scope": "已下载6页出版方会议PDF；核读第1至6页正文、表1与结论，参考文献未逐条核读",
+      "discovery_type": "历史未收录补充；出版方与Crossref记2026-07-23，属同行评审会议论文而非期刊论文",
+      "open_access_pdf_urls": [
+        "https://isprs-archives.copernicus.org/articles/XLIX-B2-2026/1283/2026/isprs-archives-XLIX-B2-2026-1283-2026.pdf"
+      ],
+      "summary": {
+        "title_zh": "基于扩散模型的火星地形单目三维重建",
+        "background": "火星高精度DTM支持着陆、路径规划和地貌研究，但高分辨率立体影像稀少，单幅影像虽然覆盖多，却难直接恢复可靠高程；稀疏轨道激光测高的分辨率也不足。传统立体匹配依赖成对影像与纹理，光度反演又要求准确的大气和反射模型。作者把单幅HiRISE影像到相对高程的映射做成条件扩散生成：在潜空间逐步去噪，并用图像特征引导多尺度网络，以额外高程趋势约束抑制局部细节虽好却整体高度跑偏。最后仍需从低分辨率地形模型取得均值和方差恢复绝对高程，因此不能说仅凭一张照片便得到完全独立的绝对高程。",
+        "background_plain": "火星照片很多，成对的高清立体照片很少；希望靠单张照片推地形，但绝对高度还得有一张粗高程图帮忙定标。",
+        "method": "输入是单幅高分辨率火星光学影像，训练时配对参考DTM；输出先为相对高程，再借低分辨率地形模型的均值与方差恢复绝对尺度。作者以预训练且冻结的变分自编码器把影像和高程压到潜空间，以影像潜特征为条件，从噪声逐步生成地形潜码；解码后拼接为连续高程图（全文第2至4页）。\n\n核心去噪器是带多尺度和注意力的U-Net，影像潜特征与噪声高程潜码在通道上组合。训练同时最小化噪声预测误差与经过低通滤波的输出/真值高程差，后者关注大尺度地形趋势；推理用跳步的确定性扩散采样减少步骤，再通过粗DEM恢复绝对尺度（第3至4页）。\n\n实验把30000对HiRISE影像及地形样本统一到每像元2米，在未参与训练的六块地区检查高程RMSE与阴影渲染相似度。该任务属于影像反演地形，不是向输入DEM随机删点或连续挖洞后的直接补值。",
+        "method_plain": "先学会把照片中的阴影和纹理逐步变成相对起伏，再拿粗高程图把整体高度尺子校准。",
+        "innovation_overview": "论文把条件潜空间扩散、单目影像特征和整体高程趋势损失结合，用有限立体参考训练火星地形生成器。",
+        "innovation_plain": "生成器负责画细节，低通约束与粗高程底图负责不让整片地形飘走。",
+        "results": "作者以30000对、2米每像元的HiRISE影像与地形训练，在六块独立测试区对参考HiRISE DTM的RMSE依次为1.37、1.52、1.04、1.84、1.64和1.13米（第4页表1）。第5页报告重建DTM阴影图与输入影像的平均SSIM为0.530，摄影测量参考DTM阴影图为0.384；这是影像外观一致性比较，不等于高程绝对精度优于参考DTM。文中把总体高程表现概括为约2米。",
+        "conclusion": "作者认为单目条件扩散可在缺少立体像对的火星区域恢复较细地貌，并给出六区误差与阴影外观证据。论文未明确列出严格的跨成像条件局限；本报告分析：绝对尺度依赖粗DEM，测试仍依赖参考HiRISE DTM，且未检验稀疏高程点或真实连续空洞，不可直接移植其约2米数字。",
+        "plain": "单张照片能帮模型补出地形细节，但要说出海拔是多少，仍需要粗地形先验；外观更像照片也不保证高程更准。",
+        "innovations": [
+          {
+            "claim": "在压缩潜空间中以影像条件逐步去噪生成地形。",
+            "analysis": "与单次直接回归相比，这种路径试图保留撞击坑、沙丘和细小起伏；跳步采样提高推理效率。作者展示六个未参与训练地区的RMSE为1.04至1.84米，但未给单次回归基线的同条件绝对RMSE，不能把全部收益单独归于扩散结构。"
+          },
+          {
+            "claim": "加入低通高程重建损失并保留粗地形的绝对尺度约束。",
+            "analysis": "噪声预测损失管局部生成，低通损失管整体地形趋势；最后从低分辨率高程模型取均值和方差恢复真实单位。该设计也暴露迁移边界：若粗模型本身缺失或有系统偏差，论文尚未证明仅凭影像可保持绝对高程。"
+          }
+        ]
+      },
+      "title_zh": "基于扩散模型的火星地形单目三维重建",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.5194/isprs-annals-xi-1-2026-81-2026",
+      "title": "Multi-branch Deep Learning Architecture for bathymetric LiDAR Point Cloud Classification",
+      "authors": "Lida Asgharian Pournodrati; Gottfried Mandlburger; Uwe Soergel",
+      "publication_date": "2026-07-03",
+      "journal": "ISPRS Annals of the Photogrammetry, Remote Sensing and Spatial Information Sciences（ISPRS大会论文）",
+      "source_type": "conference",
+      "doi": "https://doi.org/10.5194/isprs-annals-xi-1-2026-81-2026",
+      "categories": [
+        "地面分类与滤波",
+        "多源数据与摄影测量重建",
+        "稀疏高程采样重建"
+      ],
+      "direction": "联合几何、颜色与回波属性分类水陆过渡带LiDAR点云",
+      "relevance": "高",
+      "relevance_reason": "水下地面与水面、植被和噪声点分离是地形/水深表面生成的前置步骤，论文提供跨岸水域分类和少数类失效证据；并非直接高程补洞",
+      "reading_scope": "已下载10页出版方会议PDF；核读第1至8页方法、表1至表6和结论相关段落，参考文献未逐条核读",
+      "discovery_type": "历史未收录补充；出版方与Crossref记2026-07-03，属同行评审会议论文而非期刊论文",
+      "open_access_pdf_urls": [
+        "https://isprs-annals.copernicus.org/articles/XI-1-2026/81/2026/isprs-annals-XI-1-2026-81-2026.pdf"
+      ],
+      "summary": {
+        "title_zh": "面向水深激光雷达点云分类的多分支深度学习架构",
+        "background": "绿色波段航空LiDAR可同时采到陆地、水面和水下回波，但若把岸上土壤、水面、水底、树木、水生植被与噪声混成一类，就无法可靠提取水陆连续地形。单靠点的三维几何难以区分水底与贴底植物，传统流程也常把陆地与水域分开处理。作者让几何、RGB颜色和回波派生属性进入不同网络分支，再融合到逐点分类器，试图以统一流程识别陆地到水下的多种地物。论文在挪威海岸与奥地利池塘数据中比较PointNet++，同时揭示噪声和水生植物等少数类仍难分。",
+        "background_plain": "激光点落在同一高度附近，也可能来自河底、植物或噪声；先分清点的身份，才谈得上用它们重建可靠水下地形。",
+        "method": "输入为绿色LiDAR点云的XYZ坐标、可得的RGB及回波强度、回波次序等属性，输出为逐点土壤地面、水面、海床、水生植物、树木和噪声等类别。几何分支用PointMLP提取空间结构，另两条1D U-Net分别沿局部采样点序列提取颜色与回波派生属性；每支投影为同维特征后拼接，经全连接融合层和分类层输出标签（全文第3至4页）。\n\n训练采用类别均衡的空间区域采样和加权焦点损失，以缓和水面与海床占多数、植物与噪声稀少的问题。Stavanger有RGB，使用三分支；Loosdorf池塘缺RGB、换用振幅反射率和回波偏差，因此只用几何加信号双分支。两组实验的传感器和输入属性不同，不能把差异解释成单一模块收益（第4至6页）。\n\n作者在空间留出的海岸测试区及独立池塘测试区评价分类，再与仅用XYZ的PointNet++比较。文中所称OA按各类别召回率平均定义，不能不加说明地当作常见逐点总体正确率；论文未把标签进一步转成水深DTM做独立高程误差验证。",
+        "method_plain": "一条支路看点的形状，一条看颜色，一条看激光回波信号；最后合起来判断每个点是地面、水底、植物还是噪声。",
+        "innovation_overview": "作者以几何和两种信号属性分支联合分类水陆交界点云，并把跨场景少数类失败一并量化。",
+        "innovation_plain": "更多属性能帮助分清水陆点，但罕见的水草和噪声依然容易被错分。",
+        "results": "Stavanger空间留出测试集约1610万点，三分支OA为75.3%、mIoU为64.3%；仅用XYZ的PointNet++为38.34%、20.1%。Loosdorf独立池塘测试约230985点，无RGB的双分支OA为78.56%、mIoU为59.6%，XYZ基线为53.68%、29.5%。Stavanger噪声召回率为30.4%，Loosdorf水生植物精确率为20.3%，海床召回率62.4%；不能用整体指标掩盖这些类别的不足。这里OA遵循作者的宏平均召回定义。",
+        "conclusion": "作者认为几何与信号属性融合可改善水陆过渡区点云分类，并表示不同点密度、飞行参数和传感器属性下的泛化仍需研究；未来还拟与KPConv、Point Transformer等更强基线比较。本报告分析：可借鉴其地面/水底点识别作为地形重建前置模块，但当前论文没有把分类结果转为DEM并检验真实水底高程，因此分类mIoU不能当成地形重建精度。",
+        "plain": "它让机器更会挑哪些激光点是真地面和水底，却还没证明用挑出的点能把地形补得多准。",
+        "innovations": [
+          {
+            "claim": "把点的几何、颜色和回波特征分开提取后再融合。",
+            "analysis": "相较只用XYZ的PointNet++，Stavanger测试集OA从38.34%增至75.3%、mIoU从20.1%增至64.3%；Loosdorf从53.68%与29.5%增至78.56%与59.6%。两者输入属性不同，结果支持多模态组合有用，却不能证明某一分支在所有传感器上独立同样有效。"
+          },
+          {
+            "claim": "以跨池塘测试和消融揭示少数类与传感器差异。",
+            "analysis": "Loosdorf无RGB时加入回波派生属性，mIoU由34%到59.6%；但测试池塘水生植物精确率仅20.3%，Stavanger噪声召回率30.4%。这些失败直接限制用预测类别构造连续水底表面的可信度。"
+          }
+        ]
+      },
+      "title_zh": "面向水深激光雷达点云分类的多分支深度学习架构",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    },
+    {
+      "id": "https://doi.org/10.31223/x5j18r",
+      "title": "HIGH-RESOLUTION DIGITAL TERRAIN MODEL FOR THE ITALIAN TERRITORY",
+      "authors": "Marina Muto; Mario Panza; Mauro Rossi; Massimiliano Alvioli; Giulio Iovine; Ivan Marchesini",
+      "publication_date": "2026-03-13",
+      "journal": "EarthArXiv预印本（拟投Scientific Data，未通过期刊评审）",
+      "source_type": "repository",
+      "doi": "https://doi.org/10.31223/x5j18r",
+      "categories": [
+        "多源数据与摄影测量重建",
+        "DTM生成与联合重建",
+        "拓扑结构与地形特征"
+      ],
+      "direction": "融合异质LiDAR DTM与全国基底模型构建无缝5米地形面",
+      "relevance": "高",
+      "relevance_reason": "直接讨论不连续高分辨率地形源与粗全国底图的拼接、垂直偏差校正和流路保持，但不是从孤立高程点建模",
+      "reading_scope": "已下载30页EarthArXiv预印本；核读第1至5页、第11至16页方法和第19至26页技术验证，参考文献和其余页未逐页核读",
+      "discovery_type": "历史未收录补充；EarthArXiv与Crossref记2026-03-13，PDF写明提交Scientific Data审稿，不能当成该期刊已发表",
+      "open_access_pdf_urls": [
+        "https://eartharxiv.org/repository/object/12152/download/21810/"
+      ],
+      "summary": {
+        "title_zh": "面向意大利全国的高分辨率数字地形模型",
+        "background": "意大利各地机构积累了精细LiDAR DTM，但调查时间、覆盖、坐标、分辨率不一致；全国完整的TINITALY 1.1则是10米网格，在低起伏河道等地方容易平滑掉细节。作者构建全国统一5米网格的HR-DTM-5m，把局部LiDAR成果与TINITALY基底对齐、拼接和缓变融合，并重点检查地貌形态、坡度、流路以及数据边界的连续性。论文明确这是对既有地形产品的融合与再采样，不把缺少LiDAR处重采样到5米就称为出现新的5米地形细节；也没有独立控制点证明全国像元级绝对精度提升。",
+        "background_plain": "各地区的精细地图像拼图碎片，能补全国图的细节；没有精细片的地方依然是粗底图，放大像素不会生出真实山沟。",
+        "method": "输入包括意大利各机构0.5、1、2、5米LiDAR DTM和全国覆盖的10米TINITALY 1.1，输出是投影统一的5米全国GeoTIFF地形面。作者先清点来源和元数据，将所有产品投到EPSG:6875并按TINITALY格网严格对齐；同一地区同类型LiDAR片先区域拼接，重叠处以较新获取数据优先，暂不做平滑（全文第11至12页）。\n\n接着将全国10米底图及各区域LiDAR产品双线性重采样到同一5米格网。融合前用重叠区平均高差纠正LiDAR片相对于全国底图的系统垂直偏移，识别明显错误低值，保留一处真实采石场低洼例外。最后在不同来源相接的过渡带作平滑混合，优先保留LiDAR细节，让相邻片不产生突跳（第13至15页）。\n\n评价不追求单点RMSE最大改善，而以全国高程分布、剖面、坡度分级、阴影图和GRASS提取流路检查形态。此流程依赖已有局部高质量DTM和完整全国底图，不能把它当作仅凭少量离散测点的直接重建。",
+        "method_plain": "先统一所有拼图的坐标、像素和高程基准，再在重叠边缘消掉台阶；细图有的地方用细图，没有的地方仍借全国粗图补全。",
+        "innovation_overview": "作者把异质区域LiDAR地形产品与全国粗底图按来源、时相、垂直基准和边界形态组织成可复现的全国无缝融合流程。",
+        "innovation_plain": "大规模地形融合既要让拼图边缘平顺，也要保住小河沟和陡坎，而不是只看平均高度是否接近。",
+        "results": "全国5米格网中，HR-DTM-5m与重采样后的TINITALY有效格数分别为12004375366与11993718740，差约0.089%。第19页表2两者平均高程为535.5与535.9米；第20页表3定义TINITALY减HR-DTM-5m，高差中位数0米、均值0.1米、标准差5.0米，P5为负15.1米、P95为5.9米。这是两个模型的差，不是对地面真值的RMSE。第23至25页坡度与流路实例显示LiDAR覆盖处可解析更多细节，未覆盖处不虚构新增细节。",
+        "conclusion": "作者认为全国拼接产品为地貌与水文分析提供较一致的5米格网参考，同时强调验证主要针对内部连续、形态和流路，而非全国独立绝对高程精度。PDF仍标明期刊审稿中；不同采集年代和未覆盖区的底图分辨率是实际边界。本报告分析：可借鉴来源标志、偏差校正和流路验收，但不能把5米交付网格当成全国5米真实地形信息。",
+        "plain": "它做的是把已有地形图拼好、接顺、核查水往哪流；粗底图填的地方依然粗。",
+        "innovations": [
+          {
+            "claim": "在区域拼接与全国融合之间显式处理格网对齐和垂直偏差。",
+            "analysis": "不同机构数据若直接覆盖会留缝或台阶；论文按同类数据先区域拼接，再统一到5米格网，在重叠区校正平均偏移后渐变融合。第19至20页全国高程差中位数为0米，但该值是与TINITALY比较，不是绝对真值精度。"
+          },
+          {
+            "claim": "将形态与流路作为高程产品的技术验证重点。",
+            "analysis": "作者用剖面、坡度和流路对比检验平原细沟及边界连续性；第23至25页显示有LiDAR区域可识别更细的排水走向，没有LiDAR处仍保持TINITALY原有走向。该贡献是产品集成与质检，不是全新插值算法的优越性证明。"
+          }
+        ]
+      },
+      "title_zh": "面向意大利全国的高分辨率数字地形模型",
+      "journal_metrics": {
+        "not_applicable": true
+      },
+      "source_verification_count": 2,
+      "format_version": 2
+    }
+  ]
+}
